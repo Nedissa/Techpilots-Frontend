@@ -95,7 +95,7 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
             </svg>
           </button>
           {showSortMenu && (
-            <div className="absolute right-0 mt-2 bg-white z-10 shadow-lg" style={{ width: '100%' }}>
+            <div className="absolute right-0 mt-2 bg-white z-10 shadow-lg min-w-fit">
               {sortOptions.map(({ value, label }) => (
                 <button
                   key={value}
@@ -103,7 +103,7 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
                     setSortBy(value as SortOption);
                     setShowSortMenu(false);
                   }}
-                  className={`w-full text-left px-4 py-3 text-sm whitespace-nowrap overflow-hidden text-ellipsis ${
+                  className={`w-full text-left px-4 py-3 text-sm whitespace-nowrap ${
                     value === sortBy
                       ? 'bg-gray-100 text-gray-900 font-medium'
                       : 'text-gray-700 hover:bg-gray-50'
