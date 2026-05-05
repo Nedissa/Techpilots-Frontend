@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { ProductsSection } from './components/ProductsSection';
 import { ProductBanner } from './components/ProductBanner';
+import { ProductCardGrid } from './components/ProductCardGrid';
+import { FeatureCardsSection } from './components/FeatureCardsSection';
 import { MainLayout } from './components/MainLayout';
 
 const FEATURED_COLLECTIONS = [
@@ -24,17 +26,84 @@ function CampaignBannersSection() {
 }
 
 const POPULAR_PRODUCTS = [
-  { id: '1', title: 'ASUS ROG Gaming Laptop', handle: 'asus-rog-gaming-laptop', price: '14999', originalPrice: '18099', brand: 'ASUS', discount: 17, rating: 5, reviews: 128, image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
-  { id: '2', title: 'Gaming Stationär Dator', handle: 'gaming-stationär-dator', price: '8999', brand: 'Custom Build', discount: 10, rating: 5, reviews: 89, image: '/assets/Produkt bilder/STATIONÄR/1.webp' },
-  { id: '3', title: 'Premium Gaming Laptop Pro', handle: 'premium-gaming-laptop-pro', price: '11999', brand: 'ASUS', discount: 14, rating: 5, reviews: 156, image: '/assets/Produkt bilder/LAPTOP/1978563_2.webp' },
-  { id: '4', title: 'Workstation Dator', handle: 'workstation-dator', price: '1499', brand: 'Custom', discount: 21, rating: 5, reviews: 67, image: '/assets/Produkt bilder/STATIONÄR/6907594_t7dv07.webp' },
+  { id: '1', title: 'ASUS ROG Gaming Laptop', handle: 'asus-rog-gaming-laptop', price: 14999, originalPrice: 18099, brand: 'ASUS', discount: 'Upp till 17% rabatt', rating: 5, reviews: 128, image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp', colors: ['#000000', '#808080'], stock: 'I lager (128 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'] },
+  { id: '2', title: 'Gaming Stationär Dator', handle: 'gaming-stationär-dator', price: 8999, originalPrice: 9999, brand: 'Custom Build', discount: 'Upp till 10% rabatt', rating: 5, reviews: 89, image: '/assets/Produkt bilder/STATIONÄR/1.webp', colors: ['#000000'], stock: 'I lager (89 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'] },
+  { id: '3', title: 'Premium Gaming Laptop Pro', handle: 'premium-gaming-laptop-pro', price: 11999, originalPrice: 13999, brand: 'ASUS', discount: 'Upp till 14% rabatt', rating: 5, reviews: 156, image: '/assets/Produkt bilder/LAPTOP/1978563_2.webp', colors: ['#000000', '#808080'], stock: 'I lager (156 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'] },
+  { id: '4', title: 'Workstation Dator', handle: 'workstation-dator', price: 1499, originalPrice: 1899, brand: 'Custom', discount: 'Upp till 21% rabatt', rating: 5, reviews: 67, image: '/assets/Produkt bilder/STATIONÄR/6907594_t7dv07.webp', colors: ['#000000'], stock: 'I lager (67 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'] },
 ];
 
 const RECOMMENDED_PRODUCTS = [
-  { id: '5', title: 'High Performance Laptop', handle: 'high-performance-laptop', price: '12999', brand: 'ASUS', discount: 13, rating: 5, reviews: 112, image: '/assets/Produkt bilder/LAPTOP/1978563_3.webp' },
-  { id: '6', title: 'Professional Workstation', handle: 'professional-workstation', price: '7999', brand: 'Custom', discount: 11, rating: 5, reviews: 95, image: '/assets/Produkt bilder/STATIONÄR/6907594_jzbn2q.webp' },
-  { id: '7', title: 'Gaming Setup Komplett', handle: 'gaming-setup-komplett', price: '5499', brand: 'Multi', discount: 21, rating: 5, reviews: 78, image: '/assets/Produkt bilder/STATIONÄR/6907594_ebnf7f.webp' },
-  { id: '8', title: 'Ultrabook Slim Laptop', handle: 'ultrabook-slim-laptop', price: '1299', brand: 'ASUS', discount: 24, rating: 5, reviews: 234, image: '/assets/Produkt bilder/LAPTOP/6907594_v5urxz.webp' },
+  { id: '5', title: 'High Performance Laptop', handle: 'high-performance-laptop', price: 12999, originalPrice: 14999, brand: 'ASUS', discount: 'Upp till 13% rabatt', rating: 5, reviews: 112, image: '/assets/Produkt bilder/LAPTOP/1978563_3.webp', colors: ['#000000', '#808080'], stock: 'I lager (112 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'] },
+  { id: '6', title: 'Professional Workstation', handle: 'professional-workstation', price: 7999, originalPrice: 8999, brand: 'Custom', discount: 'Upp till 11% rabatt', rating: 5, reviews: 95, image: '/assets/Produkt bilder/STATIONÄR/6907594_jzbn2q.webp', colors: ['#000000'], stock: 'I lager (95 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'] },
+  { id: '7', title: 'Gaming Setup Komplett', handle: 'gaming-setup-komplett', price: 5499, originalPrice: 6999, brand: 'Multi', discount: 'Upp till 21% rabatt', rating: 5, reviews: 78, image: '/assets/Produkt bilder/STATIONÄR/6907594_ebnf7f.webp', colors: ['#000000'], stock: 'I lager (78 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'] },
+  { id: '8', title: 'Ultrabook Slim Laptop', handle: 'ultrabook-slim-laptop', price: 1299, originalPrice: 1699, brand: 'ASUS', discount: 'Upp till 24% rabatt', rating: 5, reviews: 234, image: '/assets/Produkt bilder/LAPTOP/6907594_v5urxz.webp', colors: ['#000000', '#808080'], stock: 'I lager (234 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'] },
+];
+
+const FEATURED_PRODUCTS = [
+  {
+    id: '101',
+    title: 'Nikon 1 S2 Point & Shoot Kamera',
+    handle: 'nikon-1-s2-camera',
+    brand: 'Nikon',
+    price: 2269,
+    originalPrice: 3404,
+    image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp',
+    isNew: true,
+    discount: 'Upp till 33% rabatt',
+    rating: 4,
+    reviews: 2,
+    colors: ['#FFD700', '#000000', '#DC143C', '#F5F5F5'],
+    stock: 'I lager (384 st)',
+    features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'],
+  },
+  {
+    id: '102',
+    title: 'Canon EOS R6 Digitalkamera',
+    handle: 'canon-eos-r6',
+    brand: 'Canon',
+    price: 3899,
+    originalPrice: 4599,
+    image: '/assets/Produkt bilder/LAPTOP/1978563_2.webp',
+    isNew: false,
+    discount: 'Upp till 15% rabatt',
+    rating: 5,
+    reviews: 18,
+    colors: ['#000000', '#FFFFFF'],
+    stock: 'I lager (156 st)',
+    features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'],
+  },
+  {
+    id: '103',
+    title: 'Sony A7 IV Spegellös Kamera',
+    handle: 'sony-a7-iv',
+    brand: 'Sony',
+    price: 3299,
+    originalPrice: 3999,
+    image: '/assets/Produkt bilder/LAPTOP/1978563_3.webp',
+    isNew: true,
+    discount: 'Upp till 18% rabatt',
+    rating: 5,
+    reviews: 45,
+    colors: ['#000000'],
+    stock: 'I lager (89 st)',
+    features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'],
+  },
+  {
+    id: '104',
+    title: 'Fujifilm X-T5 Kamera',
+    handle: 'fujifilm-x-t5',
+    brand: 'Fujifilm',
+    price: 1899,
+    originalPrice: 2299,
+    image: '/assets/Produkt bilder/STATIONÄR/1.webp',
+    isNew: false,
+    discount: 'Upp till 18% rabatt',
+    rating: 4,
+    reviews: 12,
+    colors: ['#000000', '#808080', '#DAA520'],
+    stock: 'I lager (234 st)',
+    features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'],
+  },
 ];
 
 function HeroCarousel() {
@@ -168,8 +237,8 @@ export default function Home() {
         <div className="-mx-6">
           <HeroCarousel />
         </div>
-        <div className="px-6">
-          <CampaignBannersSection />
+        <div className="-mx-6">
+          <FeatureCardsSection />
         </div>
         <div className="px-6">
           <ProductsSection

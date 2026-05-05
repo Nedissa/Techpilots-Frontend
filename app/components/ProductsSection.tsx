@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ProductItem } from './ProductItem';
+import { ProductCardGrid } from './ProductCardGrid';
 
 type SectionVariant = 'popular' | 'recommended' | 'related';
 
@@ -24,13 +24,18 @@ interface Product {
   id: string;
   title: string;
   handle: string;
-  price: string | number;
-  originalPrice?: string | number;
+  price: number;
+  originalPrice?: number;
+  image: string;
   brand?: string;
-  discount?: number;
+  discount?: string;
+  discountPercent?: number;
   rating?: number;
   reviews?: number;
-  specs?: string[];
+  colors?: string[];
+  features?: string[];
+  stock?: string;
+  isNew?: boolean;
 }
 
 export function ProductsSection({
@@ -56,43 +61,7 @@ export function ProductsSection({
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">{config.title}</h2>
         </div>
-        <div className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {visibleProducts.length > 0
-              ? visibleProducts.map((product) => (
-                  <ProductItem
-                    key={product.id}
-                    product={product}
-                    addToCartLabel={config.buttonLabel}
-                  />
-                ))
-              : null}
-          </div>
-
-          {products.length > itemsPerPage && (
-            <>
-              <button
-                onClick={() => setCurrentIndex((prev) => (prev - 1 + totalPages) % totalPages)}
-                className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-transform"
-                aria-label="Föregående"
-              >
-                <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-
-              <button
-                onClick={() => setCurrentIndex((prev) => (prev + 1) % totalPages)}
-                className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-transform"
-                aria-label="Nästa"
-              >
-                <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </>
-          )}
-        </div>
+        <ProductCardGrid products={visibleProducts} />
       </div>
     </section>
   );
