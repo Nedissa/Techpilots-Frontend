@@ -96,22 +96,20 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
           </button>
           {showSortMenu && (
             <div className="absolute right-0 mt-2 bg-white z-10 shadow-lg min-w-fit">
-              {sortOptions.map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => {
-                    setSortBy(value as SortOption);
-                    setShowSortMenu(false);
-                  }}
-                  className={`w-full text-left px-4 py-3 text-sm whitespace-nowrap ${
-                    value === sortBy
-                      ? 'bg-gray-100 text-gray-900 font-medium'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+              {sortOptions
+                .filter(({ value }) => value !== sortBy)
+                .map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => {
+                      setSortBy(value as SortOption);
+                      setShowSortMenu(false);
+                    }}
+                    className="w-full text-left px-4 py-3 text-sm whitespace-nowrap text-gray-700 hover:bg-gray-50"
+                  >
+                    {label}
+                  </button>
+                ))}
             </div>
           )}
         </div>
