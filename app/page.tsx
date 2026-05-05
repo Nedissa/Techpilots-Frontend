@@ -24,17 +24,17 @@ function CampaignBannersSection() {
 }
 
 const POPULAR_PRODUCTS = [
-  { id: '1', title: 'ASUS ROG Gaming Laptop', handle: 'asus-rog-gaming-laptop', price: '14999', originalPrice: '18099', brand: 'ASUS', discount: 17, rating: 5, reviews: 128 },
-  { id: '2', title: 'Intel Core i9', handle: 'intel-core-i9', price: '8999', brand: 'Intel', discount: 10, rating: 5, reviews: 89 },
-  { id: '3', title: 'NVIDIA RTX 4080', handle: 'nvidia-rtx-4080', price: '11999', brand: 'NVIDIA', discount: 14, rating: 5, reviews: 156 },
-  { id: '4', title: 'Corsair Headset', handle: 'corsair-headset', price: '1499', brand: 'Corsair', discount: 21, rating: 5, reviews: 67 },
+  { id: '1', title: 'ASUS ROG Gaming Laptop', handle: 'asus-rog-gaming-laptop', price: '14999', originalPrice: '18099', brand: 'ASUS', discount: 17, rating: 5, reviews: 128, image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
+  { id: '2', title: 'Gaming Stationär Dator', handle: 'gaming-stationär-dator', price: '8999', brand: 'Custom Build', discount: 10, rating: 5, reviews: 89, image: '/assets/Produkt bilder/STATIONÄR/1.webp' },
+  { id: '3', title: 'Premium Gaming Laptop Pro', handle: 'premium-gaming-laptop-pro', price: '11999', brand: 'ASUS', discount: 14, rating: 5, reviews: 156, image: '/assets/Produkt bilder/LAPTOP/1978563_2.webp' },
+  { id: '4', title: 'Workstation Dator', handle: 'workstation-dator', price: '1499', brand: 'Custom', discount: 21, rating: 5, reviews: 67, image: '/assets/Produkt bilder/STATIONÄR/6907594_t7dv07.webp' },
 ];
 
 const RECOMMENDED_PRODUCTS = [
-  { id: '5', title: 'Dell XPS 13', handle: 'dell-xps-13', price: '12999', brand: 'Dell', discount: 13, rating: 5, reviews: 112 },
-  { id: '6', title: 'AMD Ryzen 9', handle: 'amd-ryzen-9', price: '7999', brand: 'AMD', discount: 11, rating: 5, reviews: 95 },
-  { id: '7', title: 'Samsung Monitor 4K', handle: 'samsung-monitor-4k', price: '5499', brand: 'Samsung', discount: 21, rating: 5, reviews: 78 },
-  { id: '8', title: 'Mechanical Gaming Keyboard', handle: 'gaming-keyboard', price: '1299', brand: 'Corsair', discount: 24, rating: 5, reviews: 234 },
+  { id: '5', title: 'High Performance Laptop', handle: 'high-performance-laptop', price: '12999', brand: 'ASUS', discount: 13, rating: 5, reviews: 112, image: '/assets/Produkt bilder/LAPTOP/1978563_3.webp' },
+  { id: '6', title: 'Professional Workstation', handle: 'professional-workstation', price: '7999', brand: 'Custom', discount: 11, rating: 5, reviews: 95, image: '/assets/Produkt bilder/STATIONÄR/6907594_jzbn2q.webp' },
+  { id: '7', title: 'Gaming Setup Komplett', handle: 'gaming-setup-komplett', price: '5499', brand: 'Multi', discount: 21, rating: 5, reviews: 78, image: '/assets/Produkt bilder/STATIONÄR/6907594_ebnf7f.webp' },
+  { id: '8', title: 'Ultrabook Slim Laptop', handle: 'ultrabook-slim-laptop', price: '1299', brand: 'ASUS', discount: 24, rating: 5, reviews: 234, image: '/assets/Produkt bilder/LAPTOP/6907594_v5urxz.webp' },
 ];
 
 function HeroCarousel() {

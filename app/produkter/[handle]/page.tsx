@@ -17,14 +17,14 @@ const MOCK_PRODUCT = {
   quantityAvailable: 12,
   description: 'En kraftfull gaming-laptop med senaste teknik. Perfekt för gaming och professionellt arbete.\n\nUtstyrd med Intel Core i9-13900H, NVIDIA RTX 4080, 32GB DDR5 RAM och 1TB SSD. 16" 3.2K 165Hz display för en otrolig visuell upplevelse.',
   featuredImage: {
-    url: 'https://via.placeholder.com/800?text=ASUS+Laptop+Main',
+    url: '/assets/Produkt bilder/LAPTOP/1978563_1.webp',
     altText: 'ASUS ROG Gaming Laptop',
   },
   images: [
-    { id: '1', url: 'https://via.placeholder.com/800?text=ASUS+Laptop+1', altText: 'ASUS ROG 1' },
-    { id: '2', url: 'https://via.placeholder.com/800?text=ASUS+Laptop+2', altText: 'ASUS ROG 2' },
-    { id: '3', url: 'https://via.placeholder.com/800?text=ASUS+Laptop+3', altText: 'ASUS ROG 3' },
-    { id: '4', url: 'https://via.placeholder.com/800?text=ASUS+Laptop+4', altText: 'ASUS ROG 4' },
+    { id: '1', url: '/assets/Produkt bilder/LAPTOP/1978563_1.webp', altText: 'ASUS ROG 1' },
+    { id: '2', url: '/assets/Produkt bilder/LAPTOP/1978563_2.webp', altText: 'ASUS ROG 2' },
+    { id: '3', url: '/assets/Produkt bilder/LAPTOP/1978563_3.webp', altText: 'ASUS ROG 3' },
+    { id: '4', url: '/assets/Produkt bilder/LAPTOP/6907594_v5urxz.webp', altText: 'ASUS ROG 4' },
   ],
   highlights: [
     { value: 'Intel Core i9', label: 'Processor' },
@@ -42,12 +42,20 @@ const COLORS = {
   'Silver': '#C0C0C0',
 };
 
+const RECOMMENDED_ACCESSORIES = [
+  { id: 'acc1', name: 'Skärmskydd', price: '199.00', image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
+  { id: 'acc2', name: 'Väska för Laptop', price: '399.00', image: '/assets/Produkt bilder/STATIONÄR/1.webp' },
+  { id: 'acc3', name: 'USB-C Hub', price: '149.00', image: '/assets/Produkt bilder/LAPTOP/1978563_2.webp' },
+];
+
 export default function ProductPage({ params }: { params: { handle: string } }) {
   const product = MOCK_PRODUCT;
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState('Svart');
   const [activeTab, setActiveTab] = useState('description');
+  const [showAccessories, setShowAccessories] = useState(false);
+  const [selectedAccessories, setSelectedAccessories] = useState<string[]>([]);
   const router = useRouter();
 
   const discountPercent = Math.round(
@@ -281,6 +289,7 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
                     ))}
                   </div>
                 )}
+
               </div>
             </div>
           </div>
@@ -374,6 +383,49 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
               </div>
             </div>
 
+            {/* Recommended Accessories Dropdown */}
+            <div className="mb-4">
+              <button
+                onClick={() => setShowAccessories(!showAccessories)}
+                className="w-full flex items-center justify-between text-sm font-semibold text-gray-900 py-3 px-4 hover:bg-gray-50"
+              >
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M20 7l-2-4H6L4 7m16 0l-1.286 10.715A2 2 0 0116.734 20H7.266a2 2 0 01-1.98-2.285L4 7m16 0H4m6-4v4m4-4v4m-5 10h6" />
+                  </svg>
+                  Rekommenderade tillbehör
+                </div>
+                <svg className={`w-5 h-5 transition-transform ${showAccessories ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {showAccessories && (
+                <div className="border-t border-gray-200 divide-y divide-gray-100">
+                  {RECOMMENDED_ACCESSORIES.map((accessory) => (
+                    <label key={accessory.id} className="flex items-center gap-3 p-4 hover:bg-gray-50 cursor-pointer">
+                      <img src={accessory.image} alt={accessory.name} className="w-10 h-10 object-contain flex-shrink-0 bg-gray-100" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">{accessory.name}</p>
+                      </div>
+                      <p className="text-sm text-gray-900 flex-shrink-0">{Number(accessory.price).toLocaleString('sv-SE')} kr</p>
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 flex-shrink-0 accent-black"
+                        checked={selectedAccessories.includes(accessory.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedAccessories([...selectedAccessories, accessory.id]);
+                          } else {
+                            setSelectedAccessories(selectedAccessories.filter(id => id !== accessory.id));
+                          }
+                        }}
+                      />
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Add to Cart Button */}
             <button
               onClick={() => {
@@ -415,23 +467,28 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
             </button>
 
             {/* Key Features Footer */}
-            <div className="space-y-3 text-sm border-t border-gray-200 pt-4">
+            <div className="space-y-3 text-sm pt-4">
               <div className="flex items-center justify-center gap-6">
                 <div className="flex items-center gap-2">
-                  <span className="text-green-600 font-bold">✓</span>
+                  <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
                   <span className="text-black text-xs">Fri frakt</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-green-600 font-bold">✓</span>
+                  <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
                   <span className="text-black text-xs">Fria returer</span>
                 </div>
               </div>
-              <div className="pt-2 border-t border-gray-200 flex justify-center">
+              <div className="pt-4 border-t border-gray-200 flex justify-center">
                 <div className="inline-block bg-pink-300 text-pink-900 px-3 py-1 text-xs font-bold rounded">
                   Klarna
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>

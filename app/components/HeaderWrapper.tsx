@@ -37,16 +37,16 @@ interface MenuCategory {
 }
 
 const MOCK_PRODUCTS = [
-  { id: '1', title: 'ASUS RT-BE82U BE6500', category: 'Router', price: '2 489 kr', rating: 5, reviews: 12, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Router' },
-  { id: '2', title: 'ASUS Prime X870-P', category: 'Moderkort', price: '2 690 kr', rating: 4, reviews: 34, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Moderkort' },
-  { id: '3', title: 'ASUS ROG Crosshair X870E Hero', category: 'Moderkort', price: '6 749 kr', rating: 5, reviews: 37, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=ROG' },
-  { id: '4', title: 'ASUS RT-BE90U', category: 'Router', price: '2 990 kr', rating: 4, reviews: 9, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Router' },
-  { id: '5', title: 'ASUS ROG Keris II Origin KJP Edition', category: 'Möss', price: '2 299 kr', rating: 5, reviews: 5, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Möss' },
-  { id: '6', title: 'ASUS ROG Strix X870-F Gaming WIFI', category: 'Moderkort', price: '3 890 kr', rating: 5, reviews: 50, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Gaming' },
-  { id: '7', title: 'ASUS ROG Delta II KJP Edition', category: 'Headset', price: '3 999 kr', rating: 4, reviews: 7, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Headset' },
-  { id: '8', title: 'Uppgraderingspaket - ASUS 9800X3D', category: 'Paket', price: '31 499 kr', rating: 5, reviews: 15, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Paket' },
-  { id: '9', title: 'ASUS Ryujin III 360 A-RGB Extreme', category: 'CPU Kylare', price: '4 349 kr', rating: 4, reviews: 12, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Kylare' },
-  { id: '10', title: 'Uppgraderingspaket - ASUS 9600X', category: 'Paket', price: '17 890 kr', rating: 5, reviews: 5, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Paket' },
+  { id: '1', title: 'ASUS RT-BE82U BE6500', category: 'Router', price: '2 489 kr', rating: 5, reviews: 12, stock: 'I lager', image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
+  { id: '2', title: 'ASUS Prime X870-P', category: 'Moderkort', price: '2 690 kr', rating: 4, reviews: 34, stock: 'I lager', image: '/assets/Produkt bilder/STATIONÄR/1.webp' },
+  { id: '3', title: 'ASUS ROG Crosshair X870E Hero', category: 'Moderkort', price: '6 749 kr', rating: 5, reviews: 37, stock: 'I lager', image: '/assets/Produkt bilder/LAPTOP/1978563_2.webp' },
+  { id: '4', title: 'ASUS RT-BE90U', category: 'Router', price: '2 990 kr', rating: 4, reviews: 9, stock: 'I lager', image: '/assets/Produkt bilder/STATIONÄR/6907594_t7dv07.webp' },
+  { id: '5', title: 'ASUS ROG Keris II Origin KJP Edition', category: 'Möss', price: '2 299 kr', rating: 5, reviews: 5, stock: 'I lager', image: '/assets/Produkt bilder/LAPTOP/1978563_3.webp' },
+  { id: '6', title: 'ASUS ROG Strix X870-F Gaming WIFI', category: 'Moderkort', price: '3 890 kr', rating: 5, reviews: 50, stock: 'I lager', image: '/assets/Produkt bilder/STATIONÄR/6907594_jzbn2q.webp' },
+  { id: '7', title: 'ASUS ROG Delta II KJP Edition', category: 'Headset', price: '3 999 kr', rating: 4, reviews: 7, stock: 'I lager', image: '/assets/Produkt bilder/STATIONÄR/6907594_ebnf7f.webp' },
+  { id: '8', title: 'Uppgraderingspaket - ASUS 9800X3D', category: 'Paket', price: '31 499 kr', rating: 5, reviews: 15, stock: 'I lager', image: '/assets/Produkt bilder/LAPTOP/6907594_v5urxz.webp' },
+  { id: '9', title: 'ASUS Ryujin III 360 A-RGB Extreme', category: 'CPU Kylare', price: '4 349 kr', rating: 4, reviews: 12, stock: 'I lager', image: '/assets/Produkt bilder/STATIONÄR/6907594_7fuptp.webp' },
+  { id: '10', title: 'Uppgraderingspaket - ASUS 9600X', category: 'Paket', price: '17 890 kr', rating: 5, reviews: 5, stock: 'I lager', image: '/assets/Produkt bilder/STATIONÄR/6907594_ikylm6 (1).webp' },
 ];
 
 const MENU_DATA: MenuCategory[] = [
@@ -278,8 +278,10 @@ export function HeaderWrapper() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const isPathActive = (url: string) => {
+    if (!pathname) return false;
     if (url === '/') return pathname === '/';
     return pathname.startsWith(url);
   };
@@ -338,6 +340,19 @@ export function HeaderWrapper() {
 
   // Handle scroll to show/hide header
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setShowSearchResults(false);
+      }
+    };
+
+    if (showSearchResults) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showSearchResults]);
+
+  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
@@ -364,13 +379,16 @@ export function HeaderWrapper() {
     }`}>
       {/* Search bar section */}
       <div className="px-6 py-4">
-        <div className="max-w-[1280px] mx-auto flex items-center justify-between gap-4">
-          <Link href="/" className="flex-shrink-0">
-            <Logo />
+        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+          <Link href="/" className="flex-shrink-0 flex items-center gap-2 h-9">
+            <div style={{ width: '36px', height: '36px' }}>
+              <Logo />
+            </div>
+            <span className="font-bold text-black hidden sm:inline" style={{ fontSize: '20px', lineHeight: '1.2' }}>Techpilots</span>
           </Link>
 
           {/* Search Input */}
-          <div className="flex-1 relative">
+          <div className="flex-1 max-w-2xl relative" ref={searchContainerRef}>
             <div className="relative flex items-center bg-gray-100 px-3 py-2 rounded">
               <svg className="w-5 h-5 text-gray-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35"/>
@@ -380,12 +398,20 @@ export function HeaderWrapper() {
                 placeholder="Sök efter produkt, kategori eller artikel"
                 className="flex-1 bg-transparent text-sm placeholder-gray-400 focus:outline-none py-1"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onFocus={() => searchTerm.length > 1 && setShowSearchResults(true)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  if (e.target.value.length > 0) {
+                    setShowSearchResults(true);
+                  }
+                }}
+                onFocus={() => searchTerm.length > 0 && setShowSearchResults(true)}
               />
             </div>
-            {showSearchResults && searchTerm.length > 1 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 shadow-lg z-[9999]">
+            {searchTerm.length > 0 && showSearchResults && (
+              <div
+                className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 shadow-lg z-[9999]"
+                onMouseDown={(e) => e.preventDefault()}
+              >
                 {(() => {
                   const results = MOCK_PRODUCTS.filter(product =>
                     product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -396,15 +422,15 @@ export function HeaderWrapper() {
                     <div className="divide-y divide-gray-100">
                       {results.map((product) => (
                         <Link key={product.id} href={`/produkt/${product.id}`}>
-                          <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center justify-between gap-3">
-                            <img src={product.image} alt={product.title} className="w-10 h-10 object-cover flex-shrink-0 bg-gray-100" />
+                          <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center gap-3">
+                            <img src={product.image} alt={product.title} className="w-12 h-12 object-contain flex-shrink-0 bg-gray-100" />
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-sm text-black">{product.title}</div>
                               <div className="text-xs text-gray-600">
                                 {product.category} | Frekvensband: Dual-band
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
+                            <div className="flex items-center gap-3 flex-shrink-0">
                               <div className="flex gap-0.5">
                                 {[...Array(5)].map((_, i) => (
                                   <svg key={i} className={`w-3 h-3 ${i < product.rating ? 'fill-black' : 'fill-gray-300'}`} viewBox="0 0 20 20">
@@ -413,8 +439,8 @@ export function HeaderWrapper() {
                                 ))}
                               </div>
                               <span className="text-xs text-gray-600 whitespace-nowrap">● {product.reviews} st</span>
-                              <div className="text-sm font-bold text-red-600 ml-3 whitespace-nowrap">{product.price}</div>
-                              <button className="bg-black text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-gray-800 ml-2 flex-shrink-0">
+                              <div className="text-sm font-bold text-red-600 whitespace-nowrap">{product.price}</div>
+                              <button className="bg-black text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-gray-800 flex-shrink-0">
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
                                 </svg>
@@ -435,7 +461,7 @@ export function HeaderWrapper() {
           </div>
 
           {/* Right side icons */}
-          <div className="flex items-center gap-6 flex-shrink-0">
+          <div className="flex items-center gap-4 flex-shrink-0">
             {/* Language Switcher */}
             <div className="hidden md:block">
               <LanguageSwitcher />
@@ -453,14 +479,14 @@ export function HeaderWrapper() {
               className="flex items-center gap-4 text-black"
             >
               <div className="relative flex items-center">
-                <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
-                  <path d="M7 4V3c0-.55.45-1 1-1h8c.55 0 1 .45 1 1v1h4c1.1 0 2 .9 2 2v3H3V6c0-1.1.9-2 2-2h2zm13 14v-6H4v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-6-2.5c0 .83-.67 1.5-1.5 1.5S11 16.33 11 15.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm4 0c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5z"/>
+                <svg className="w-5 h-5 fill-black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
                 </svg>
                 {cartCount > 0 && (
                   <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg">{cartCount}</span>
                 )}
               </div>
-              <div className="flex flex-col items-end gap-0.5 hidden md:flex">
+              <div className="flex flex-col items-start gap-0.5 hidden md:flex">
                 <span className="text-sm font-bold text-black">{cartTotal.toLocaleString('sv-SE')} kr</span>
                 <span className="text-xs font-semibold text-black">Varukorg</span>
               </div>
