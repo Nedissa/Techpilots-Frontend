@@ -84,7 +84,7 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
     <div className="space-y-6">
       {/* Sort Menu */}
       <div className="flex justify-end mb-4">
-        <div className="relative w-64">
+        <div className="relative w-44">
           <button
             onClick={() => setShowSortMenu(!showSortMenu)}
             className="w-full bg-white border-2 border-gray-900 text-sm font-medium text-gray-900 flex items-center justify-between px-4 py-2 hover:bg-gray-50 transition-colors rounded"
@@ -95,7 +95,7 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
             </svg>
           </button>
           {showSortMenu && (
-            <div className="absolute top-full left-0 right-0 mt-0 bg-white z-10 border-2 border-gray-900 border-t-0 rounded-b">
+            <div className="absolute top-full left-0 right-0 mt-0 bg-white z-50 border-2 border-gray-900 border-t-0 rounded-b">
               {sortOptions.map(({ value, label }) => (
                 <button
                   key={value}
