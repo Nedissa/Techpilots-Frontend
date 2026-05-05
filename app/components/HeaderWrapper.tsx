@@ -36,6 +36,19 @@ interface MenuCategory {
   items?: MenuSection[];
 }
 
+const MOCK_PRODUCTS = [
+  { id: '1', title: 'ASUS RT-BE82U BE6500', category: 'Router', price: '2 489 kr', rating: 5, reviews: 12, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Router' },
+  { id: '2', title: 'ASUS Prime X870-P', category: 'Moderkort', price: '2 690 kr', rating: 4, reviews: 34, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Moderkort' },
+  { id: '3', title: 'ASUS ROG Crosshair X870E Hero', category: 'Moderkort', price: '6 749 kr', rating: 5, reviews: 37, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=ROG' },
+  { id: '4', title: 'ASUS RT-BE90U', category: 'Router', price: '2 990 kr', rating: 4, reviews: 9, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Router' },
+  { id: '5', title: 'ASUS ROG Keris II Origin KJP Edition', category: 'Möss', price: '2 299 kr', rating: 5, reviews: 5, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Möss' },
+  { id: '6', title: 'ASUS ROG Strix X870-F Gaming WIFI', category: 'Moderkort', price: '3 890 kr', rating: 5, reviews: 50, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Gaming' },
+  { id: '7', title: 'ASUS ROG Delta II KJP Edition', category: 'Headset', price: '3 999 kr', rating: 4, reviews: 7, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Headset' },
+  { id: '8', title: 'Uppgraderingspaket - ASUS 9800X3D', category: 'Paket', price: '31 499 kr', rating: 5, reviews: 15, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Paket' },
+  { id: '9', title: 'ASUS Ryujin III 360 A-RGB Extreme', category: 'CPU Kylare', price: '4 349 kr', rating: 4, reviews: 12, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Kylare' },
+  { id: '10', title: 'Uppgraderingspaket - ASUS 9600X', category: 'Paket', price: '17 890 kr', rating: 5, reviews: 5, stock: 'I lager', image: 'https://via.placeholder.com/60x60?text=Paket' },
+];
+
 const MENU_DATA: MenuCategory[] = [
   {
     id: 'datorer-och-tillbehor',
@@ -372,10 +385,51 @@ export function HeaderWrapper() {
               />
             </div>
             {showSearchResults && searchTerm.length > 1 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-50 max-h-96 overflow-y-auto">
-                <div className="p-3 text-sm text-gray-600">
-                  Inga resultat för "{searchTerm}"
-                </div>
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 shadow-lg z-[9999]">
+                {(() => {
+                  const results = MOCK_PRODUCTS.filter(product =>
+                    product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+                  ).slice(0, 5);
+
+                  return results.length > 0 ? (
+                    <div className="divide-y divide-gray-100">
+                      {results.map((product) => (
+                        <Link key={product.id} href={`/produkt/${product.id}`}>
+                          <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center justify-between gap-3">
+                            <img src={product.image} alt={product.title} className="w-10 h-10 object-cover flex-shrink-0 bg-gray-100" />
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-sm text-black">{product.title}</div>
+                              <div className="text-xs text-gray-600">
+                                {product.category} | Frekvensband: Dual-band
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <div className="flex gap-0.5">
+                                {[...Array(5)].map((_, i) => (
+                                  <svg key={i} className={`w-3 h-3 ${i < product.rating ? 'fill-black' : 'fill-gray-300'}`} viewBox="0 0 20 20">
+                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                                  </svg>
+                                ))}
+                              </div>
+                              <span className="text-xs text-gray-600 whitespace-nowrap">● {product.reviews} st</span>
+                              <div className="text-sm font-bold text-red-600 ml-3 whitespace-nowrap">{product.price}</div>
+                              <button className="bg-black text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-gray-800 ml-2 flex-shrink-0">
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-3 text-sm text-gray-600">
+                      Inga resultat för "{searchTerm}"
+                    </div>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -398,9 +452,9 @@ export function HeaderWrapper() {
               onClick={() => open('cart')}
               className="flex items-center gap-4 text-black"
             >
-              <div className="relative flex items-center pt-1">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" strokeLinecap="round" strokeLinejoin="round"/>
+              <div className="relative flex items-center">
+                <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
+                  <path d="M7 4V3c0-.55.45-1 1-1h8c.55 0 1 .45 1 1v1h4c1.1 0 2 .9 2 2v3H3V6c0-1.1.9-2 2-2h2zm13 14v-6H4v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-6-2.5c0 .83-.67 1.5-1.5 1.5S11 16.33 11 15.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm4 0c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5z"/>
                 </svg>
                 {cartCount > 0 && (
                   <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg">{cartCount}</span>
