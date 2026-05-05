@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//f/Techpilots-Hydrogen/app/components/**)",
+      "Read(//f/Techpilots-Hydrogen/**)",
+      "Bash(npm install *)",
+      "Bash(medusa new *)",
+      "Bash(cat)",
+      "Bash(bash /tmp/migrate.sh)",
+      "Bash(npm run *)",
+      "Bash(node fix-react-router.js)",
+      "Bash(node fix-paths.js)",
+      "Bash(node remove-broken-components.js)",
+      "PowerShell(Get-ChildItem -Path \"F:\\\\techpilots-frontend\\\\techpilots-frontend\\\\app\\\\components\" -Directory | Where-Object { $_.Name -eq 'F' })",
+      "Bash(node cleanup-dirs.js)",
+      "Bash(rm -rf \"f:\\\\techpilots-frontend\\\\techpilots-frontend\\\\app\\\\components\\\\F:\" 2>&1 || true)",
+      "Bash(Get-ChildItem -Path \"F:\\\\Techpilots-Hydrogen\" -Recurse -Directory)",
+      "Bash(Select-Object -First 50)",
+      "Bash(Format-Table FullName)",
+      "Bash(grep -E \"\\\\.tsx$\")",
+      "Bash(node migrate-complete.js)",
+      "PowerShell(Copy-Item -Path \"F:/Techpilots-Hydrogen/app/components/Icons\" -Destination \"f:\\\\techpilots-frontend\\\\techpilots-frontend\\\\app\\\\components\\\\\" -Recurse -Force)",
+      "Bash(node fix-all-imports.js)",
+      "Read(//f/techpilots-frontend/techpilots-frontend/**)",
+      "Bash(xargs rm -f)",
+      "Bash(node create-stubs.js)",
+      "Bash(node create-icon-stubs.js)",
+      "PowerShell(cd \"F:\\\\techpilots-frontend\\\\techpilots-frontend\\\\app\"; Get-ChildItem | Where-Object { $_.Name -match \"^\\\\\\(\\\\$locale\\\\\\)\" -or $_.Name -match \"robots|sitemap\" } | Remove-Item -Recurse -Force; \"Cleaned old routes\")",
+      "PowerShell(mkdir \"F:\\\\techpilots-frontend\\\\techpilots-frontend\\\\app\\\\components\" -Force)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(curl -s http://localhost:3001)",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force -ErrorAction SilentlyContinue)",
+      "Bash(Get-ChildItem -Path \"F:\\\\Techpilots-Hydrogen\" -Recurse -Name)",
+      "Bash(git clone *)",
+      "Bash(taskkill /PID 26068 /F)",
+      "PowerShell(Stop-Process -Id 26068 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(\"Process stopped\")",
+      "Bash(curl -s http://localhost:3000/)",
+      "PowerShell(Stop-Process -Force)",
+      "PowerShell(\"Old processes stopped\")"
+    ],
+    "additionalDirectories": [
+      "F:\\Techpilots-Hydrogen\\app\\components\\Icons",
+      "f:\\techpilots-frontend\\techpilots-frontend\\app\\components"
+    ]
+  }
+}
