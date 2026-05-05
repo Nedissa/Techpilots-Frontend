@@ -29,6 +29,17 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
   const [sortBy, setSortBy] = useState<SortOption>('recommended');
   const [showSortMenu, setShowSortMenu] = useState(false);
 
+  const sortOptions = [
+    { value: 'recommended', label: 'Rekommenderat' },
+    { value: 'latest', label: 'Senaste' },
+    { value: 'rating', label: 'Betyg' },
+    { value: 'popularity', label: 'Popularitet' },
+    { value: 'price-asc', label: 'Pris stigande' },
+    { value: 'price-desc', label: 'Pris fallande' },
+  ];
+
+  const currentSortLabel = sortOptions.find(opt => opt.value === sortBy)?.label || 'Rekommenderat';
+
   const sortedProducts = useMemo(() => {
     const sorted = [...products];
     switch (sortBy) {
@@ -78,34 +89,29 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
             onClick={() => setShowSortMenu(!showSortMenu)}
             className="bg-white text-sm font-medium text-gray-900 flex items-center gap-1 hover:text-black transition-colors whitespace-nowrap"
           >
-            Rekommenderat
+            {currentSortLabel}
             <svg className={`w-4 h-4 transition-transform flex-shrink-0 ${showSortMenu ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 24 24">
               <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
             </svg>
           </button>
           {showSortMenu && (
             <div className="absolute right-0 mt-2 bg-white z-10 shadow-lg" style={{ width: '100%' }}>
-              {[
-                { value: 'recommended', label: 'Rekommenderat' },
-                { value: 'latest', label: 'Senaste' },
-                { value: 'rating', label: 'Betyg' },
-                { value: 'popularity', label: 'Popularitet' },
-                { value: 'price-asc', label: 'Pris stigande' },
-                { value: 'price-desc', label: 'Pris fallande' },
-              ]
-                .filter(({ value }) => value !== sortBy)
-                .map(({ value, label }) => (
-                  <button
-                    key={value}
-                    onClick={() => {
-                      setSortBy(value as SortOption);
-                      setShowSortMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap overflow-hidden text-ellipsis"
-                  >
-                    {label}
-                  </button>
-                ))}
+              {sortOptions.map(({ value, label }) => (
+                <button
+                  key={value}
+                  onClick={() => {
+                    setSortBy(value as SortOption);
+                    setShowSortMenu(false);
+                  }}
+                  className={`w-full text-left px-4 py-3 text-sm whitespace-nowrap overflow-hidden text-ellipsis ${
+                    value === sortBy
+                      ? 'bg-gray-100 text-gray-900 font-medium'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
           )}
         </div>
