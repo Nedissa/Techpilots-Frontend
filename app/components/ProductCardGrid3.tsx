@@ -83,33 +83,35 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
   return (
     <div className="space-y-6">
       {/* Sort Menu */}
-      <div className="flex justify-end">
-        <div className="relative inline-block">
+      <div className="flex justify-end mb-4">
+        <div className="relative w-64">
           <button
             onClick={() => setShowSortMenu(!showSortMenu)}
-            className="bg-white text-sm font-medium text-gray-900 flex items-center gap-1 hover:text-black transition-colors whitespace-nowrap"
+            className="w-full bg-white border-2 border-gray-900 text-sm font-medium text-gray-900 flex items-center justify-between px-4 py-2 hover:bg-gray-50 transition-colors rounded"
           >
-            {currentSortLabel}
+            <span>{currentSortLabel}</span>
             <svg className={`w-4 h-4 transition-transform flex-shrink-0 ${showSortMenu ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 24 24">
               <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
             </svg>
           </button>
           {showSortMenu && (
-            <div className="absolute right-0 mt-2 bg-white z-10 shadow-lg min-w-fit">
-              {sortOptions
-                .filter(({ value }) => value !== sortBy)
-                .map(({ value, label }) => (
-                  <button
-                    key={value}
-                    onClick={() => {
-                      setSortBy(value as SortOption);
-                      setShowSortMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-3 text-sm whitespace-nowrap text-gray-700 hover:bg-gray-50"
-                  >
-                    {label}
-                  </button>
-                ))}
+            <div className="absolute top-full left-0 right-0 mt-0 bg-white z-10 border-2 border-gray-900 border-t-0 rounded-b">
+              {sortOptions.map(({ value, label }) => (
+                <button
+                  key={value}
+                  onClick={() => {
+                    setSortBy(value as SortOption);
+                    setShowSortMenu(false);
+                  }}
+                  className={`w-full text-left px-4 py-3 text-sm whitespace-nowrap transition-colors ${
+                    value === sortBy
+                      ? 'bg-blue-100 text-gray-700 font-medium'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
           )}
         </div>
