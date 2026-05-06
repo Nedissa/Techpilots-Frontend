@@ -133,8 +133,8 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
           </svg>
         </button>
         {expandedSections.price && (
-        <div className="px-6 py-4 space-y-4">
-          <div className="price-slider-container">
+        <div className="px-6 py-4 space-y-4 w-full overflow-hidden">
+          <div className="price-slider-container w-full">
             <div className="price-slider-track bg-gray-300 rounded pointer-events-none">
               <div
                 className="absolute h-1 bg-black rounded"
