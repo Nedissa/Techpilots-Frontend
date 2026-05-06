@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ProductFilter } from '@/app/components/ProductFilter';
 import { ProductCardGrid3 } from '@/app/components/ProductCardGrid3';
+import { Breadcrumb } from '@/app/components/Breadcrumb';
 
 interface Product {
   id: string;
@@ -62,12 +63,22 @@ export function ProductSeriesContent({
     return priceMatch && brandMatch && ratingMatch && stockMatch;
   });
 
+  const breadcrumbItems = breadcrumbTrail
+    ? [
+        { label: breadcrumbTrail.mainCategoryTitle, href: '#' },
+        { label: breadcrumbTrail.subcategoryTitle, href: `/produktserier/${breadcrumbTrail.subcategorySlug}` },
+      ]
+    : [];
+
   return (
-    <div className="flex">
-      <ProductFilter onFilterChange={setFilters} maxPrice={maxPrice} />
-      <div className="flex-1 px-6 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">{categoryTitle}</h1>
-        <ProductCardGrid3 products={filteredProducts} categorySlug={categorySlug} breadcrumbTrail={breadcrumbTrail} />
+    <div>
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="flex">
+        <ProductFilter onFilterChange={setFilters} maxPrice={maxPrice} />
+        <div className="flex-1 px-6 py-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">{categoryTitle}</h1>
+          <ProductCardGrid3 products={filteredProducts} categorySlug={categorySlug} breadcrumbTrail={breadcrumbTrail} />
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Product, getCategoryTitle } from '@/app/lib/products';
+import { Breadcrumb } from '@/app/components/Breadcrumb';
 
 const COLORS = {
   'Svart': '#000000',
@@ -79,51 +80,27 @@ export default function ProductDetailClient({
 
   const mainImage = productDetails.images[selectedImage] || productDetails.featuredImage;
 
+  const breadcrumbItems = breadcrumbTrail
+    ? [
+        { label: breadcrumbTrail.mainCategoryTitle, href: '#' },
+        { label: breadcrumbTrail.subcategoryTitle, href: `/produktserier/${breadcrumbTrail.subcategorySlug}` },
+        ...(breadcrumbTrail.seriesSlug ? [{ label: breadcrumbTrail.seriesTitle!, href: `/produktserier/${breadcrumbTrail.seriesSlug}` }] : []),
+        { label: product.title },
+      ]
+    : [{ label: product.title }];
+
   return (
     <div>
-      {/* Breadcrumbs and Rating */}
-      <div className="flex flex-col gap-1 mb-5">
-        <div className="flex items-center gap-2 text-sm text-black">
-          <Link href="/" className="hover:text-gray-600">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-            </svg>
-          </Link>
-          <span className="text-gray-600">/</span>
-          {breadcrumbTrail ? (
-            <>
-              <span className="text-gray-600">{breadcrumbTrail.mainCategoryTitle}</span>
-              <span className="text-gray-600">/</span>
-              <Link href={`/produktserier/${breadcrumbTrail.subcategorySlug}`} className="hover:text-gray-600">
-                {breadcrumbTrail.subcategoryTitle}
-              </Link>
-              {breadcrumbTrail.seriesSlug && (
-                <>
-                  <span className="text-gray-600">/</span>
-                  <Link href={`/produktserier/${breadcrumbTrail.seriesSlug}`} className="hover:text-gray-600">
-                    {breadcrumbTrail.seriesTitle}
-                  </Link>
-                </>
-              )}
-            </>
-          ) : (
-            <Link href={`/produktserier/${categorySlug}`} className="hover:text-gray-600">
-              {categoryTitle}
-            </Link>
-          )}
-          <span className="text-gray-600">/</span>
-          <span className="text-black font-medium">{product.title}</span>
-        </div>
+      <Breadcrumb items={breadcrumbItems} />
 
-        {/* Rating */}
-        <div className="flex items-center gap-2">
-          <div className="flex gap-1 text-black">
-            {[...Array(5)].map((_, i) => (
-              <span key={i}>★</span>
-            ))}
-          </div>
-          <span className="text-sm text-black">{product.rating} ({product.reviews})</span>
+      {/* Rating */}
+      <div className="flex items-center gap-2 mb-5">
+        <div className="flex gap-1 text-black">
+          {[...Array(5)].map((_, i) => (
+            <span key={i}>★</span>
+          ))}
         </div>
+        <span className="text-sm text-black">{product.rating} ({product.reviews})</span>
       </div>
 
       {/* Main Product Grid */}
