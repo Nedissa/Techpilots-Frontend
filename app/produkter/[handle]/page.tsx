@@ -95,7 +95,7 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
         </div>
 
         {/* Main Product Grid */}
-        <div className="flex gap-2.5 mb-0">
+        <div className="flex mb-0">
           {/* Left Column - Image & Tabs */}
           <div className="flex-1 flex flex-col gap-2.5">
             {/* Image Gallery */}
