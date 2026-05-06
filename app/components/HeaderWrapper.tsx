@@ -444,14 +444,14 @@ export function HeaderWrapper() {
                               </div>
                             </div>
                             <div className="flex items-center gap-2 flex-shrink-0">
-                              <div className="flex gap-0.5 items-center justify-center">
+                              <div className="flex gap-0.5">
                                 {[...Array(5)].map((_, i) => (
                                   <svg key={i} className={`w-3 h-3 ${i < product.rating ? 'fill-black' : 'fill-gray-300'}`} viewBox="0 0 20 20">
                                     <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                                   </svg>
                                 ))}
                               </div>
-                              <span className="text-xs text-gray-600 whitespace-nowrap">● {product.reviews}</span>
+                              <span className="text-xs text-gray-600 whitespace-nowrap">● {product.reviews} st</span>
                               <div className="text-sm font-bold text-red-600 whitespace-nowrap">{product.price}</div>
                               <button className="bg-black text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-gray-800 flex-shrink-0">
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
