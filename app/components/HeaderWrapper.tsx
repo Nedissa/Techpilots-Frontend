@@ -128,7 +128,7 @@ const MENU_DATA: MenuCategory[] = [
       },
       {
         id: 'ram',
-        title: 'RAM arbetminne',
+        title: 'RAM-minne',
         url: '/produktserier/ram',
         icon: <ProcessorIcon />,
         items: [
@@ -138,7 +138,7 @@ const MENU_DATA: MenuCategory[] = [
       },
       {
         id: 'lagringsenhet',
-        title: 'Lagring SSD & HDD',
+        title: 'Lagring',
         url: '/produktserier/lagring',
         icon: <ProcessorIcon />,
         items: [
@@ -148,7 +148,7 @@ const MENU_DATA: MenuCategory[] = [
       },
       {
         id: 'natlagring',
-        title: 'Nätaggregat strömförsörjning',
+        title: 'Nätaggregat',
         url: '/produktserier/natlagring',
         icon: <ProcessorIcon />,
         items: [
