@@ -235,7 +235,7 @@ export function ProductCard({
 
         {/* Button Container */}
         {product.stock && (
-          <div className={`mt-auto transition-all duration-300 overflow-hidden ${isHovered ? 'opacity-100' : 'opacity-0 -translate-y-2'}`}>
+          <div className={`mt-auto transition-all duration-200 overflow-hidden ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             <button
               onClick={handleClick}
               disabled={added}
