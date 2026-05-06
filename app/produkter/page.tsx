@@ -27,20 +27,23 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState('relevant');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const maxPrice = Math.max(...ALL_PRODUCTS.map(p => p.price));
+  const categoryFilteredProducts = ALL_PRODUCTS.filter((product) =>
+    selectedCategory === 'Alla' || product.category === selectedCategory
+  );
+  const maxPriceInCategory = Math.max(...categoryFilteredProducts.map(p => p.price));
+
   const PRICE_RANGES = [
-    { label: 'Alla', min: 0, max: maxPrice },
+    { label: 'Alla', min: 0, max: maxPriceInCategory },
     { label: 'Under 1000 SEK', min: 0, max: 1000 },
     { label: '1000 - 5000 SEK', min: 1000, max: 5000 },
     { label: '5000 - 10000 SEK', min: 5000, max: 10000 },
-    { label: `Över 10000 SEK`, min: 10000, max: maxPrice },
+    { label: `Över 10000 SEK`, min: 10000, max: maxPriceInCategory },
   ];
 
-  const filtered = ALL_PRODUCTS.filter((product) => {
-    const categoryMatch = selectedCategory === 'Alla' || product.category === selectedCategory;
+  const filtered = categoryFilteredProducts.filter((product) => {
     const priceRange = PRICE_RANGES.find((r) => r.label === selectedPriceRange);
     const priceMatch = product.price >= priceRange!.min && product.price <= priceRange!.max;
-    return categoryMatch && priceMatch;
+    return priceMatch;
   });
 
   const sorted = [...filtered].sort((a, b) => {
