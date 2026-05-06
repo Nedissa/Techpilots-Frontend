@@ -142,9 +142,6 @@ export function ProductCardGrid({
           <div
             key={product.id}
             className="flex flex-col bg-white"
-            onMouseLeave={() => {
-              setImageIndex(prev => ({ ...prev, [product.id]: 0 }));
-            }}
           >
             {/* Image Container with Badges */}
             <div
@@ -195,25 +192,23 @@ export function ProductCardGrid({
 
               <Link href={categorySlug ? `/produktserier/${categorySlug}/${product.handle}` : `/produkter/${product.handle}`} scroll={false} className="w-full h-full flex items-center justify-center relative">
                 <style>{`
-                  @keyframes slideRight {
+                  @keyframes fadeIn {
                     from {
-                      transform: translateX(-100%);
                       opacity: 0;
                     }
                     to {
-                      transform: translateX(0);
                       opacity: 1;
                     }
                   }
-                  .slide-in {
-                    animation: slideRight 0.3s ease-out forwards;
+                  .fade-in {
+                    animation: fadeIn 0.3s ease-out forwards;
                   }
                 `}</style>
                 <img
                   key={imageIndex[product.id] || 0}
                   src={product.images?.[imageIndex[product.id] || 0] || product.image}
                   alt={product.title}
-                  className={`w-full h-full object-contain p-8 ${(imageIndex[product.id] || 0) > 0 ? 'slide-in' : ''}`}
+                  className={`w-full h-full object-contain p-8 ${(imageIndex[product.id] || 0) > 0 ? 'fade-in' : ''}`}
                 />
               </Link>
             </div>
