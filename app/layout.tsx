@@ -19,9 +19,11 @@ export default function RootLayout({
       <body className="bg-white">
         <RootLayoutClient>
           <HeaderWrapper />
-          <div className="mx-auto max-w-[1280px] w-full">
-            <main className="py-4 pb-24">{children}</main>
-          </div>
+          <main className="py-4 pb-24 flex justify-center">
+            <div className="w-full max-w-[1280px] px-6">
+              {children}
+            </div>
+          </main>
           <FooterWrapper />
         </RootLayoutClient>
       </body>
