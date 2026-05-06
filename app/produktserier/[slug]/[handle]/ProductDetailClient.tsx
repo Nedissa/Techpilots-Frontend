@@ -22,6 +22,8 @@ interface BreadcrumbTrail {
   mainCategoryTitle: string;
   subcategorySlug: string;
   subcategoryTitle: string;
+  seriesSlug?: string;
+  seriesTitle?: string;
 }
 
 interface ProductDetailClientProps {
@@ -95,10 +97,14 @@ export default function ProductDetailClient({
               <Link href={`/produktserier/${breadcrumbTrail.subcategorySlug}`} className="hover:text-gray-600">
                 {breadcrumbTrail.subcategoryTitle}
               </Link>
-              <span className="text-gray-600">/</span>
-              <Link href={`/produktserier/${categorySlug}`} className="hover:text-gray-600">
-                {categoryTitle}
-              </Link>
+              {breadcrumbTrail.seriesSlug && (
+                <>
+                  <span className="text-gray-600">/</span>
+                  <Link href={`/produktserier/${breadcrumbTrail.seriesSlug}`} className="hover:text-gray-600">
+                    {breadcrumbTrail.seriesTitle}
+                  </Link>
+                </>
+              )}
             </>
           ) : (
             <Link href={`/produktserier/${categorySlug}`} className="hover:text-gray-600">

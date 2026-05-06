@@ -45,6 +45,12 @@ export const SUBCATEGORIES: Record<string, { title: string; mainCategory: string
   'ultrabooks': { title: 'Ultrabooks', mainCategory: 'laptops' },
 };
 
+export const PRODUCT_SERIES: Record<string, { title: string; parentCategory: string }> = {
+  'ultrabooks': { title: 'Ultrabooks', parentCategory: 'laptops' },
+  'gaming-laptops-gaming': { title: 'Gaming bärbara', parentCategory: 'gaming-laptops' },
+  'kontor': { title: 'Kontor', parentCategory: 'laptops' },
+};
+
 export const CATEGORY_TITLES: Record<string, string> = {
   'laptops': 'Bärbara datorer',
   'desktops': 'Stationära Datorer',
@@ -57,16 +63,36 @@ export const CATEGORY_TITLES: Record<string, string> = {
 };
 
 export function getBreadcrumbTrail(slug: string) {
-  const subcategory = SUBCATEGORIES[slug];
-  if (!subcategory) return null;
+  // Check if it's a product series first
+  const productSeries = PRODUCT_SERIES[slug];
+  if (productSeries) {
+    const parentSubcategory = SUBCATEGORIES[productSeries.parentCategory];
+    if (parentSubcategory) {
+      const mainCategory = MAIN_CATEGORIES[parentSubcategory.mainCategory];
+      return {
+        mainCategorySlug: parentSubcategory.mainCategory,
+        mainCategoryTitle: mainCategory,
+        subcategorySlug: productSeries.parentCategory,
+        subcategoryTitle: parentSubcategory.title,
+        seriesSlug: slug,
+        seriesTitle: productSeries.title,
+      };
+    }
+  }
 
-  const mainCategory = MAIN_CATEGORIES[subcategory.mainCategory];
-  return {
-    mainCategorySlug: subcategory.mainCategory,
-    mainCategoryTitle: mainCategory,
-    subcategorySlug: slug,
-    subcategoryTitle: subcategory.title,
-  };
+  // Check if it's a subcategory
+  const subcategory = SUBCATEGORIES[slug];
+  if (subcategory) {
+    const mainCategory = MAIN_CATEGORIES[subcategory.mainCategory];
+    return {
+      mainCategorySlug: subcategory.mainCategory,
+      mainCategoryTitle: mainCategory,
+      subcategorySlug: slug,
+      subcategoryTitle: subcategory.title,
+    };
+  }
+
+  return null;
 }
 
 export function getProductByHandle(handle: string): Product | undefined {
