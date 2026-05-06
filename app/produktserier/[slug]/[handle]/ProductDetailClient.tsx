@@ -197,11 +197,14 @@ export default function ProductDetailClient({
                     <button
                       key={idx}
                       onClick={() => setSelectedImage(idx)}
-                      className={`flex-shrink-0 aspect-square w-20 overflow-hidden transition-all duration-150 flex items-center justify-center ${
-                        selectedImage === idx ? 'scale-150' : ''
+                      className={`flex-shrink-0 aspect-square w-20 overflow-hidden transition-all duration-150 flex items-center justify-center rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 ${
+                        selectedImage === idx ? 'scale-150 ring-2 ring-gray-400' : ''
                       }`}
+                      style={{
+                        boxShadow: selectedImage === idx ? '0 4px 12px rgba(0,0,0,0.15)' : '0 2px 6px rgba(0,0,0,0.1)'
+                      }}
                     >
-                      <img src={img.url} alt="" className="w-full h-full object-contain" />
+                      <img src={img.url} alt="" className="w-full h-full object-contain p-2" />
                     </button>
                   ))}
                 </div>
