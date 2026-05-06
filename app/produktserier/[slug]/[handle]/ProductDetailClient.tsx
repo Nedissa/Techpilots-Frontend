@@ -17,16 +17,25 @@ const RECOMMENDED_ACCESSORIES = [
   { id: 'acc3', name: 'USB-C Hub', price: '149.00', image: '/assets/Produkt bilder/LAPTOP/1978563_2.webp' },
 ];
 
+interface BreadcrumbTrail {
+  mainCategorySlug: string;
+  mainCategoryTitle: string;
+  subcategorySlug: string;
+  subcategoryTitle: string;
+}
+
 interface ProductDetailClientProps {
   product: Product;
   categorySlug: string;
   categoryTitle: string;
+  breadcrumbTrail: BreadcrumbTrail | null;
 }
 
 export default function ProductDetailClient({
   product,
   categorySlug,
   categoryTitle,
+  breadcrumbTrail,
 }: ProductDetailClientProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -78,11 +87,25 @@ export default function ProductDetailClient({
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
           </Link>
-          <span>/</span>
-          <Link href={`/produktserier/${categorySlug}`} className="hover:text-gray-600">
-            {categoryTitle}
-          </Link>
-          <span>/</span>
+          <span className="text-gray-600">/</span>
+          {breadcrumbTrail ? (
+            <>
+              <span className="text-gray-600">{breadcrumbTrail.mainCategoryTitle}</span>
+              <span className="text-gray-600">/</span>
+              <Link href={`/produktserier/${breadcrumbTrail.subcategorySlug}`} className="hover:text-gray-600">
+                {breadcrumbTrail.subcategoryTitle}
+              </Link>
+              <span className="text-gray-600">/</span>
+              <Link href={`/produktserier/${categorySlug}`} className="hover:text-gray-600">
+                {categoryTitle}
+              </Link>
+            </>
+          ) : (
+            <Link href={`/produktserier/${categorySlug}`} className="hover:text-gray-600">
+              {categoryTitle}
+            </Link>
+          )}
+          <span className="text-gray-600">/</span>
           <span className="text-black font-medium">{product.title}</span>
         </div>
 

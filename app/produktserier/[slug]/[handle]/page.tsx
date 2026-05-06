@@ -1,5 +1,5 @@
 import { MainLayout } from '@/app/components/MainLayout';
-import { getProductByHandle, getCategoryTitle } from '@/app/lib/products';
+import { getProductByHandle, getCategoryTitle, getBreadcrumbTrail } from '@/app/lib/products';
 import ProductDetailClient from './ProductDetailClient';
 
 interface PageProps {
@@ -18,6 +18,7 @@ export default async function ProductPage({ params }: PageProps) {
   }
 
   const categoryTitle = getCategoryTitle(slug);
+  const breadcrumbTrail = getBreadcrumbTrail(slug);
 
   return (
     <MainLayout>
@@ -25,6 +26,7 @@ export default async function ProductPage({ params }: PageProps) {
         product={product}
         categorySlug={slug}
         categoryTitle={categoryTitle}
+        breadcrumbTrail={breadcrumbTrail}
       />
     </MainLayout>
   );

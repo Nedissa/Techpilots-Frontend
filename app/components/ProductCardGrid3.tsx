@@ -23,7 +23,22 @@ interface Product {
 
 type SortOption = 'recommended' | 'latest' | 'rating' | 'popularity' | 'price-asc' | 'price-desc';
 
-export function ProductCardGrid3({ products, categorySlug }: { products: Product[]; categorySlug?: string }) {
+interface BreadcrumbTrail {
+  mainCategorySlug: string;
+  mainCategoryTitle: string;
+  subcategorySlug: string;
+  subcategoryTitle: string;
+}
+
+export function ProductCardGrid3({
+  products,
+  categorySlug,
+  breadcrumbTrail,
+}: {
+  products: Product[];
+  categorySlug?: string;
+  breadcrumbTrail?: BreadcrumbTrail | null;
+}) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
   const [sortBy, setSortBy] = useState<SortOption>('recommended');

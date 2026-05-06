@@ -26,6 +26,25 @@ export const MOCK_PRODUCTS: Product[] = [
   { id: '6', title: 'Professional workstation', handle: 'professional-workstation', price: 7999, originalPrice: 8999, brand: 'Custom', discount: 'Upp till 11% rabatt', rating: 5, reviews: 95, image: '/assets/Produkt bilder/STATIONÄR/6907594_jzbn2q.webp', colors: ['#000000'], stock: 'I lager (95 st)', features: ['Högsta prestanda', 'Världsklass design', 'Garanterad kvalitet'], category: 'desktops' },
 ];
 
+export const MAIN_CATEGORIES: Record<string, string> = {
+  'datorer-tillbehor': 'Datorer & Tillbehör',
+  'datorkomponenter': 'Datorkomponenter',
+  'gaming': 'Gaming',
+  'mobiltelefoner': 'Mobiltelefoner',
+  'tv-hifi': 'TV & HiFi',
+};
+
+export const SUBCATEGORIES: Record<string, { title: string; mainCategory: string }> = {
+  'laptops': { title: 'Bärbara datorer', mainCategory: 'datorer-tillbehor' },
+  'desktops': { title: 'Stationära Datorer', mainCategory: 'datorer-tillbehor' },
+  'accessories': { title: 'Datortillbehör', mainCategory: 'datorer-tillbehor' },
+  'components': { title: 'Komponenter', mainCategory: 'datorkomponenter' },
+  'gaming-laptops': { title: 'Gaming Bärbara datorer', mainCategory: 'gaming' },
+  'gaming-pc': { title: 'Gaming Stationär dator', mainCategory: 'gaming' },
+  'phones': { title: 'Mobiltelefoner', mainCategory: 'mobiltelefoner' },
+  'ultrabooks': { title: 'Ultrabooks', mainCategory: 'laptops' },
+};
+
 export const CATEGORY_TITLES: Record<string, string> = {
   'laptops': 'Bärbara datorer',
   'desktops': 'Stationära Datorer',
@@ -36,6 +55,19 @@ export const CATEGORY_TITLES: Record<string, string> = {
   'phones': 'Mobiltelefoner',
   'ultrabooks': 'Ultrabooks',
 };
+
+export function getBreadcrumbTrail(slug: string) {
+  const subcategory = SUBCATEGORIES[slug];
+  if (!subcategory) return null;
+
+  const mainCategory = MAIN_CATEGORIES[subcategory.mainCategory];
+  return {
+    mainCategorySlug: subcategory.mainCategory,
+    mainCategoryTitle: mainCategory,
+    subcategorySlug: slug,
+    subcategoryTitle: subcategory.title,
+  };
+}
 
 export function getProductByHandle(handle: string): Product | undefined {
   return MOCK_PRODUCTS.find(product => product.handle === handle);
