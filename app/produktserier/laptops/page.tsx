@@ -18,9 +18,11 @@ interface FilterOptions {
   inStock: boolean;
 }
 
+const maxPrice = Math.max(...MOCK_PRODUCTS.map(p => p.price));
+
 export default function LaptopsPage() {
   const [filters, setFilters] = useState<FilterOptions>({
-    priceRange: [0, 20000],
+    priceRange: [0, maxPrice],
     brands: [],
     rating: null,
     inStock: false,
@@ -37,7 +39,7 @@ export default function LaptopsPage() {
   return (
     <MainLayout>
       <div className="flex gap-6">
-        <ProductFilter onFilterChange={setFilters} />
+        <ProductFilter onFilterChange={setFilters} maxPrice={maxPrice} />
         <div className="flex-1">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Laptops</h1>
           <ProductCardGrid3 products={filteredProducts} />

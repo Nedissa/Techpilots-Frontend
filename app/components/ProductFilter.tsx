@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface FilterOptions {
   priceRange: [number, number];
@@ -17,7 +17,7 @@ interface ProductFilterProps {
 const BRANDS = ['ASUS', 'Canon', 'Nikon', 'Sony', 'Fujifilm', 'Custom', 'Multi'];
 
 export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilterProps) {
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
+  const [priceRange, setPriceRange] = useState<[number, number]>(() => [0, maxPrice]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -27,6 +27,10 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
     rating: true,
     stock: true,
   });
+
+  useEffect(() => {
+    setPriceRange([0, maxPrice]);
+  }, [maxPrice]);
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({
@@ -110,8 +114,8 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
                 className="absolute h-1 bg-black rounded"
                 style={{
                   top: 0,
-                  left: `${(priceRange[0] / 20000) * 100}%`,
-                  right: `${100 - (priceRange[1] / 20000) * 100}%`,
+                  left: `${(priceRange[0] / maxPrice) * 100}%`,
+                  right: `${100 - (priceRange[1] / maxPrice) * 100}%`,
                 }}
               />
             </div>

@@ -34,7 +34,7 @@ export function ProductSeriesContent({
   categoryTitle: string;
   products: Product[];
 }) {
-  const maxPrice = Math.max(...products.map(p => p.price), 20000);
+  const maxPrice = Math.max(...products.map(p => p.price));
 
   const [filters, setFilters] = useState<FilterOptions>({
     priceRange: [0, maxPrice],
