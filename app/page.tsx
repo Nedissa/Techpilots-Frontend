@@ -8,9 +8,9 @@ import { ProductCardGrid } from './components/ProductCardGrid';
 import { MainLayout } from './components/MainLayout';
 
 const FEATURED_COLLECTIONS = [
-  { title: 'Gaming Laptops', handle: 'gaming-laptops', image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
-  { title: 'Datorkomponenter', handle: 'datorkomponenter', image: '/assets/Produkt bilder/STATIONÄR/1.webp' },
-  { title: 'Gaming Setup', handle: 'gaming-setup', image: '/assets/Produkt bilder/STATIONÄR/6907594_ebnf7f.webp' },
+  { title: 'Gaming Laptops', handle: 'gaming-laptops' },
+  { title: 'Datorkomponenter', handle: 'datorkomponenter' },
+  { title: 'Gaming Setup', handle: 'gaming-setup' },
 ]
 
 function CampaignBannersSection() {
@@ -107,7 +107,6 @@ const FEATURED_PRODUCTS = [
 
 function HeroCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [imagePosition, setImagePosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
@@ -118,34 +117,17 @@ function HeroCarousel() {
     return () => clearInterval(slideTimer);
   }, [isPlaying]);
 
-  useEffect(() => {
-    const panTimer = setInterval(() => {
-      setImagePosition((prev) => (prev + 0.5) % 100);
-    }, 50);
-    return () => clearInterval(panTimer);
-  }, []);
-
   const currentCollection = FEATURED_COLLECTIONS[currentIndex];
 
   return (
     <div className="relative z-0">
       <div className="relative w-full h-[484px] overflow-hidden bg-gray-900 flex items-center justify-center">
-        <Link href={`/kategorier/${currentCollection.handle}`} className="block relative w-full h-full">
-          <img
-            src={currentCollection.image}
-            alt={currentCollection.title}
-            className="w-full h-full object-cover transition-all duration-1000"
-            style={{
-              transform: `scaleX(1.2) translateX(${imagePosition - 50}%)`,
-            }}
-          />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">{currentCollection.title}</h1>
-              <button className="bg-white text-black px-8 py-3 font-semibold hover:bg-gray-100 transition-colors">
-                Utforska →
-              </button>
-            </div>
+        <Link href={`/kategorier/${currentCollection.handle}`} className="block relative w-full h-full flex items-center justify-center">
+          <div className="text-center text-white">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">{currentCollection.title}</h1>
+            <button className="bg-white text-black px-8 py-3 font-semibold hover:bg-gray-100 transition-colors">
+              Utforska →
+            </button>
           </div>
         </Link>
       </div>
