@@ -197,15 +197,17 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
             </div>
             <div className="flex items-center gap-1">
               <input
-                type="text"
+                type="number"
                 value={priceRange[1]}
                 onChange={(e) => {
-                  let newMax = Number(e.target.value) || maxPrice;
+                  let newMax = Number(e.target.value);
                   if (newMax > maxPrice) newMax = maxPrice;
                   if (newMax >= priceRange[0]) {
                     handlePriceChange('max', newMax);
                   }
                 }}
+                min={0}
+                max={maxPrice}
                 className="w-14 px-1 py-0.5 text-xs text-gray-700 text-center border-b border-gray-400 focus:outline-none focus:border-gray-700"
               />
               <span className="text-gray-600">kr</span>
