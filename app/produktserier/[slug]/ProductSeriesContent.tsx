@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ProductFilter } from '@/app/components/ProductFilter';
-import { ProductCardGrid3 } from '@/app/components/ProductCardGrid3';
+import { ProductCardGrid } from '@/app/components/ProductCardGrid';
 import { Breadcrumb } from '@/app/components/Breadcrumb';
 
 interface Product {
@@ -77,7 +77,7 @@ export function ProductSeriesContent({
         <ProductFilter onFilterChange={setFilters} maxPrice={maxPrice} />
         <div className="flex-1 px-6 py-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">{categoryTitle}</h1>
-          <ProductCardGrid3 products={filteredProducts} categorySlug={categorySlug} breadcrumbTrail={breadcrumbTrail} />
+          <ProductCardGrid products={filteredProducts} categorySlug={categorySlug} breadcrumbTrail={breadcrumbTrail} showSort={true} />
         </div>
       </div>
     </div>

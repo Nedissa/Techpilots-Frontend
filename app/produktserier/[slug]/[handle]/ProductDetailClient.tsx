@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Product, getCategoryTitle } from '@/app/lib/products';
 import { Breadcrumb } from '@/app/components/Breadcrumb';
+import { ImageZoomDialog } from '@/app/components/ImageZoomDialog';
 
 const COLORS = {
   'Svart': '#000000',
@@ -47,6 +48,7 @@ export default function ProductDetailClient({
   const [showAccessories, setShowAccessories] = useState(false);
   const [selectedAccessories, setSelectedAccessories] = useState<string[]>([]);
   const [isAdded, setIsAdded] = useState(false);
+  const [showZoom, setShowZoom] = useState(false);
   const router = useRouter();
 
   // Mock product details for display
@@ -150,13 +152,16 @@ export default function ProductDetailClient({
                   ‹
                 </button>
 
-                <div className="relative bg-white flex items-center justify-center h-96 w-full overflow-hidden p-8">
+                <button
+                  onClick={() => setShowZoom(true)}
+                  className="relative bg-white flex items-center justify-center h-96 w-full overflow-hidden p-8 cursor-zoom-in"
+                >
                   <img
                     src={mainImage.url}
                     alt={mainImage.altText}
                     className="max-w-full max-h-full object-contain"
                   />
-                </div>
+                </button>
 
                 <button
                   onClick={() => setSelectedImage((prev) => (prev + 1) % productDetails.images.length)}
@@ -539,6 +544,14 @@ export default function ProductDetailClient({
 
         </div>
       </div>
+
+      {/* Image Zoom Dialog */}
+      <ImageZoomDialog
+        images={productDetails.images}
+        initialIndex={selectedImage}
+        isOpen={showZoom}
+        onClose={() => setShowZoom(false)}
+      />
     </div>
   );
 }

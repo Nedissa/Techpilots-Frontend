@@ -27,6 +27,7 @@ interface Product {
   price: number;
   originalPrice?: number;
   image: string;
+  images?: string[];
   brand?: string;
   discount?: string;
   discountPercent?: number;
