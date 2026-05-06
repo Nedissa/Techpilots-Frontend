@@ -228,17 +228,22 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
         </button>
         {expandedSections.brands && (
         <div className="px-6 py-4 space-y-2">
-          {BRANDS.map((brand) => (
-            <label key={brand} className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={selectedBrands.includes(brand)}
-                onChange={() => handleBrandToggle(brand)}
-                className="w-4 h-4 border-gray-400 accent-black"
-              />
-              <span className="text-sm text-gray-800">{brand}</span>
-            </label>
-          ))}
+          {BRANDS.map((brand, idx) => {
+            const blackShades = ['bg-slate-200', 'bg-slate-300', 'bg-slate-400', 'bg-slate-500', 'bg-slate-600', 'bg-slate-700', 'bg-slate-800'];
+            return (
+              <button
+                key={brand}
+                onClick={() => handleBrandToggle(brand)}
+                className={`w-full text-left px-2.5 py-1 text-sm font-medium transition-colors ${
+                  selectedBrands.includes(brand)
+                    ? `${blackShades[idx]} ${idx < 3 ? 'text-black' : 'text-white'}`
+                    : 'text-gray-900'
+                }`}
+              >
+                {brand}
+              </button>
+            );
+          })}
         </div>
         )}
       </div>
@@ -255,24 +260,30 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
           </svg>
         </button>
         {expandedSections.colors && (
-        <div className="px-6 py-4 space-y-3">
-          {COLORS.map((color) => (
-            <label key={color.value} className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={selectedColors.includes(color.value)}
-                onChange={() => handleColorToggle(color.value)}
-                className="w-4 h-4 border-gray-400 accent-black"
-              />
-              <div className="flex items-center gap-2 flex-1">
+        <div className="px-6 py-4 space-y-2">
+          {COLORS.map((color, idx) => {
+            const blackShades = ['bg-slate-400', 'bg-slate-500', 'bg-slate-600', 'bg-slate-700'];
+            return (
+              <button
+                key={color.value}
+                onClick={() => handleColorToggle(color.value)}
+                className={`w-full text-left px-2.5 py-1 text-sm font-medium transition-colors flex items-center gap-2 ${
+                  selectedColors.includes(color.value)
+                    ? `${blackShades[idx]} ${idx < 2 ? 'text-white' : 'text-white'}`
+                    : 'text-gray-900'
+                }`}
+              >
                 <div
-                  className="w-5 h-5 rounded border-2 border-gray-400"
-                  style={{ backgroundColor: color.value }}
+                  className="w-3 h-3"
+                  style={{
+                    backgroundColor: color.value,
+                    border: color.value === '#FFFFFF' ? '1px solid #ccc' : 'none',
+                  }}
                 />
-                <span className="text-sm text-gray-800">{color.name}</span>
-              </div>
-            </label>
-          ))}
+                {color.name}
+              </button>
+            );
+          })}
         </div>
         )}
       </div>
@@ -290,26 +301,29 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
         </button>
         {expandedSections.rating && (
         <div className="px-6 py-4 space-y-2">
-          {[5, 4, 3, 2, 1].map((rating) => (
-            <label key={rating} className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={selectedRating === rating}
-                onChange={() => handleRatingChange(rating)}
-                className="w-4 h-4 border-gray-400 accent-black"
-              />
-              <div className="flex items-center gap-2 flex-1">
+          {[5, 4, 3, 2, 1].map((rating, idx) => {
+            const blackShades = ['bg-slate-400', 'bg-slate-500', 'bg-slate-600', 'bg-slate-700', 'bg-slate-800'];
+            return (
+              <button
+                key={rating}
+                onClick={() => handleRatingChange(rating)}
+                className={`w-full text-left px-2.5 py-1 text-sm font-medium transition-colors flex items-center gap-1 ${
+                  selectedRating === rating
+                    ? `${blackShades[idx]} ${idx < 2 ? 'text-white' : 'text-white'}`
+                    : 'text-gray-900'
+                }`}
+              >
                 <div className="flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className={i < rating ? 'text-yellow-400' : 'text-gray-300'}>
+                    <span key={i} className={i < rating ? 'text-yellow-400' : 'text-gray-300'} style={{ fontSize: '12px' }}>
                       ★
                     </span>
                   ))}
                 </div>
-                <span className="text-xs text-gray-800">({rating}+)</span>
-              </div>
-            </label>
-          ))}
+                <span className="text-xs">({rating}+)</span>
+              </button>
+            );
+          })}
         </div>
         )}
       </div>
@@ -327,15 +341,16 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
         </button>
         {expandedSections.stock && (
         <div className="px-6 py-4">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={inStockOnly}
-              onChange={handleStockChange}
-              className="w-4 h-4 border-gray-400 accent-black"
-            />
-            <span className="text-sm font-semibold text-gray-800">Endast i lager</span>
-          </label>
+          <button
+            onClick={handleStockChange}
+            className={`w-full text-left px-2.5 py-1 text-sm font-medium transition-colors ${
+              inStockOnly
+                ? 'bg-slate-500 text-white'
+                : 'text-gray-900'
+            }`}
+          >
+            Endast i lager
+          </button>
         </div>
         )}
       </div>
