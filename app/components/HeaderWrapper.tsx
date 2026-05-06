@@ -24,6 +24,7 @@ interface MenuItem {
 interface MenuSection {
   id: string;
   title: string;
+  description?: string;
   url: string;
   icon?: React.ReactNode;
   items?: MenuItem[];
@@ -58,6 +59,7 @@ const MENU_DATA: MenuCategory[] = [
       {
         id: 'barbara',
         title: 'Bärbara',
+        description: 'Bärbara datorer',
         url: '/produktserier/laptops',
         icon: <LaptopIcon />,
         items: [
@@ -69,6 +71,7 @@ const MENU_DATA: MenuCategory[] = [
       {
         id: 'stationara',
         title: 'Stationära',
+        description: 'Stationära datorer',
         url: '/produktserier/desktops',
         icon: <DesktopIcon />,
         items: [
@@ -80,6 +83,7 @@ const MENU_DATA: MenuCategory[] = [
       {
         id: 'datortillbehor',
         title: 'Tillbehör',
+        description: 'Dator tillbehör',
         url: '/produktserier/accessories',
         icon: <AccessoriesIcon />,
         items: [
@@ -99,6 +103,7 @@ const MENU_DATA: MenuCategory[] = [
       {
         id: 'processorer',
         title: 'Processorer',
+        description: 'CPU processorer',
         url: '/produktserier/processorer',
         icon: <ProcessorIcon />,
         items: [
@@ -109,6 +114,7 @@ const MENU_DATA: MenuCategory[] = [
       {
         id: 'moderkort',
         title: 'Moderkort',
+        description: 'Datorkort',
         url: '/produktserier/moderkort',
         icon: <ModerkortIcon />,
         items: [
@@ -119,6 +125,7 @@ const MENU_DATA: MenuCategory[] = [
       {
         id: 'grafikkort',
         title: 'Grafikkort',
+        description: 'GPU grafikkort',
         url: '/produktserier/grafikkort',
         icon: <GrafikkortIcon />,
         items: [
@@ -129,6 +136,7 @@ const MENU_DATA: MenuCategory[] = [
       {
         id: 'ram',
         title: 'RAM-minnen',
+        description: 'Arbetminne',
         url: '/produktserier/ram',
         icon: <ProcessorIcon />,
         items: [
@@ -139,6 +147,7 @@ const MENU_DATA: MenuCategory[] = [
       {
         id: 'lagringsenhet',
         title: 'Lagringsenhet',
+        description: 'SSD & HDD',
         url: '/produktserier/lagring',
         icon: <ProcessorIcon />,
         items: [
@@ -547,6 +556,9 @@ export function HeaderWrapper() {
                             {section.title}
                           </h3>
                         </Link>
+                        {section.description && (
+                          <p className="text-xs text-gray-500 mt-1">{section.description}</p>
+                        )}
                       </div>
                       <ul className="space-y-2">
                         {section.items && section.items.map((item) => (
