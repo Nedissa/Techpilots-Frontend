@@ -124,9 +124,45 @@ export default function Checkout() {
 
   return (
     <MainLayout bordered={false}>
-      <div className="grid grid-cols-3 gap-8">
-        {/* Left column - Form */}
-        <div className="col-span-2">
+      <div className="flex flex-col gap-12">
+        {/* Cart Items Section */}
+        <section>
+          <h2 className="text-2xl font-bold mb-6">Din beställning</h2>
+          <div className="space-y-4 pb-8 border-b border-gray-200">
+            {cartItems.map(item => (
+              <div key={item.id} className="flex gap-4 items-start">
+                {/* Product Thumbnail */}
+                <div className="flex-shrink-0">
+                  <div className="w-24 h-24 bg-gray-100 flex items-center justify-center rounded">
+                    <span className="text-gray-400 text-xs">Bild</span>
+                  </div>
+                </div>
+                {/* Product Info */}
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
+                  <p className="text-gray-600 text-sm mt-1">Antal: {item.quantity}</p>
+                  <p className="text-sm text-green-600 font-medium mt-2">I lager</p>
+                </div>
+                {/* Price */}
+                <div className="text-right flex-shrink-0">
+                  <p className="text-lg font-bold text-gray-900">
+                    {(item.price * item.quantity).toLocaleString('sv-SE')} SEK
+                  </p>
+                  {item.originalPrice && (
+                    <p className="text-sm text-gray-400 line-through">
+                      {(item.originalPrice * item.quantity).toLocaleString('sv-SE')} SEK
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Form and Summary */}
+        <div className="grid grid-cols-3 gap-8">
+          {/* Left column - Form */}
+          <div className="col-span-2">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Shipping Information */}
             <section>
@@ -432,6 +468,7 @@ export default function Checkout() {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </MainLayout>
