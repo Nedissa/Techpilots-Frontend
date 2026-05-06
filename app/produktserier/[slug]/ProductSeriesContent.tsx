@@ -71,12 +71,14 @@ export function ProductSeriesContent({
     : [];
 
   return (
-    <div>
-      <Breadcrumb items={breadcrumbItems} />
+    <div style={{ scrollbarGutter: 'stable' }}>
+      <div className="min-h-20">
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
       <div className="flex">
         <ProductFilter onFilterChange={setFilters} maxPrice={maxPrice} />
         <div className="flex-1 px-6 py-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">{categoryTitle}</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-8 min-h-10">{categoryTitle}</h1>
           <ProductCardGrid products={filteredProducts} categorySlug={categorySlug} breadcrumbTrail={breadcrumbTrail} showSort={true} />
         </div>
       </div>

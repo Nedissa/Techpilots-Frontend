@@ -137,11 +137,11 @@ export function ProductCardGrid({
       )}
 
       {/* Products Grid */}
-      <div className={`grid ${showSort ? 'grid-cols-3' : 'grid-cols-4'} gap-6`}>
+      <div className={`grid ${showSort ? 'grid-cols-3' : 'grid-cols-4'} gap-6 py-6`}>
         {sortedProducts.map((product) => (
           <div
             key={product.id}
-            className="flex flex-col bg-white"
+            className="flex flex-col bg-white h-full"
           >
             {/* Image Container with Badges */}
             <div
