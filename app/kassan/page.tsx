@@ -129,29 +129,28 @@ export default function Checkout() {
       <div className="w-full max-w-[800px] flex flex-col gap-12">
         {/* Cart Items Section */}
         <section className="bg-white p-6 border border-gray-200" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-          <h2 className="text-2xl font-bold mb-6">Din beställning</h2>
-          <div className="space-y-4 pb-8 border-b border-gray-200">
+          <h2 className="text-xl font-bold mb-4">Din beställning</h2>
+          <div className="space-y-3">
             {cartItems.map(item => (
-              <div key={item.id} className="flex gap-4 items-start">
+              <div key={item.id} className="flex gap-3 items-center p-3 bg-gray-50 rounded">
                 {/* Product Thumbnail */}
                 <div className="flex-shrink-0">
-                  <div className="w-24 h-24 bg-gray-100 flex items-center justify-center rounded">
+                  <div className="w-16 h-16 bg-white border border-gray-200 flex items-center justify-center rounded">
                     <span className="text-gray-400 text-xs">Bild</span>
                   </div>
                 </div>
                 {/* Product Info */}
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
-                  <p className="text-gray-600 text-sm mt-1">Antal: {item.quantity}</p>
-                  <p className="text-sm text-green-600 font-medium mt-2">I lager</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-semibold text-gray-900 truncate">{item.title}</h3>
+                  <p className="text-xs text-gray-600">Antal: {item.quantity}</p>
                 </div>
                 {/* Price */}
                 <div className="text-right flex-shrink-0">
-                  <p className="text-lg font-bold text-gray-900">
+                  <p className="text-sm font-bold text-gray-900">
                     {(item.price * item.quantity).toLocaleString('sv-SE')} SEK
                   </p>
                   {item.originalPrice && (
-                    <p className="text-sm text-gray-400 line-through">
+                    <p className="text-xs text-gray-400 line-through">
                       {(item.originalPrice * item.quantity).toLocaleString('sv-SE')} SEK
                     </p>
                   )}
@@ -159,12 +158,25 @@ export default function Checkout() {
               </div>
             ))}
           </div>
+          {/* Order Summary Preview */}
+          <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Delsumma</span>
+              <span className="font-semibold">{cartTotal.toLocaleString('sv-SE')} SEK</span>
+            </div>
+            {totalDiscount > 0 && (
+              <div className="flex justify-between text-sm text-green-600">
+                <span>Rabatt</span>
+                <span className="font-semibold">-{totalDiscount.toLocaleString('sv-SE')} SEK</span>
+              </div>
+            )}
+          </div>
         </section>
 
         {/* Form and Summary */}
         <div className="w-full">
           {/* Customer Type Tabs */}
-          <div className="flex gap-0 mb-6 border-b border-gray-200">
+          <div className="flex gap-0 mb-4 border-b border-gray-200">
             <button
               onClick={() => setCustomerType('private')}
               className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
@@ -450,10 +462,10 @@ export default function Checkout() {
 
         {/* Order Summary */}
         <div className="bg-white p-6 border border-gray-200" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-          <h2 className="text-xl font-bold mb-6">Orderöversikt</h2>
+          <h2 className="text-lg font-bold mb-4">Orderöversikt</h2>
 
           {/* Cart Items */}
-          <div className="space-y-4 mb-6 pb-6 border-b border-gray-300">
+          <div className="space-y-2 mb-4 pb-4 border-b border-gray-300">
             {cartItems.map(item => (
               <div key={item.id} className="flex justify-between text-sm">
                 <div>

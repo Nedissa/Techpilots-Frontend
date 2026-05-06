@@ -329,16 +329,60 @@ export default function ProductDetailClient({
               )}
 
               {activeTab === 'questions' && (
-                <div className="space-y-3 pb-8">
-                  {[
-                    { q: 'Hur lång är batteritiden?', a: 'Batteritiden är cirka 8-10 timmar beroende på användning.' },
-                    { q: 'Kan man uppgradera RAM?', a: 'Ja, RAM kan uppgraderas. Kontakta oss för mer information.' },
-                  ].map((qa, idx) => (
-                    <div key={idx} className="border-b border-gray-200 pb-3">
-                      <div className="font-semibold text-gray-900 mb-2">{qa.q}</div>
-                      <p className="text-sm text-gray-700">{qa.a}</p>
+                <div className="space-y-6 pb-8">
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Vanliga frågor</h3>
+                    <div className="space-y-3">
+                      {[
+                        { q: 'Hur lång är batteritiden?', a: 'Batteritiden är cirka 8-10 timmar beroende på användning.' },
+                        { q: 'Kan man uppgradera RAM?', a: 'Ja, RAM kan uppgraderas. Kontakta oss för mer information.' },
+                      ].map((qa, idx) => (
+                        <div key={idx} className="border-b border-gray-200 pb-3">
+                          <div className="font-semibold text-gray-900 mb-2">{qa.q}</div>
+                          <p className="text-sm text-gray-700">{qa.a}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="pt-6 border-t border-gray-200">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Ställ en fråga</h3>
+                    <form className="space-y-3" onSubmit={(e) => {
+                      e.preventDefault();
+                      const formData = new FormData(e.currentTarget);
+                      const subject = `Fråga om ${product.title}`;
+                      const body = `Namn: ${formData.get('name')}\nE-post: ${formData.get('email')}\n\nFråga:\n${formData.get('question')}`;
+                      window.location.href = `mailto:info@techpilots.se?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                    }}>
+                      <input
+                        type="text"
+                        name="name"
+                        placeholder="Ditt namn"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-gray-500"
+                      />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Din e-postadress"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-gray-500"
+                      />
+                      <textarea
+                        name="question"
+                        placeholder="Din fråga"
+                        required
+                        rows={4}
+                        className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-gray-500 resize-none"
+                      />
+                      <button
+                        type="submit"
+                        className="w-full bg-black text-white text-sm font-semibold py-2 px-3 hover:bg-gray-800 transition-colors"
+                      >
+                        Skicka fråga
+                      </button>
+                    </form>
+                  </div>
                 </div>
               )}
 
