@@ -47,6 +47,7 @@ export function ProductCard({
   isAdded = false,
 }: ProductCardProps) {
   const [imageIndex, setImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
   const config = VARIANT_CONFIG[variant];
 
   const handleAddToCart = useCallback(() => {
@@ -76,7 +77,11 @@ export function ProductCard({
     : `/produkter/${product.handle}`;
 
   return (
-    <div className="flex flex-col bg-white h-full transition-all duration-300 hover:-translate-y-3">
+    <div
+      className="flex flex-col bg-white h-full transition-all duration-300 hover:-translate-y-3"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {/* Image Container with Badges */}
       <div
         className={`relative bg-gray-100 overflow-hidden mb-4 ${config.imageHeight} flex items-center justify-center`}
@@ -230,7 +235,7 @@ export function ProductCard({
 
         {/* Button Container */}
         {product.stock && (
-          <div className="mt-auto">
+          <div className={`mt-auto transition-all duration-300 overflow-hidden ${isHovered ? 'opacity-100' : 'opacity-0 -translate-y-2'}`}>
             <button
               onClick={handleClick}
               disabled={added}
