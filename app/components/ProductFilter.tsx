@@ -129,12 +129,14 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
         {expandedSections.price && (
         <div className="px-6 py-4 space-y-4">
           <div className="price-slider-container">
-            <div className="price-slider-ticks">
-              {[...Array(21)].map((_, i) => (
-                <div key={i} className="price-slider-tick" style={{ left: `${i * 5}%` }} />
-              ))}
-            </div>
-            <div className="price-slider-track bg-gray-300 rounded pointer-events-none">
+            <div className="price-slider-track bg-gray-300 rounded pointer-events-none relative">
+              <div className="absolute inset-0 flex pointer-events-none">
+                {[...Array(101)].map((_, i) => (
+                  <div key={i} className="flex-1 relative">
+                    <div className={`absolute left-1/2 -translate-x-1/2 bg-gray-400 ${i % 10 === 0 ? 'h-2 top-1/2 -translate-y-1/2' : 'h-1 top-1/3'}`} />
+                  </div>
+                ))}
+              </div>
               <div
                 className="absolute h-1 bg-black rounded"
                 style={{
