@@ -15,6 +15,7 @@ interface CartItem {
 export default function Checkout() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartTotal, setCartTotal] = useState(0);
+  const [customerType, setCustomerType] = useState<'private' | 'business'>('private');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -162,6 +163,30 @@ export default function Checkout() {
 
         {/* Form and Summary */}
         <div className="w-full">
+          {/* Customer Type Tabs */}
+          <div className="flex gap-0 mb-6 border-b border-gray-200">
+            <button
+              onClick={() => setCustomerType('private')}
+              className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
+                customerType === 'private'
+                  ? 'border-black text-black'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Privatperson
+            </button>
+            <button
+              onClick={() => setCustomerType('business')}
+              className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
+                customerType === 'business'
+                  ? 'border-black text-black'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Företag
+            </button>
+          </div>
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="bg-white p-6 border border-gray-200 space-y-8" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
             {/* Shipping Information */}
@@ -188,14 +213,17 @@ export default function Checkout() {
                     className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
                   />
                 </div>
-                <input
-                  type="text"
-                  name="companyName"
-                  placeholder="Företagsnamn (valfritt)"
-                  value={formData.companyName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
-                />
+                {customerType === 'business' && (
+                  <input
+                    type="text"
+                    name="companyName"
+                    placeholder="Företagsnamn"
+                    value={formData.companyName}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                  />
+                )}
                 <input
                   type="email"
                   name="email"
