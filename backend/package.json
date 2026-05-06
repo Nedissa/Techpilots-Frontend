@@ -13,7 +13,8 @@
     "medusa"
   ],
   "scripts": {
-    "build": "echo 'Build skipped for Medusa v2'",
+    "build": "npm run prepare",
+    "prepare": "exit 0",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "start": "medusa start",
     "dev": "medusa develop",
