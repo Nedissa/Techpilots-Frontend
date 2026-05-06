@@ -4,6 +4,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { MainLayout } from '@/app/components/MainLayout';
 
+interface PriceRange {
+  min: number;
+  max: number;
+}
+
 const ALL_PRODUCTS = [
   { id: '1', title: 'ASUS ROG Gaming Laptop 16"', handle: 'asus-rog-gaming-laptop', price: 14999, originalPrice: 17999, rating: 4.8, reviews: 128, category: 'Laptops', image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
   { id: '2', title: 'Intel Core i9-13900H', handle: 'intel-core-i9', price: 8999, originalPrice: 9999, rating: 4.7, reviews: 89, category: 'Komponenter', image: 'https://via.placeholder.com/300?text=Intel+i9' },
@@ -23,7 +28,7 @@ const CATEGORIES = ['Alla', 'Laptops', 'Komponenter', 'Datorer', 'Tillbehör'];
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('Alla');
-  const [selectedPriceRange, setSelectedPriceRange] = useState('Alla');
+  const [priceRange, setPriceRange] = useState<PriceRange>({ min: 0, max: 20000 });
   const [sortBy, setSortBy] = useState('relevant');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -32,17 +37,13 @@ export default function ProductsPage() {
   );
   const maxPriceInCategory = Math.max(...categoryFilteredProducts.map(p => p.price));
 
-  const PRICE_RANGES = [
-    { label: 'Alla', min: 0, max: maxPriceInCategory },
-    { label: 'Under 1000 SEK', min: 0, max: 1000 },
-    { label: '1000 - 5000 SEK', min: 1000, max: 5000 },
-    { label: '5000 - 10000 SEK', min: 5000, max: 10000 },
-    { label: `Över 10000 SEK`, min: 10000, max: maxPriceInCategory },
-  ];
+  // Update price range max when category changes
+  if (priceRange.max !== maxPriceInCategory) {
+    setPriceRange(prev => ({ ...prev, max: maxPriceInCategory }));
+  }
 
   const filtered = categoryFilteredProducts.filter((product) => {
-    const priceRange = PRICE_RANGES.find((r) => r.label === selectedPriceRange);
-    const priceMatch = product.price >= priceRange!.min && product.price <= priceRange!.max;
+    const priceMatch = product.price >= priceRange.min && product.price <= priceRange.max;
     return priceMatch;
   });
 
@@ -99,24 +100,18 @@ export default function ProductsPage() {
               {/* Price Filter */}
               <div>
                 <h3 className="font-bold text-lg mb-4">Pris</h3>
-                <div className="space-y-2">
-                  {PRICE_RANGES.map((range) => (
-                    <button
-                      key={range.label}
-                      onClick={() => {
-                        setSelectedPriceRange(range.label);
-                        setCurrentPage(1);
-                      }}
-                      className={`block w-full text-left px-3 py-2 rounded transition-colors ${
-                        selectedPriceRange === range.label
-                          ? 'bg-black text-white font-semibold'
-                          : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      {range.label}
-                    </button>
-                  ))}
-                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max={maxPriceInCategory}
+                  value={priceRange.max}
+                  onChange={(e) => {
+                    setPriceRange(prev => ({ ...prev, max: Number(e.target.value) }));
+                    setCurrentPage(1);
+                  }}
+                  className="w-full"
+                />
+                <p className="text-sm text-gray-600 mt-2">0 - {priceRange.max.toLocaleString('sv-SE')} kr</p>
               </div>
             </div>
           </div>
