@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MainLayout } from '@/app/components/MainLayout';
 
 interface PriceRange {
@@ -38,9 +38,9 @@ export default function ProductsPage() {
   const maxPriceInCategory = Math.max(...categoryFilteredProducts.map(p => p.price));
 
   // Update price range max when category changes
-  if (priceRange.max !== maxPriceInCategory) {
+  useEffect(() => {
     setPriceRange(prev => ({ ...prev, max: maxPriceInCategory }));
-  }
+  }, [selectedCategory]);
 
   const filtered = categoryFilteredProducts.filter((product) => {
     const priceMatch = product.price >= priceRange.min && product.price <= priceRange.max;
