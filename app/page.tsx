@@ -198,7 +198,7 @@ function CampaignBanner({
 function CallToAction() {
   return (
     <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-16 flex justify-center">
-      <div className="max-w-[1280px] w-full">
+      <div className="max-w-[1280px] w-full px-6">
         <h2 className="text-4xl font-bold mb-4">Är du redo att uppgradera?</h2>
         <p className="text-xl mb-8 max-w-2xl">
           Hitta de bästa datorerna, komponenterna och tillbehöret. Snabb leverans och utmärkt kundsupport.
