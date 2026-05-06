@@ -172,6 +172,9 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
               className="price-input"
             />
           </div>
+          <div className="text-xs text-gray-700 font-semibold">
+            {priceRange[0].toLocaleString('sv-SE')} - {priceRange[1].toLocaleString('sv-SE')} kr
+          </div>
         </div>
         )}
       </div>
