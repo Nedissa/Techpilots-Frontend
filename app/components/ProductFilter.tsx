@@ -180,19 +180,17 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
           <div className="flex items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-1">
               <input
-                type="text"
+                type="number"
                 value={priceRange[0]}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  if (value === '') return;
-
-                  let newMin = Number(value);
-                  if (isNaN(newMin)) return;
+                  let newMin = Number(e.target.value);
                   if (newMin > maxPrice) newMin = maxPrice;
-                  if (newMin > priceRange[1]) return;
-
-                  handlePriceChange('min', newMin);
+                  if (newMin <= priceRange[1]) {
+                    handlePriceChange('min', newMin);
+                  }
                 }}
+                min={0}
+                max={maxPrice}
                 className="w-14 px-1 py-0.5 text-xs text-gray-700 text-center border-b border-gray-400 focus:outline-none focus:border-gray-700"
               />
               <span className="text-gray-600">kr</span>
