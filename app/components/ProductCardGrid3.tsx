@@ -162,7 +162,7 @@ export function ProductCardGrid3({
               <img
                 src={product.image}
                 alt={product.title}
-                className="w-full h-full object-contain p-8"
+                className="w-full h-full object-contain"
               />
             </Link>
           </div>
