@@ -49,7 +49,7 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
   };
 
   const snapToInterval = (value: number) => {
-    const interval = 1000;
+    const interval = 200;
     return Math.round(value / interval) * interval;
   };
 
