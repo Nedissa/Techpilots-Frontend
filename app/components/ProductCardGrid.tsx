@@ -35,33 +35,21 @@ export function ProductCardGrid({
   products,
   categorySlug,
   breadcrumbTrail,
-  showSort = false,
+  sortBy: externalSortBy,
 }: {
   products: Product[];
   categorySlug?: string;
   breadcrumbTrail?: BreadcrumbTrail | null;
-  showSort?: boolean;
+  sortBy?: SortOption;
 }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
-  const [sortBy, setSortBy] = useState<SortOption>('recommended');
-  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>(externalSortBy || 'recommended');
   const [imageIndex, setImageIndex] = useState<Record<string, number>>({});
 
-  const sortOptions = [
-    { value: 'recommended', label: 'Rekommenderat' },
-    { value: 'latest', label: 'Senaste' },
-    { value: 'rating', label: 'Betyg' },
-    { value: 'popularity', label: 'Popularitet' },
-    { value: 'price-asc', label: 'Pris stigande' },
-    { value: 'price-desc', label: 'Pris fallande' },
-  ];
-
-  const currentSortLabel = sortOptions.find(opt => opt.value === sortBy)?.label || 'Rekommenderat';
 
   const sortedProducts = useMemo(() => {
     const sorted = [...products];
-    if (!showSort) return sorted;
 
     switch (sortBy) {
       case 'latest':
@@ -77,7 +65,7 @@ export function ProductCardGrid({
       default:
         return sorted;
     }
-  }, [products, sortBy, showSort]);
+  }, [products, sortBy]);
 
   const addToCart = useCallback((product: Product) => {
     const cartEvent = new CustomEvent('addToCart', {
@@ -103,41 +91,8 @@ export function ProductCardGrid({
 
   return (
     <div className="space-y-6">
-      {/* Sort Menu - only show if showSort is true */}
-      {showSort && (
-        <div className="flex justify-end mb-4">
-          <div className="relative w-44">
-            <button
-              onClick={() => setShowSortMenu(!showSortMenu)}
-              className="w-full bg-white shadow-sm text-sm font-medium text-gray-900 flex items-center justify-between px-4 py-2 hover:bg-gray-50 transition-colors rounded"
-            >
-              <span>{currentSortLabel}</span>
-              <svg className={`w-4 h-4 transition-transform flex-shrink-0 ${showSortMenu ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 24 24">
-                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
-              </svg>
-            </button>
-            {showSortMenu && (
-              <div className="absolute top-full left-0 right-0 mt-0 bg-white z-20 shadow-lg rounded-b">
-                {sortOptions.filter(opt => opt.value !== sortBy).map(({ value, label }) => (
-                  <button
-                    key={value}
-                    onClick={() => {
-                      setSortBy(value as SortOption);
-                      setShowSortMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-3 text-sm whitespace-nowrap transition-colors text-gray-700 hover:bg-gray-50"
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Products Grid */}
-      <div className={`grid ${showSort ? 'grid-cols-3' : 'grid-cols-4'} gap-6 py-6`}>
+      <div className="grid grid-cols-3 gap-6 py-6">
         {sortedProducts.map((product) => (
           <div
             key={product.id}
