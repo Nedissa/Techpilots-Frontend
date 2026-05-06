@@ -16,7 +16,8 @@ interface CartItem {
 export function CartAside() {
   const { close } = useAside();
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    // Initialize state from sessionStorage
+    // Initialize state from sessionStorage (only in browser)
+    if (typeof window === 'undefined') return [];
     const savedCartItems = sessionStorage.getItem('cartItems');
     if (savedCartItems) {
       try {
