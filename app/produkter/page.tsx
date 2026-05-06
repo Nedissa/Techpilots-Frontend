@@ -4,11 +4,6 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { MainLayout } from '@/app/components/MainLayout';
 
-interface PriceRange {
-  min: number;
-  max: number;
-}
-
 const ALL_PRODUCTS = [
   { id: '1', title: 'ASUS ROG Gaming Laptop 16"', handle: 'asus-rog-gaming-laptop', price: 14999, originalPrice: 17999, rating: 4.8, reviews: 128, category: 'Laptops', image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
   { id: '2', title: 'Intel Core i9-13900H', handle: 'intel-core-i9', price: 8999, originalPrice: 9999, rating: 4.7, reviews: 89, category: 'Komponenter', image: 'https://via.placeholder.com/300?text=Intel+i9' },
