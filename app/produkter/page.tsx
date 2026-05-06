@@ -23,6 +23,7 @@ const CATEGORIES = ['Alla', 'Laptops', 'Komponenter', 'Datorer', 'Tillbehör'];
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('Alla');
+  const [priceMax, setPriceMax] = useState(20000);
   const [sortBy, setSortBy] = useState('relevant');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -31,8 +32,12 @@ export default function ProductsPage() {
   );
   const maxPriceInCategory = Math.max(...categoryFilteredProducts.map(p => p.price));
 
+  useEffect(() => {
+    setPriceMax(maxPriceInCategory);
+  }, [maxPriceInCategory]);
+
   const filtered = categoryFilteredProducts.filter((product) => {
-    return product.price <= maxPriceInCategory;
+    return product.price <= priceMax;
   });
 
   const sorted = [...filtered].sort((a, b) => {
@@ -92,10 +97,14 @@ export default function ProductsPage() {
                   type="range"
                   min="0"
                   max={maxPriceInCategory}
-                  defaultValue={maxPriceInCategory}
+                  value={priceMax}
+                  onChange={(e) => {
+                    setPriceMax(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
                   className="w-full"
                 />
-                <p className="text-sm text-gray-600 mt-2">0 - {maxPriceInCategory.toLocaleString('sv-SE')} kr</p>
+                <p className="text-sm text-gray-600 mt-2">0 - {priceMax.toLocaleString('sv-SE')} kr</p>
               </div>
             </div>
           </div>
