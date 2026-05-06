@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { MainLayout } from '@/app/components/MainLayout';
 
 const ALL_PRODUCTS = [
-  { id: '1', title: 'ASUS ROG Gaming Laptop 16"', handle: 'asus-rog-gaming-laptop', price: 14999, originalPrice: 17999, rating: 4.8, reviews: 128, category: 'Laptops', image: 'https://via.placeholder.com/300?text=ASUS+Laptop' },
+  { id: '1', title: 'ASUS ROG Gaming Laptop 16"', handle: 'asus-rog-gaming-laptop', price: 14999, originalPrice: 17999, rating: 4.8, reviews: 128, category: 'Laptops', image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
   { id: '2', title: 'Intel Core i9-13900H', handle: 'intel-core-i9', price: 8999, originalPrice: 9999, rating: 4.7, reviews: 89, category: 'Komponenter', image: 'https://via.placeholder.com/300?text=Intel+i9' },
   { id: '3', title: 'NVIDIA RTX 4080', handle: 'nvidia-rtx-4080', price: 11999, originalPrice: 13999, rating: 4.9, reviews: 156, category: 'Komponenter', image: 'https://via.placeholder.com/300?text=RTX+4080' },
   { id: '4', title: 'Corsair Headset', handle: 'corsair-headset', price: 1499, originalPrice: 1899, rating: 4.6, reviews: 67, category: 'Tillbehör', image: 'https://via.placeholder.com/300?text=Corsair+Headset' },

@@ -413,7 +413,7 @@ export function CartAside() {
                       cartItems.forEach(item => {
                         const itemTotal = (item.price * item.quantity).toLocaleString('sv-SE');
                         const originalPriceStr = item.originalPrice ? `<div class="price-strikethrough">${item.originalPrice.toLocaleString('sv-SE')} kr</div>` : '';
-                        const imageUrl = `https://via.placeholder.com/80?text=${encodeURIComponent(item.title)}`;
+                        const imageUrl = '/assets/Produkt bilder/LAPTOP/1978563_1.webp';
                         printWindow.document.write(`
                           <tr>
                             <td style="width: 10%; text-align: center; padding-right: 20px;">

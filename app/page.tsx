@@ -8,9 +8,9 @@ import { ProductCardGrid } from './components/ProductCardGrid';
 import { MainLayout } from './components/MainLayout';
 
 const FEATURED_COLLECTIONS = [
-  { title: 'Gaming Laptops', handle: 'gaming-laptops', image: 'https://via.placeholder.com/1280x484?text=Gaming+Laptops' },
-  { title: 'Datorkomponenter', handle: 'datorkomponenter', image: 'https://via.placeholder.com/1280x484?text=Komponenter' },
-  { title: 'Gaming Setup', handle: 'gaming-setup', image: 'https://via.placeholder.com/1280x484?text=Gaming+Setup' },
+  { title: 'Gaming Laptops', handle: 'gaming-laptops', image: '/assets/Produkt bilder/LAPTOP/1978563_1.webp' },
+  { title: 'Datorkomponenter', handle: 'datorkomponenter', image: '/assets/Produkt bilder/STATIONÄR/1.webp' },
+  { title: 'Gaming Setup', handle: 'gaming-setup', image: '/assets/Produkt bilder/STATIONÄR/6907594_ebnf7f.webp' },
 ]
 
 function CampaignBannersSection() {
