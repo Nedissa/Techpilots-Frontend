@@ -19,7 +19,7 @@ export default function RootLayout({
       <body className="bg-white">
         <RootLayoutClient>
           <HeaderWrapper />
-          <main className="py-4">{children}</main>
+          <main className="py-4 pb-24">{children}</main>
           <FooterWrapper />
         </RootLayoutClient>
       </body>
