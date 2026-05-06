@@ -126,7 +126,7 @@ export default function Checkout() {
   return (
     <MainLayout bordered={false}>
       <div className="flex justify-center pt-12 pb-16">
-      <div className="w-full max-w-[640px] flex flex-col gap-12">
+      <div className="w-full max-w-[800px] flex flex-col gap-12">
         {/* Cart Items Section */}
         <section className="bg-white p-6 border border-gray-200" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h2 className="text-2xl font-bold mb-6">Din beställning</h2>
