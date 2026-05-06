@@ -435,7 +435,7 @@ export function HeaderWrapper() {
                     <div className="divide-y divide-gray-100">
                       {results.map((product) => (
                         <Link key={product.id} href={`/produkt/${product.id}`}>
-                          <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center gap-3">
+                          <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center gap-4">
                             <img src={product.image} alt={product.title} className="w-12 h-12 object-contain flex-shrink-0 bg-gray-100" />
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-sm text-black">{product.title}</div>
@@ -443,7 +443,7 @@ export function HeaderWrapper() {
                                 {product.category} | Frekvensband: Dual-band
                               </div>
                             </div>
-                            <div className="flex items-center gap-3 flex-shrink-0">
+                            <div className="flex items-center gap-4 flex-shrink-0">
                               <div className="flex gap-1.5">
                                 {[...Array(5)].map((_, i) => (
                                   <svg key={i} className={`w-3 h-3 ${i < product.rating ? 'fill-black' : 'fill-gray-300'}`} viewBox="0 0 20 20">
