@@ -14,7 +14,7 @@ interface CartItem {
 }
 
 export function CartAside() {
-  const { close, open } = useAside();
+  const { close } = useAside();
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     // Initialize state from sessionStorage (only in browser)
     if (typeof window === 'undefined') return [];
@@ -64,12 +64,11 @@ export function CartAside() {
       setCartTotal(prev => prev + (priceNum * (quantity || 1)));
       wasEmptyRef.current = false;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      open('cart');
     };
 
     window.addEventListener('addToCart', handleAddToCart);
     return () => window.removeEventListener('addToCart', handleAddToCart);
-  }, [open]);
+  }, []);
 
   // Auto-close after 4 seconds when cart is empty
   useEffect(() => {
