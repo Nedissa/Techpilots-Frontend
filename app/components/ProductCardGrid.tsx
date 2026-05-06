@@ -122,9 +122,9 @@ export function ProductCardGrid({ products }: { products: Product[] }) {
               </div>
             )}
 
-            {/* Price and Stock Container */}
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-baseline gap-2">
+            {/* Price */}
+            <div className="mb-3">
+              <div className="flex flex-col">
                 <span className="text-lg font-bold text-gray-900">
                   {product.price.toLocaleString('sv-SE')} kr
                 </span>
@@ -134,13 +134,15 @@ export function ProductCardGrid({ products }: { products: Product[] }) {
                   </span>
                 )}
               </div>
-              {product.stock && (
-                <p className="text-xs text-green-600 font-semibold flex items-center gap-1">
-                  <span className="w-2 h-2 bg-green-600 rounded-full"></span>
-                  I lager
-                </p>
-              )}
             </div>
+
+            {/* Stock Status */}
+            {product.stock && (
+              <p className="text-xs text-green-600 font-semibold mb-3 flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-600 rounded-full"></span>
+                I lager
+              </p>
+            )}
 
             {/* Color Selector */}
             {product.colors && product.colors.length > 0 && (
