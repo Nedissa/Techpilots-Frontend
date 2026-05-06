@@ -30,8 +30,6 @@ export function CartAside() {
     return [];
   });
   const [cartTotal, setCartTotal] = useState(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const wasEmptyRef = useRef(false);
 
   useEffect(() => {
     // Update total when cartItems changes
@@ -62,33 +60,11 @@ export function CartAside() {
       });
 
       setCartTotal(prev => prev + (priceNum * (quantity || 1)));
-      wasEmptyRef.current = false;
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
 
     window.addEventListener('addToCart', handleAddToCart);
     return () => window.removeEventListener('addToCart', handleAddToCart);
   }, []);
-
-  // Auto-close after 4 seconds when cart is empty
-  useEffect(() => {
-    if (cartItems.length === 0 && !wasEmptyRef.current) {
-      wasEmptyRef.current = true;
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        // Close with animation - the Aside component handles the animation
-        close();
-        wasEmptyRef.current = false;
-      }, 4000);
-    } else if (cartItems.length > 0) {
-      wasEmptyRef.current = false;
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    }
-
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [cartItems.length, close]);
 
   const calculateTotalDiscount = () => {
     return cartItems.reduce((total, item) => {
