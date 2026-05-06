@@ -237,11 +237,24 @@ export function ProductCard({
         {product.stock && (
           <>
             <div className={`mt-auto border-t border-gray-200 ${isHovered ? 'hidden' : ''}`}></div>
-            <div className={`mt-auto transition-all duration-200 overflow-hidden ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <style>{`
+              @keyframes slideInFill {
+                from {
+                  clip-path: inset(0 100% 0 0);
+                }
+                to {
+                  clip-path: inset(0 0 0 0);
+                }
+              }
+              .button-fill {
+                animation: slideInFill 0.3s ease-out forwards;
+              }
+            `}</style>
+            <div className={`mt-auto ${isHovered ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}>
               <button
               onClick={handleClick}
               disabled={added}
-              className={`w-full py-2.5 font-semibold text-sm flex items-center justify-center gap-2 bg-black text-white`}
+              className={`w-full py-2.5 font-semibold text-sm flex items-center justify-center gap-2 bg-black text-white ${isHovered ? 'button-fill' : ''}`}
             >
               {added ? (
                 <>
