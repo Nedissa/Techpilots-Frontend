@@ -38,7 +38,12 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
   });
 
   useEffect(() => {
-    setPriceRange([0, maxPrice]);
+    setPriceRange(prev => {
+      if (prev[1] > maxPrice) {
+        return [prev[0], maxPrice];
+      }
+      return prev;
+    });
   }, [maxPrice]);
 
   const toggleSection = (section: string) => {
