@@ -127,7 +127,7 @@ export default function Checkout() {
       <div className="flex justify-center">
       <div className="w-full max-w-[640px] flex flex-col gap-12">
         {/* Cart Items Section */}
-        <section>
+        <section className="bg-white p-6 border border-gray-200" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h2 className="text-2xl font-bold mb-6">Din beställning</h2>
           <div className="space-y-4 pb-8 border-b border-gray-200">
             {cartItems.map(item => (
@@ -163,7 +163,7 @@ export default function Checkout() {
         {/* Form and Summary */}
         <div className="w-full">
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="bg-white p-6 border border-gray-200 space-y-8" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
             {/* Shipping Information */}
             <section>
               <h2 className="text-2xl font-bold mb-6">Leveransadress</h2>
@@ -421,7 +421,7 @@ export default function Checkout() {
           </form>
 
         {/* Order Summary */}
-        <div className="bg-gray-50 p-6 border border-gray-200">
+        <div className="bg-white p-6 border border-gray-200" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h2 className="text-xl font-bold mb-6">Orderöversikt</h2>
 
           {/* Cart Items */}
