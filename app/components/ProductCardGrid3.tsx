@@ -23,7 +23,7 @@ interface Product {
 
 type SortOption = 'recommended' | 'latest' | 'rating' | 'popularity' | 'price-asc' | 'price-desc';
 
-export function ProductCardGrid3({ products }: { products: Product[] }) {
+export function ProductCardGrid3({ products, categorySlug }: { products: Product[]; categorySlug?: string }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
   const [sortBy, setSortBy] = useState<SortOption>('recommended');
@@ -143,7 +143,7 @@ export function ProductCardGrid3({ products }: { products: Product[] }) {
               ) : null}
             </div>
 
-            <Link href={`/produkter/${product.handle}`} className="w-full h-full flex items-center justify-center">
+            <Link href={categorySlug ? `/produktserier/${categorySlug}/${product.handle}` : `/produkter/${product.handle}`} className="w-full h-full flex items-center justify-center">
               <img
                 src={product.image}
                 alt={product.title}
