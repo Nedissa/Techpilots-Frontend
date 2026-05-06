@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { MainLayout } from '../components/MainLayout';
+import { MAIN_CATEGORIES } from '@/app/lib/products';
 
 interface CartItem {
   id: string;
@@ -65,11 +66,19 @@ export default function CartPage() {
         <h1 className="text-4xl font-bold mb-8">Din varukorg</h1>
         {cartItems.length === 0 ? (
           <div className="text-center py-12">
-            <h2 className="text-2xl font-bold mb-4">Din varukorg är tom</h2>
-            <p className="text-gray-600 mb-8">Du har inte lagt till några produkter än</p>
-            <Link href="/produkter" className="inline-block bg-black text-white px-8 py-3 font-bold hover:bg-gray-800">
-              Börja shoppa
-            </Link>
+            <h2 className="text-4xl font-bold mb-4">Din varukorg är tom</h2>
+            <p className="text-gray-600 mb-12">Inte säker på var du ska börja?<br />Prova dessa kategorier:</p>
+
+            <div className="space-y-3 max-w-md mx-auto">
+              {Object.entries(MAIN_CATEGORIES).map(([slug, title]) => (
+                <Link key={slug} href={`/kategori/${slug}`} className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors rounded">
+                  <span className="text-lg font-medium text-gray-900">{title}</span>
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">

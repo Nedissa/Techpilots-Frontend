@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Aside, useAside } from './Aside';
+import { MAIN_CATEGORIES } from '@/app/lib/products';
 
 interface CartItem {
   id: string;
@@ -14,25 +15,28 @@ interface CartItem {
 
 export function CartAside() {
   const { close } = useAside();
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    // Initialize state from sessionStorage
+    const savedCartItems = sessionStorage.getItem('cartItems');
+    if (savedCartItems) {
+      try {
+        return JSON.parse(savedCartItems);
+      } catch (e) {
+        console.error('Failed to load cart items from sessionStorage', e);
+        return [];
+      }
+    }
+    return [];
+  });
   const [cartTotal, setCartTotal] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wasEmptyRef = useRef(false);
 
   useEffect(() => {
-    // Load cart items from sessionStorage on mount (resets on page refresh)
-    const savedCartItems = sessionStorage.getItem('cartItems');
-    if (savedCartItems) {
-      try {
-        const items = JSON.parse(savedCartItems);
-        setCartItems(items);
-        const total = items.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
-        setCartTotal(total);
-      } catch (e) {
-        console.error('Failed to load cart items from sessionStorage', e);
-      }
-    }
-  }, []);
+    // Update total when cartItems changes
+    const total = cartItems.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
+    setCartTotal(total);
+  }, [cartItems]);
 
   useEffect(() => {
     const handleAddToCart = (event: Event) => {
@@ -156,18 +160,26 @@ export function CartAside() {
     <Aside type="cart" heading="Din varukorg">
       <div className="flex flex-col h-full bg-white">
         {cartItems.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center p-6">
-              <p className="text-gray-500 text-sm mb-4">
-                Varukorgen är tom
-              </p>
-              <button
-                onClick={close}
-                className="text-black hover:text-gray-700 text-sm font-semibold"
-              >
-                Fortsätt handla
-              </button>
+          <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
+            <p className="text-gray-600 text-sm mb-6 text-center">Inte säker på var du ska börja?<br />Prova dessa kategorier:</p>
+
+            <div className="space-y-2 w-full">
+              {Object.entries(MAIN_CATEGORIES).map(([slug, title]) => (
+                <Link key={slug} href={`/kategori/${slug}`} onClick={close} className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition-colors rounded">
+                  <span className="text-sm font-medium text-gray-900">{title}</span>
+                  <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              ))}
             </div>
+
+            <button
+              onClick={close}
+              className="text-black hover:text-gray-700 text-sm font-semibold mt-6"
+            >
+              Fortsätt handla
+            </button>
           </div>
         ) : (
           <>
