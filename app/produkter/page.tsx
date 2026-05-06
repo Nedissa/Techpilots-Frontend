@@ -35,7 +35,7 @@ export default function ProductsPage() {
   // Initialize and update price filter when category changes
   useEffect(() => {
     setMaxPriceFilter(maxPriceInCategory);
-  }, [selectedCategory]);
+  }, [maxPriceInCategory]);
 
   const filtered = categoryFilteredProducts.filter((product) => {
     const priceMatch = maxPriceFilter === null || product.price <= maxPriceFilter;
