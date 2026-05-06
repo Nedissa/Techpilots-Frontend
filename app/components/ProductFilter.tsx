@@ -172,8 +172,35 @@ export function ProductFilter({ onFilterChange, maxPrice = 20000 }: ProductFilte
               className="price-input"
             />
           </div>
-          <div className="text-xs text-gray-700 font-semibold">
-            {priceRange[0].toLocaleString('sv-SE')} - {priceRange[1].toLocaleString('sv-SE')} kr
+          <div className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-1">
+              <input
+                type="text"
+                value={priceRange[0]}
+                onChange={(e) => {
+                  const newMin = Number(e.target.value) || 0;
+                  if (newMin <= priceRange[1]) {
+                    handlePriceChange('min', newMin);
+                  }
+                }}
+                className="w-14 px-1 py-0.5 text-xs text-gray-700 text-center border-b border-gray-400 focus:outline-none focus:border-gray-700"
+              />
+              <span className="text-gray-600">kr</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <input
+                type="text"
+                value={priceRange[1]}
+                onChange={(e) => {
+                  const newMax = Number(e.target.value) || maxPrice;
+                  if (newMax >= priceRange[0]) {
+                    handlePriceChange('max', newMax);
+                  }
+                }}
+                className="w-14 px-1 py-0.5 text-xs text-gray-700 text-center border-b border-gray-400 focus:outline-none focus:border-gray-700"
+              />
+              <span className="text-gray-600">kr</span>
+            </div>
           </div>
         </div>
         )}
