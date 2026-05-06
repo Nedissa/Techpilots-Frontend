@@ -254,7 +254,7 @@ export function CartAside() {
                 </div>
               </div>
 
-              <Link href="/kassan" className="block">
+              <Link href="/kassan" className="block" onClick={close}>
                 <button className="w-full bg-green-600 text-white py-3 text-base font-bold hover:bg-green-700">
                   Till kassan
                 </button>
