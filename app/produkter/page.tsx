@@ -28,7 +28,7 @@ const CATEGORIES = ['Alla', 'Laptops', 'Komponenter', 'Datorer', 'Tillbehör'];
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('Alla');
-  const [priceRange, setPriceRange] = useState<PriceRange>({ min: 0, max: 20000 });
+  const [maxPriceFilter, setMaxPriceFilter] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState('relevant');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -37,13 +37,13 @@ export default function ProductsPage() {
   );
   const maxPriceInCategory = Math.max(...categoryFilteredProducts.map(p => p.price));
 
-  // Update price range max when category changes
+  // Initialize and update price filter when category changes
   useEffect(() => {
-    setPriceRange(prev => ({ ...prev, max: maxPriceInCategory }));
+    setMaxPriceFilter(maxPriceInCategory);
   }, [selectedCategory]);
 
   const filtered = categoryFilteredProducts.filter((product) => {
-    const priceMatch = product.price >= priceRange.min && product.price <= priceRange.max;
+    const priceMatch = maxPriceFilter === null || product.price <= maxPriceFilter;
     return priceMatch;
   });
 
@@ -100,18 +100,22 @@ export default function ProductsPage() {
               {/* Price Filter */}
               <div>
                 <h3 className="font-bold text-lg mb-4">Pris</h3>
-                <input
-                  type="range"
-                  min="0"
-                  max={maxPriceInCategory}
-                  value={priceRange.max}
-                  onChange={(e) => {
-                    setPriceRange(prev => ({ ...prev, max: Number(e.target.value) }));
-                    setCurrentPage(1);
-                  }}
-                  className="w-full"
-                />
-                <p className="text-sm text-gray-600 mt-2">0 - {priceRange.max.toLocaleString('sv-SE')} kr</p>
+                {maxPriceFilter !== null && (
+                  <>
+                    <input
+                      type="range"
+                      min="0"
+                      max={maxPriceInCategory}
+                      value={maxPriceFilter}
+                      onChange={(e) => {
+                        setMaxPriceFilter(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                      className="w-full"
+                    />
+                    <p className="text-sm text-gray-600 mt-2">0 - {maxPriceFilter.toLocaleString('sv-SE')} kr</p>
+                  </>
+                )}
               </div>
             </div>
           </div>
