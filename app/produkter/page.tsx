@@ -151,12 +151,12 @@ export default function ProductsPage() {
                       <div className="flex items-center gap-2 mb-3">
                         <div className="flex gap-0.5">
                           {[...Array(5)].map((_, i) => (
-                            <span key={i} className={i < Math.floor(product.rating) ? 'text-yellow-400 text-sm' : 'text-gray-300 text-sm'}>
+                            <span key={i} className={i < Math.floor(product.rating || 0) ? 'text-yellow-400 text-sm' : 'text-gray-300 text-sm'}>
                               ★
                             </span>
                           ))}
                         </div>
-                        <span className="text-xs text-gray-600">({product.reviews})</span>
+                        <span className="text-xs text-gray-600">({product.reviews || 0})</span>
                       </div>
 
                       {/* Price */}
