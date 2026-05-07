@@ -1,0 +1,5 @@
+{
+  "name": "medusa-backend-root",
+  "private": true,
+  "workspaces": ["src"]
+}
