@@ -163,13 +163,13 @@ export default function ProductsPage() {
                       <div className="mb-4">
                         <div className="flex items-baseline gap-2">
                           <span className="text-lg font-bold text-black">{product.price} SEK</span>
-                          {product.originalPrice > product.price && (
+                          {(product.originalPrice || 0) > product.price && (
                             <span className="text-sm text-gray-500 line-through">{product.originalPrice} SEK</span>
                           )}
                         </div>
-                        {product.originalPrice > product.price && (
+                        {(product.originalPrice || 0) > product.price && (
                           <p className="text-xs text-green-600 font-semibold mt-1">
-                            Spara {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                            Spara {Math.round((((product.originalPrice || 0) - product.price) / (product.originalPrice || 1)) * 100)}%
                           </p>
                         )}
                       </div>
