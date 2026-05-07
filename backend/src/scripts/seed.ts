@@ -378,205 +378,200 @@ export default async function seedDemoData({ container }: ExecArgs) {
     input: {
       product_categories: [
         {
-          name: "Shirts",
+          name: "Laptops",
           is_active: true,
         },
         {
-          name: "Sweatshirts",
+          name: "Desktops",
           is_active: true,
         },
         {
-          name: "Pants",
+          name: "Components",
           is_active: true,
         },
         {
-          name: "Merch",
+          name: "Gaming",
+          is_active: true,
+        },
+        {
+          name: "Phones",
+          is_active: true,
+        },
+        {
+          name: "TV & HiFi",
+          is_active: true,
+        },
+        {
+          name: "Network",
           is_active: true,
         },
       ],
     },
   });
 
+  logger.info("Seeding product attributes...");
+
+  const productModuleService = container.resolve(Modules.PRODUCT);
+
+  // Laptops attributes
+  await productModuleService.createAttributes([
+    { key: "laptop_processor", title: "Processor" },
+    { key: "laptop_ram_gb", title: "RAM (GB)" },
+    { key: "laptop_ram_type", title: "RAM Type" },
+    { key: "laptop_storage_gb", title: "Storage (GB)" },
+    { key: "laptop_storage_type", title: "Storage Type" },
+    { key: "laptop_screen_size_inches", title: "Screen Size (inches)" },
+    { key: "laptop_screen_resolution", title: "Screen Resolution" },
+    { key: "laptop_screen_refresh_rate_hz", title: "Screen Refresh Rate (Hz)" },
+    { key: "laptop_gpu", title: "GPU" },
+    { key: "laptop_gpu_vram_gb", title: "GPU VRAM (GB)" },
+    { key: "laptop_battery_life_hours", title: "Battery Life (hours)" },
+    { key: "laptop_weight_kg", title: "Weight (kg)" },
+    { key: "laptop_os", title: "Operating System" },
+    { key: "laptop_warranty_months", title: "Warranty (months)" },
+    { key: "laptop_sku", title: "SKU" },
+    { key: "laptop_ean", title: "EAN" },
+  ]);
+
+  // Desktops attributes
+  await productModuleService.createAttributes([
+    { key: "desktop_processor", title: "Processor" },
+    { key: "desktop_ram_gb", title: "RAM (GB)" },
+    { key: "desktop_ram_type", title: "RAM Type" },
+    { key: "desktop_storage_gb", title: "Storage (GB)" },
+    { key: "desktop_storage_type", title: "Storage Type" },
+    { key: "desktop_gpu", title: "GPU" },
+    { key: "desktop_gpu_vram_gb", title: "GPU VRAM (GB)" },
+    { key: "desktop_motherboard", title: "Motherboard" },
+    { key: "desktop_power_supply_w", title: "Power Supply (W)" },
+    { key: "desktop_case_size", title: "Case Size" },
+    { key: "desktop_os", title: "Operating System" },
+    { key: "desktop_warranty_months", title: "Warranty (months)" },
+    { key: "desktop_sku", title: "SKU" },
+    { key: "desktop_ean", title: "EAN" },
+  ]);
+
+  // CPU Component attributes
+  await productModuleService.createAttributes([
+    { key: "cpu_cores", title: "Cores" },
+    { key: "cpu_threads", title: "Threads" },
+    { key: "cpu_socket", title: "Socket" },
+    { key: "cpu_tdp_w", title: "TDP (W)" },
+  ]);
+
+  // GPU Component attributes
+  await productModuleService.createAttributes([
+    { key: "gpu_memory_gb", title: "Memory (GB)" },
+    { key: "gpu_memory_type", title: "Memory Type" },
+    { key: "gpu_memory_bandwidth", title: "Memory Bandwidth" },
+    { key: "gpu_power_consumption_w", title: "Power Consumption (W)" },
+  ]);
+
+  // RAM Component attributes
+  await productModuleService.createAttributes([
+    { key: "ram_type", title: "Type" },
+    { key: "ram_speed_mhz", title: "Speed (MHz)" },
+    { key: "ram_latency_cas", title: "Latency (CAS)" },
+    { key: "ram_capacity_gb", title: "Capacity (GB)" },
+  ]);
+
+  // Storage Component attributes
+  await productModuleService.createAttributes([
+    { key: "storage_interface", title: "Interface" },
+    { key: "storage_capacity_gb", title: "Capacity (GB)" },
+    { key: "storage_rpm_for_hdd", title: "RPM (for HDD)" },
+  ]);
+
+  // Motherboard Component attributes
+  await productModuleService.createAttributes([
+    { key: "motherboard_chipset", title: "Chipset" },
+    { key: "motherboard_socket", title: "Socket" },
+    { key: "motherboard_memory_slots", title: "Memory Slots" },
+    { key: "motherboard_form_factor", title: "Form Factor" },
+  ]);
+
+  // PSU Component attributes
+  await productModuleService.createAttributes([
+    { key: "psu_wattage", title: "Wattage (W)" },
+    { key: "psu_efficiency_rating", title: "Efficiency Rating" },
+    { key: "psu_modular_type", title: "Modular Type" },
+  ]);
+
+  // Gaming attributes (Laptops/Desktops)
+  await productModuleService.createAttributes([
+    { key: "gaming_gpu", title: "GPU" },
+    { key: "gaming_gpu_tier", title: "GPU Tier" },
+    { key: "gaming_processor", title: "Processor" },
+    { key: "gaming_ram_gb", title: "RAM (GB)" },
+    { key: "gaming_screen_refresh_rate_hz", title: "Screen Refresh Rate (Hz)" },
+    { key: "gaming_response_time_ms", title: "Response Time (ms)" },
+    { key: "gaming_warranty_months", title: "Warranty (months)" },
+  ]);
+
+  // Phones attributes
+  await productModuleService.createAttributes([
+    { key: "phone_screen_size_inches", title: "Screen Size (inches)" },
+    { key: "phone_screen_type", title: "Screen Type" },
+    { key: "phone_soc_model", title: "SoC Model" },
+    { key: "phone_camera_mp_main", title: "Main Camera (MP)" },
+    { key: "phone_camera_mp_front", title: "Front Camera (MP)" },
+    { key: "phone_battery_mah", title: "Battery (mAh)" },
+    { key: "phone_os_version", title: "OS Version" },
+    { key: "phone_5g_support", title: "5G Support" },
+    { key: "phone_water_resistance_rating", title: "Water Resistance Rating" },
+  ]);
+
+  // TV attributes
+  await productModuleService.createAttributes([
+    { key: "tv_panel_type", title: "Panel Type" },
+    { key: "tv_screen_size_inches", title: "Screen Size (inches)" },
+    { key: "tv_brightness_nits", title: "Brightness (nits)" },
+    { key: "tv_contrast_ratio", title: "Contrast Ratio" },
+    { key: "tv_smart_tv_support", title: "Smart TV Support" },
+    { key: "tv_refresh_rate_hz", title: "Refresh Rate (Hz)" },
+  ]);
+
+  // Audio/HiFi attributes
+  await productModuleService.createAttributes([
+    { key: "audio_driver_size_mm", title: "Driver Size (mm)" },
+    { key: "audio_frequency_range", title: "Frequency Range" },
+    { key: "audio_impedance_ohms", title: "Impedance (Ohms)" },
+    { key: "audio_sensitivity_db", title: "Sensitivity (dB)" },
+  ]);
+
+  // Network Access Point attributes
+  await productModuleService.createAttributes([
+    { key: "network_wifi_standard", title: "WiFi Standard" },
+    { key: "network_speed_mbps", title: "Speed (Mbps)" },
+    { key: "network_coverage_area_sqm", title: "Coverage Area (sqm)" },
+    { key: "network_ports_count", title: "Ports Count" },
+    { key: "network_frequency_bands", title: "Frequency Bands" },
+    { key: "network_security_standards", title: "Security Standards" },
+  ]);
+
+  logger.info("Finished seeding product attributes.");
+
   await createProductsWorkflow(container).run({
     input: {
       products: [
         {
-          title: "Medusa T-Shirt",
+          title: "Example Laptop",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Shirts")!.id,
+            categoryResult.find((cat) => cat.name === "Laptops")!.id,
           ],
-          description:
-            "Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.",
-          handle: "t-shirt",
-          weight: 400,
+          description: "High-performance laptop with latest specifications",
+          handle: "example-laptop",
+          weight: 1800,
           status: ProductStatus.PUBLISHED,
           shipping_profile_id: shippingProfile.id,
-          images: [
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-front.png",
-            },
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-back.png",
-            },
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-front.png",
-            },
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-back.png",
-            },
-          ],
-          options: [
-            {
-              title: "Size",
-              values: ["S", "M", "L", "XL"],
-            },
-            {
-              title: "Color",
-              values: ["Black", "White"],
-            },
-          ],
           variants: [
             {
-              title: "S / Black",
-              sku: "SHIRT-S-BLACK",
-              options: {
-                Size: "S",
-                Color: "Black",
-              },
+              title: "Standard",
+              sku: "LAPTOP-001",
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "S / White",
-              sku: "SHIRT-S-WHITE",
-              options: {
-                Size: "S",
-                Color: "White",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "M / Black",
-              sku: "SHIRT-M-BLACK",
-              options: {
-                Size: "M",
-                Color: "Black",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "M / White",
-              sku: "SHIRT-M-WHITE",
-              options: {
-                Size: "M",
-                Color: "White",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "L / Black",
-              sku: "SHIRT-L-BLACK",
-              options: {
-                Size: "L",
-                Color: "Black",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "L / White",
-              sku: "SHIRT-L-WHITE",
-              options: {
-                Size: "L",
-                Color: "White",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "XL / Black",
-              sku: "SHIRT-XL-BLACK",
-              options: {
-                Size: "XL",
-                Color: "Black",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "XL / White",
-              sku: "SHIRT-XL-WHITE",
-              options: {
-                Size: "XL",
-                Color: "White",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
+                  amount: 99900,
+                  currency_code: "sek",
                 },
               ],
             },
@@ -588,96 +583,23 @@ export default async function seedDemoData({ container }: ExecArgs) {
           ],
         },
         {
-          title: "Medusa Sweatshirt",
+          title: "Example Desktop",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Sweatshirts")!.id,
+            categoryResult.find((cat) => cat.name === "Desktops")!.id,
           ],
-          description:
-            "Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.",
-          handle: "sweatshirt",
-          weight: 400,
+          description: "Powerful desktop workstation",
+          handle: "example-desktop",
+          weight: 5000,
           status: ProductStatus.PUBLISHED,
           shipping_profile_id: shippingProfile.id,
-          images: [
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-front.png",
-            },
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-back.png",
-            },
-          ],
-          options: [
-            {
-              title: "Size",
-              values: ["S", "M", "L", "XL"],
-            },
-          ],
           variants: [
             {
-              title: "S",
-              sku: "SWEATSHIRT-S",
-              options: {
-                Size: "S",
-              },
+              title: "Standard",
+              sku: "DESKTOP-001",
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "M",
-              sku: "SWEATSHIRT-M",
-              options: {
-                Size: "M",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "L",
-              sku: "SWEATSHIRT-L",
-              options: {
-                Size: "L",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "XL",
-              sku: "SWEATSHIRT-XL",
-              options: {
-                Size: "XL",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
+                  amount: 129900,
+                  currency_code: "sek",
                 },
               ],
             },
@@ -689,197 +611,23 @@ export default async function seedDemoData({ container }: ExecArgs) {
           ],
         },
         {
-          title: "Medusa Sweatpants",
+          title: "Example Phone",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Pants")!.id,
+            categoryResult.find((cat) => cat.name === "Phones")!.id,
           ],
-          description:
-            "Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.",
-          handle: "sweatpants",
-          weight: 400,
+          description: "Advanced smartphone with cutting-edge features",
+          handle: "example-phone",
+          weight: 200,
           status: ProductStatus.PUBLISHED,
           shipping_profile_id: shippingProfile.id,
-          images: [
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-front.png",
-            },
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-back.png",
-            },
-          ],
-          options: [
-            {
-              title: "Size",
-              values: ["S", "M", "L", "XL"],
-            },
-          ],
           variants: [
             {
-              title: "S",
-              sku: "SWEATPANTS-S",
-              options: {
-                Size: "S",
-              },
+              title: "Standard",
+              sku: "PHONE-001",
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "M",
-              sku: "SWEATPANTS-M",
-              options: {
-                Size: "M",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "L",
-              sku: "SWEATPANTS-L",
-              options: {
-                Size: "L",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "XL",
-              sku: "SWEATPANTS-XL",
-              options: {
-                Size: "XL",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-          ],
-          sales_channels: [
-            {
-              id: defaultSalesChannel[0].id,
-            },
-          ],
-        },
-        {
-          title: "Medusa Shorts",
-          category_ids: [
-            categoryResult.find((cat) => cat.name === "Merch")!.id,
-          ],
-          description:
-            "Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.",
-          handle: "shorts",
-          weight: 400,
-          status: ProductStatus.PUBLISHED,
-          shipping_profile_id: shippingProfile.id,
-          images: [
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-front.png",
-            },
-            {
-              url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-back.png",
-            },
-          ],
-          options: [
-            {
-              title: "Size",
-              values: ["S", "M", "L", "XL"],
-            },
-          ],
-          variants: [
-            {
-              title: "S",
-              sku: "SHORTS-S",
-              options: {
-                Size: "S",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "M",
-              sku: "SHORTS-M",
-              options: {
-                Size: "M",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "L",
-              sku: "SHORTS-L",
-              options: {
-                Size: "L",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
-                },
-              ],
-            },
-            {
-              title: "XL",
-              sku: "SHORTS-XL",
-              options: {
-                Size: "XL",
-              },
-              prices: [
-                {
-                  amount: 10,
-                  currency_code: "eur",
-                },
-                {
-                  amount: 15,
-                  currency_code: "usd",
+                  amount: 12990,
+                  currency_code: "sek",
                 },
               ],
             },
