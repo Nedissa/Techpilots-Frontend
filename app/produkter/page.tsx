@@ -24,9 +24,12 @@ export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    console.log('ProductsPage useEffect running');
     const loadProducts = async () => {
+      console.log('loadProducts called');
       setLoading(true);
       const fetchedProducts = await fetchProductsFromMedusa();
+      console.log('fetchedProducts result:', fetchedProducts);
       setProducts(fetchedProducts.length > 0 ? fetchedProducts : FALLBACK_PRODUCTS);
       setLoading(false);
     };
