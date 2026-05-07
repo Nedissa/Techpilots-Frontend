@@ -26,6 +26,7 @@ export interface Product {
 
 export async function fetchProductsFromMedusa(): Promise<Product[]> {
   try {
+    console.log('Fetching products from Medusa...');
     const response = await fetch(
       `${MEDUSA_API_URL}/store/products?limit=100`,
       {
@@ -35,6 +36,8 @@ export async function fetchProductsFromMedusa(): Promise<Product[]> {
         },
       }
     );
+
+    console.log('Medusa response status:', response.status);
 
     if (!response.ok) {
       console.error('Failed to fetch products from Medusa:', response.status);
