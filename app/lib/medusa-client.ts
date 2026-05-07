@@ -1,4 +1,5 @@
 const MEDUSA_API_URL = 'https://frumpy-cloud-disuse.medusajs.app';
+const PUBLISHABLE_API_KEY = 'pk_91214f8d5ac9aa3cbfee7384cd66d2d3607d6a563b7d33508c23e836adff56f9';
 
 export interface MedusaProduct {
   id: string;
@@ -30,6 +31,7 @@ export async function fetchProductsFromMedusa(): Promise<Product[]> {
       {
         headers: {
           'Content-Type': 'application/json',
+          'x-publishable-api-key': PUBLISHABLE_API_KEY,
         },
       }
     );
@@ -71,6 +73,7 @@ export async function fetchProductByHandle(handle: string): Promise<Product | nu
       {
         headers: {
           'Content-Type': 'application/json',
+          'x-publishable-api-key': PUBLISHABLE_API_KEY,
         },
       }
     );

@@ -4,5 +4,5 @@ export async function GET(
   req: MedusaRequest,
   res: MedusaResponse
 ) {
-  res.sendStatus(200);
+  res.json({ message: "Store API endpoint" });
 }
