@@ -1,0 +1,325 @@
+{
+  "products": [
+    {
+      "title": "ASUS ROG Gaming Laptop 16",
+      "handle": "asus-rog-gaming-laptop-16",
+      "description": "High-performance gaming laptop with RTX 4090",
+      "category": "Laptops",
+      "sku": "ASUS-ROG-16-001",
+      "price": 189900,
+      "currency": "sek",
+      "metadata": {
+        "processor": "Intel Core i9-13900HX",
+        "ram_gb": 32,
+        "ram_type": "DDR5",
+        "storage_gb": 1000,
+        "storage_type": "NVMe SSD",
+        "screen_size_inches": 16,
+        "screen_resolution": "2560x1600",
+        "screen_refresh_rate_hz": 240,
+        "gpu": "NVIDIA RTX 4090",
+        "gpu_vram_gb": 24,
+        "battery_life_hours": 6,
+        "weight_kg": 2.6,
+        "os": "Windows 11",
+        "warranty_months": 24,
+        "ean": "4718017970057"
+      }
+    },
+    {
+      "title": "Dell XPS 13 Plus",
+      "handle": "dell-xps-13-plus",
+      "description": "Ultra-thin premium laptop",
+      "category": "Laptops",
+      "sku": "DELL-XPS-13P-001",
+      "price": 129900,
+      "currency": "sek",
+      "metadata": {
+        "processor": "Intel Core Ultra 7",
+        "ram_gb": 16,
+        "ram_type": "LPDDR5",
+        "storage_gb": 512,
+        "storage_type": "NVMe SSD",
+        "screen_size_inches": 13.4,
+        "screen_resolution": "2560x1600",
+        "screen_refresh_rate_hz": 60,
+        "gpu": "Intel Arc",
+        "gpu_vram_gb": 2,
+        "battery_life_hours": 12,
+        "weight_kg": 1.27,
+        "os": "Windows 11",
+        "warranty_months": 12,
+        "ean": "5397184531241"
+      }
+    },
+    {
+      "title": "NZXT BLD-Ready Desktop",
+      "handle": "nzxt-bld-desktop",
+      "description": "Pre-built gaming desktop",
+      "category": "Desktops",
+      "sku": "NZXT-BLD-RTX4070-001",
+      "price": 149900,
+      "currency": "sek",
+      "metadata": {
+        "processor": "Intel Core i7-13700K",
+        "ram_gb": 32,
+        "ram_type": "DDR5",
+        "storage_gb": 1000,
+        "storage_type": "NVMe SSD",
+        "gpu": "NVIDIA RTX 4070",
+        "gpu_vram_gb": 12,
+        "motherboard": "ASUS ROG STRIX Z790-E",
+        "power_supply_w": 850,
+        "case_size": "Mid-Tower",
+        "os": "Windows 11",
+        "warranty_months": 24,
+        "ean": "4711128970013"
+      }
+    },
+    {
+      "title": "Apple Mac Studio",
+      "handle": "apple-mac-studio",
+      "description": "Professional desktop workstation",
+      "category": "Desktops",
+      "sku": "APPLE-MACSTUDIO-M2-001",
+      "price": 249900,
+      "currency": "sek",
+      "metadata": {
+        "processor": "Apple M2 Max",
+        "ram_gb": 32,
+        "ram_type": "Unified Memory",
+        "storage_gb": 512,
+        "storage_type": "SSD",
+        "gpu": "Apple GPU",
+        "gpu_vram_gb": 16,
+        "motherboard": "Apple M2 SoC",
+        "power_supply_w": 240,
+        "case_size": "Compact",
+        "os": "macOS",
+        "warranty_months": 12,
+        "ean": "194252148336"
+      }
+    },
+    {
+      "title": "Intel Core i9-13900K",
+      "handle": "intel-core-i9-13900k",
+      "description": "High-end desktop processor",
+      "category": "Components",
+      "sku": "INTEL-I9-13900K-001",
+      "price": 8990,
+      "currency": "sek",
+      "metadata": {
+        "component_type": "CPU",
+        "cores": 24,
+        "threads": 32,
+        "socket": "LGA1700",
+        "tdp_w": 253,
+        "base_clock_ghz": 3.0,
+        "boost_clock_ghz": 5.8,
+        "ean": "5032037215959"
+      }
+    },
+    {
+      "title": "NVIDIA RTX 4090",
+      "handle": "nvidia-rtx-4090",
+      "description": "Flagship graphics card",
+      "category": "Components",
+      "sku": "NVIDIA-RTX4090-001",
+      "price": 64990,
+      "currency": "sek",
+      "metadata": {
+        "component_type": "GPU",
+        "memory_gb": 24,
+        "memory_type": "GDDR6X",
+        "memory_bandwidth": "1440 GB/s",
+        "power_consumption_w": 450,
+        "cuda_cores": 16384,
+        "ean": "5060960359505"
+      }
+    },
+    {
+      "title": "Corsair Dominator Platinum RGB 32GB",
+      "handle": "corsair-dominator-32gb",
+      "description": "High-speed DDR5 RAM",
+      "category": "Components",
+      "sku": "CORSAIR-DOM-32G-DDR5-001",
+      "price": 3490,
+      "currency": "sek",
+      "metadata": {
+        "component_type": "RAM",
+        "type": "DDR5",
+        "speed_mhz": 6000,
+        "latency_cas": 30,
+        "capacity_gb": 32,
+        "voltage_v": 1.40,
+        "ean": "840006697558"
+      }
+    },
+    {
+      "title": "Samsung 990 Pro 2TB",
+      "handle": "samsung-990-pro-2tb",
+      "description": "NVMe SSD for high-speed storage",
+      "category": "Components",
+      "sku": "SAMSUNG-990PRO-2TB-001",
+      "price": 2990,
+      "currency": "sek",
+      "metadata": {
+        "component_type": "Storage",
+        "interface": "NVMe",
+        "capacity_gb": 2000,
+        "read_speed_mbps": 7100,
+        "write_speed_mbps": 6000,
+        "form_factor": "M.2",
+        "ean": "8806090843443"
+      }
+    },
+    {
+      "title": "ASUS ROG Ally X",
+      "handle": "asus-rog-ally-x",
+      "description": "Handheld gaming device",
+      "category": "Gaming",
+      "sku": "ASUS-ROG-ALLYX-001",
+      "price": 8990,
+      "currency": "sek",
+      "metadata": {
+        "processor": "AMD Ryzen Z1 Extreme",
+        "ram_gb": 24,
+        "storage_gb": 1000,
+        "screen_size_inches": 7,
+        "screen_refresh_rate_hz": 120,
+        "response_time_ms": 9,
+        "gpu": "AMD RDNA 3",
+        "gpu_tier": "High-end",
+        "battery_mah": 80,
+        "os": "Windows 11",
+        "warranty_months": 12,
+        "ean": "4711387020157"
+      }
+    },
+    {
+      "title": "iPhone 15 Pro Max",
+      "handle": "iphone-15-pro-max",
+      "description": "Latest flagship smartphone",
+      "category": "Phones",
+      "sku": "APPLE-IP15PM-001",
+      "price": 16990,
+      "currency": "sek",
+      "metadata": {
+        "screen_size_inches": 6.7,
+        "screen_type": "OLED",
+        "soc_model": "Apple A17 Pro",
+        "camera_mp_main": 48,
+        "camera_mp_front": 12,
+        "battery_mah": 4385,
+        "os_version": "iOS 17",
+        "5g_support": true,
+        "water_resistance_rating": "IP69",
+        "storage_gb": 256,
+        "ean": "194253180893"
+      }
+    },
+    {
+      "title": "Samsung Galaxy S24 Ultra",
+      "handle": "samsung-galaxy-s24-ultra",
+      "description": "Premium Android flagship",
+      "category": "Phones",
+      "sku": "SAMSUNG-S24U-001",
+      "price": 15990,
+      "currency": "sek",
+      "metadata": {
+        "screen_size_inches": 6.8,
+        "screen_type": "AMOLED",
+        "soc_model": "Snapdragon 8 Gen 3",
+        "camera_mp_main": 200,
+        "camera_mp_front": 12,
+        "battery_mah": 5000,
+        "os_version": "Android 14",
+        "5g_support": true,
+        "water_resistance_rating": "IP68",
+        "storage_gb": 256,
+        "ean": "8806095509971"
+      }
+    },
+    {
+      "title": "LG OLED65G4PUA",
+      "handle": "lg-oled65g4pua",
+      "description": "65-inch 4K OLED TV",
+      "category": "TV & HiFi",
+      "sku": "LG-OLED65G4-001",
+      "price": 79990,
+      "currency": "sek",
+      "metadata": {
+        "product_type": "TV",
+        "panel_type": "OLED",
+        "screen_size_inches": 65,
+        "resolution": "4K UHD",
+        "brightness_nits": 200,
+        "contrast_ratio": "Infinite",
+        "smart_tv_support": "webOS",
+        "refresh_rate_hz": 120,
+        "hdr_support": "Dolby Vision, HDR10",
+        "ean": "8806095560370"
+      }
+    },
+    {
+      "title": "Sonos Arc",
+      "handle": "sonos-arc",
+      "description": "Premium soundbar",
+      "category": "TV & HiFi",
+      "sku": "SONOS-ARC-001",
+      "price": 6490,
+      "currency": "sek",
+      "metadata": {
+        "product_type": "Audio",
+        "driver_size_mm": 20,
+        "frequency_range": "20Hz - 20kHz",
+        "impedance_ohms": 4,
+        "sensitivity_db": 87,
+        "power_w": 6,
+        "connectivity": "WiFi, HDMI eARC",
+        "dolby_support": "Dolby Atmos, Dolby Digital",
+        "ean": "711656033234"
+      }
+    },
+    {
+      "title": "TP-Link AXE300 WiFi 6E Router",
+      "handle": "tp-link-axe300-router",
+      "description": "WiFi 6E mesh router",
+      "category": "Network",
+      "sku": "TPLINK-AXE300-001",
+      "price": 2490,
+      "currency": "sek",
+      "metadata": {
+        "product_type": "Router",
+        "wifi_standard": "WiFi 6E",
+        "speed_mbps": 5952,
+        "coverage_area_sqm": 150,
+        "ports_count": 4,
+        "frequency_bands": "2.4GHz, 5GHz, 6GHz",
+        "security_standards": "WPA3",
+        "beam_steering": true,
+        "ean": "6935364089608"
+      }
+    },
+    {
+      "title": "Netgear Nighthawk M6 Pro",
+      "handle": "netgear-nighthawk-m6-pro",
+      "description": "WiFi 6 mesh extender",
+      "category": "Network",
+      "sku": "NETGEAR-M6PRO-001",
+      "price": 1990,
+      "currency": "sek",
+      "metadata": {
+        "product_type": "Extender",
+        "wifi_standard": "WiFi 6",
+        "speed_mbps": 3000,
+        "coverage_area_sqm": 120,
+        "ports_count": 1,
+        "frequency_bands": "2.4GHz, 5GHz",
+        "security_standards": "WPA3",
+        "beam_steering": true,
+        "ean": "606449140826"
+      }
+    }
+  ]
+}

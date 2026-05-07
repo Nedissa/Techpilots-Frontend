@@ -11,6 +11,7 @@ export function Header() {
           <Link href="/produkter" className="hover:text-blue-600">Produkter</Link>
           <Link href="/kategorier/laptops" className="hover:text-blue-600">Laptops</Link>
           <Link href="/kategorier/komponenter" className="hover:text-blue-600">Komponenter</Link>
+          <Link href="/kategorier/natwerk" className="hover:text-blue-600">Nätverk</Link>
         </nav>
         <div className="flex gap-4">
           <Link href="/varukorg" className="text-2xl">🛒</Link>

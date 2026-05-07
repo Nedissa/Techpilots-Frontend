@@ -226,6 +226,54 @@ const MENU_DATA: MenuCategory[] = [
     ],
   },
   {
+    id: 'natverk',
+    title: 'Nätverk',
+    url: '/kategori/natverk',
+    items: [
+      {
+        id: 'accesspunkter',
+        title: 'Accesspunkter',
+        url: '/produktserier/accesspunkter',
+        icon: <ProcessorIcon />,
+        items: [
+          { id: 'wifi6', title: 'WiFi 6', url: '/produktserier/wifi6-accesspunkter' },
+          { id: 'wifi7', title: 'WiFi 7', url: '/produktserier/wifi7-accesspunkter' },
+        ],
+      },
+      {
+        id: 'natsverksforlangarе',
+        title: 'Nätverksförlängare',
+        url: '/produktserier/natsverksforlangarе',
+        icon: <ProcessorIcon />,
+        items: [
+          { id: 'wifi-forlangarе', title: 'WiFi-förlängare', url: '/produktserier/wifi-forlangarе' },
+          { id: 'mesh-forlangarе', title: 'Mesh-förlängare', url: '/produktserier/mesh-forlangarе' },
+        ],
+      },
+      {
+        id: 'routrar',
+        title: 'Routrar',
+        url: '/produktserier/routrar',
+        icon: <ProcessorIcon />,
+        items: [
+          { id: 'wifi6-routrar', title: 'WiFi 6 Routrar', url: '/produktserier/wifi6-routrar' },
+          { id: 'wifi7-routrar', title: 'WiFi 7 Routrar', url: '/produktserier/wifi7-routrar' },
+          { id: 'gaming-routrar', title: 'Gaming Routrar', url: '/produktserier/gaming-routrar' },
+        ],
+      },
+      {
+        id: 'mesh',
+        title: 'Mesh Nätverk',
+        url: '/produktserier/mesh-natverk',
+        icon: <ProcessorIcon />,
+        items: [
+          { id: 'mesh-wifi6', title: 'Mesh WiFi 6', url: '/produktserier/mesh-wifi6' },
+          { id: 'mesh-wifi7', title: 'Mesh WiFi 7', url: '/produktserier/mesh-wifi7' },
+        ],
+      },
+    ],
+  },
+  {
     id: 'tv-hifi',
     title: 'TV & HiFi',
     url: '/kategori/tv-hifi',

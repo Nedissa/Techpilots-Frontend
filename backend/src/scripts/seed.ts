@@ -370,160 +370,29 @@ export default async function seedDemoData({ container }: ExecArgs) {
   });
   logger.info("Finished seeding publishable API key data.");
 
-  logger.info("Seeding product data...");
+  logger.info("Seeding product categories and attributes...");
 
   const { result: categoryResult } = await createProductCategoriesWorkflow(
     container
   ).run({
     input: {
       product_categories: [
-        {
-          name: "Laptops",
-          is_active: true,
-        },
-        {
-          name: "Desktops",
-          is_active: true,
-        },
-        {
-          name: "Components",
-          is_active: true,
-        },
-        {
-          name: "Gaming",
-          is_active: true,
-        },
-        {
-          name: "Phones",
-          is_active: true,
-        },
-        {
-          name: "TV & HiFi",
-          is_active: true,
-        },
-        {
-          name: "Network",
-          is_active: true,
-        },
+        // Huvudkategorier
+        { name: "Datorer & Tillbehör", is_active: true },
+        { name: "Datorkomponenter", is_active: true },
+        { name: "Gaming", is_active: true },
+        { name: "Mobiltelefoner", is_active: true },
+        { name: "TV & HiFi", is_active: true },
+        // Underkategorier
+        { name: "Bärbara datorer", is_active: true },
+        { name: "Stationära Datorer", is_active: true },
+        { name: "Datortillbehör", is_active: true },
+        { name: "Komponenter", is_active: true },
+        { name: "Gaming Bärbara datorer", is_active: true },
+        { name: "Gaming Stationär dator", is_active: true },
       ],
     },
   });
 
-
-  await createProductsWorkflow(container).run({
-    input: {
-      products: [
-        {
-          title: "Example Laptop",
-          category_ids: [
-            categoryResult.find((cat) => cat.name === "Laptops")!.id,
-          ],
-          description: "High-performance laptop with latest specifications",
-          handle: "example-laptop",
-          weight: 1800,
-          status: ProductStatus.PUBLISHED,
-          shipping_profile_id: shippingProfile.id,
-          variants: [
-            {
-              title: "Standard",
-              sku: "LAPTOP-001",
-              prices: [
-                {
-                  amount: 99900,
-                  currency_code: "sek",
-                },
-              ],
-            },
-          ],
-          sales_channels: [
-            {
-              id: defaultSalesChannel[0].id,
-            },
-          ],
-        },
-        {
-          title: "Example Desktop",
-          category_ids: [
-            categoryResult.find((cat) => cat.name === "Desktops")!.id,
-          ],
-          description: "Powerful desktop workstation",
-          handle: "example-desktop",
-          weight: 5000,
-          status: ProductStatus.PUBLISHED,
-          shipping_profile_id: shippingProfile.id,
-          variants: [
-            {
-              title: "Standard",
-              sku: "DESKTOP-001",
-              prices: [
-                {
-                  amount: 129900,
-                  currency_code: "sek",
-                },
-              ],
-            },
-          ],
-          sales_channels: [
-            {
-              id: defaultSalesChannel[0].id,
-            },
-          ],
-        },
-        {
-          title: "Example Phone",
-          category_ids: [
-            categoryResult.find((cat) => cat.name === "Phones")!.id,
-          ],
-          description: "Advanced smartphone with cutting-edge features",
-          handle: "example-phone",
-          weight: 200,
-          status: ProductStatus.PUBLISHED,
-          shipping_profile_id: shippingProfile.id,
-          variants: [
-            {
-              title: "Standard",
-              sku: "PHONE-001",
-              prices: [
-                {
-                  amount: 12990,
-                  currency_code: "sek",
-                },
-              ],
-            },
-          ],
-          sales_channels: [
-            {
-              id: defaultSalesChannel[0].id,
-            },
-          ],
-        },
-      ],
-    },
-  });
-  logger.info("Finished seeding product data.");
-
-  logger.info("Seeding inventory levels.");
-
-  const { data: inventoryItems } = await query.graph({
-    entity: "inventory_item",
-    fields: ["id"],
-  });
-
-  const inventoryLevels: CreateInventoryLevelInput[] = [];
-  for (const inventoryItem of inventoryItems) {
-    const inventoryLevel = {
-      location_id: stockLocation.id,
-      stocked_quantity: 1000000,
-      inventory_item_id: inventoryItem.id,
-    };
-    inventoryLevels.push(inventoryLevel);
-  }
-
-  await createInventoryLevelsWorkflow(container).run({
-    input: {
-      inventory_levels: inventoryLevels,
-    },
-  });
-
-  logger.info("Finished seeding inventory levels data.");
+  logger.info("Finished seeding product categories and attributes.");
 }
