@@ -1,15 +1,22 @@
 {
-  "name": "techpilots",
+  "name": "techpilots-monorepo",
   "version": "1.0.0",
+  "description": "TechPilots monorepo - frontend and backend",
   "private": true,
   "workspaces": [
     "apps/frontend",
     "apps/backend/src"
   ],
   "scripts": {
-    "dev:frontend": "cd apps/frontend && npm run dev",
-    "dev:backend": "cd apps/backend/src && npm run dev",
-    "build:frontend": "cd apps/frontend && npm run build",
-    "build:backend": "cd apps/backend/src && npm run build"
+    "dev:frontend": "npm run dev -w apps/frontend",
+    "dev:backend": "npm run dev -w apps/backend/src",
+    "build:frontend": "npm run build -w apps/frontend",
+    "build:backend": "npm run build -w apps/backend/src"
+  },
+  "dependencies": {
+    "@medusajs/admin-sdk": "2.14.1",
+    "@medusajs/cli": "2.14.1",
+    "@medusajs/framework": "2.14.1",
+    "@medusajs/medusa": "2.14.1"
   }
 }
