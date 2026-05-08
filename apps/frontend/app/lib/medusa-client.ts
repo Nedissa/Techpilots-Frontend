@@ -1,5 +1,5 @@
 const MEDUSA_API_URL = 'https://techpilots.medusajs.app';
-const PUBLISHABLE_API_KEY = 'pk_28a7e81fa3c5143763dab1cd7dab06c13e477e3bc9811b0ac4f32fdf39f2ace7';
+const PUBLISHABLE_API_KEY = 'pk_ab6e93368dc9440a191c0540f0ab9227b81f916924bc422b654c61d371652e29';
 
 export interface MedusaProduct {
   id: string;

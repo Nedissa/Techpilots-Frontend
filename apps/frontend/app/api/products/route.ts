@@ -4,7 +4,7 @@ export async function GET() {
       'https://techpilots.medusajs.app/store/products?limit=100',
       {
         headers: {
-          'x-publishable-api-key': 'pk_28a7e81fa3c5143763dab1cd7dab06c13e477e3bc9811b0ac4f32fdf39f2ace7',
+          'x-publishable-api-key': 'pk_ab6e93368dc9440a191c0540f0ab9227b81f916924bc422b654c61d371652e29',
         },
       }
     );
