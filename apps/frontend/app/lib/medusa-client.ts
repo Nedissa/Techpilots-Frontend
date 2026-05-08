@@ -1,4 +1,4 @@
-const MEDUSA_API_URL = 'https://frumpy-cloud-disuse.medusajs.app';
+const MEDUSA_API_URL = 'https://absorbed-basket-practise.medusajs.app';
 const PUBLISHABLE_API_KEY = 'pk_91214f8d5ac9aa3cbfee7384cd66d2d3607d6a563b7d33508c23e836adff56f9';
 
 export interface MedusaProduct {
