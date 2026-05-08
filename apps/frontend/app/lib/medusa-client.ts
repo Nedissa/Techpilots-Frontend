@@ -1,4 +1,4 @@
-const MEDUSA_API_URL = 'https://absorbed-basket-practise.medusajs.app';
+const MEDUSA_API_URL = 'https://techpilots.medusajs.app';
 const PUBLISHABLE_API_KEY = 'pk_28a7e81fa3c5143763dab1cd7dab06c13e477e3bc9811b0ac4f32fdf39f2ace7';
 
 export interface MedusaProduct {

@@ -1,7 +1,7 @@
 export async function GET() {
   try {
     const response = await fetch(
-      'https://absorbed-basket-practise.medusajs.app/store/products?limit=100',
+      'https://techpilots.medusajs.app/store/products?limit=100',
       {
         headers: {
           'Content-Type': 'application/json',
