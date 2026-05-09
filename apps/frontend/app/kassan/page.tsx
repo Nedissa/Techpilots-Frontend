@@ -160,7 +160,7 @@ export default function Checkout() {
     }
   }, []);
 
-  const shippingCost = shippingMethod === 'express' ? 199 : 0;
+  const shippingCost = shippingMethod === 'express' ? 99 : 0;
   const totalDiscount = cartItems.reduce((total, item) => {
     if (item.originalPrice) {
       return total + ((item.originalPrice - item.price) * item.quantity);
@@ -505,7 +505,7 @@ export default function Checkout() {
                     <p className="font-medium">Expressfrakt</p>
                     <p className="text-sm text-gray-600">Leverans nästa arbetsdag (beställ före 12:00)</p>
                   </div>
-                  <span className="font-semibold">199 SEK</span>
+                  <span className="font-semibold">99 SEK</span>
                 </label>
               </div>
             </section>
