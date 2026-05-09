@@ -13,6 +13,13 @@ interface CartItem {
   image?: string;
 }
 
+declare global {
+  interface Window {
+    initGoogleMapsAutocomplete?: () => void;
+    google?: any;
+  }
+}
+
 export default function Checkout() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartTotal, setCartTotal] = useState(0);
