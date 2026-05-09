@@ -50,7 +50,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className=" p-6 rounded-lg">
                 <div className="mb-4">
-                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                   </svg>
                 </div>
@@ -59,7 +59,7 @@ export default function AboutPage() {
               </div>
               <div className=" p-6 rounded-lg">
                 <div className="mb-4">
-                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
                   </svg>
                 </div>
@@ -68,7 +68,7 @@ export default function AboutPage() {
               </div>
               <div className=" p-6 rounded-lg">
                 <div className="mb-4">
-                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12h-8v2h8v-2zm0-3h-8v2h8V11zm0-3H4V6h14v2z"/>
                   </svg>
                 </div>
