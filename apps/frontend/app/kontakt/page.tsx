@@ -121,7 +121,7 @@ export default function ContactPage() {
                 <div className="border-l-4 border-black pl-4">
                   <h3 className="font-bold mb-2 text-lg">Adress</h3>
                   <p className="text-gray-700">
-                    TechPilots AB<br />
+                    Techpilots AB<br />
                     Skogshyddegatan 37<br />
                     506 31 Borås<br />
                     Sverige
