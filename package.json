@@ -19,5 +19,8 @@
     "@medusajs/framework": "2.14.1",
     "@medusajs/medusa": "2.14.1",
     "nodemailer": "^8.0.7"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.0"
   }
 }
