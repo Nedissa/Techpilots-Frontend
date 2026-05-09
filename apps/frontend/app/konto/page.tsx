@@ -81,19 +81,27 @@ export default function AccountPage() {
     document.head.appendChild(script);
 
     script.onload = () => {
-      if ((window as any).google && addressInputRef.current) {
-        const autocomplete = new (window as any).google.maps.places.Autocomplete(addressInputRef.current, {
-          types: ['geocode'],
-          componentRestrictions: { country: 'se' }
-        });
+      try {
+        if ((window as any).google && addressInputRef.current) {
+          const autocomplete = new (window as any).google.maps.places.Autocomplete(addressInputRef.current, {
+            types: ['geocode'],
+            componentRestrictions: { country: 'se' }
+          });
 
-        autocomplete.addListener('place_changed', () => {
-          const place = autocomplete.getPlace();
-          if (place.formatted_address) {
-            setEditAddress(place.formatted_address);
-          }
-        });
+          autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            if (place.formatted_address) {
+              setEditAddress(place.formatted_address);
+            }
+          });
+        }
+      } catch (error) {
+        console.warn('Google Places Autocomplete failed to initialize:', error);
       }
+    };
+
+    script.onerror = () => {
+      console.warn('Failed to load Google Maps API');
     };
 
     return () => {
