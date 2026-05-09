@@ -11,6 +11,7 @@ interface CartItem {
   price: number;
   originalPrice?: number;
   quantity: number;
+  image?: string;
 }
 
 export function CartAside() {
@@ -46,7 +47,7 @@ export function CartAside() {
   useEffect(() => {
     const handleAddToCart = (event: Event) => {
       const customEvent = event as CustomEvent;
-      const { id, title, price, originalPrice, quantity } = customEvent.detail;
+      const { id, title, price, originalPrice, quantity, image } = customEvent.detail;
       const priceNum = typeof price === 'string' ? parseInt(price) : price;
       const originalPriceNum = originalPrice ? (typeof originalPrice === 'string' ? parseInt(originalPrice) : originalPrice) : undefined;
 
@@ -58,7 +59,7 @@ export function CartAside() {
             item.id === id ? { ...item, quantity: item.quantity + (quantity || 1) } : item
           );
         } else {
-          updated = [...prev, { id, title, price: priceNum, originalPrice: originalPriceNum, quantity: quantity || 1 }];
+          updated = [...prev, { id, title, price: priceNum, originalPrice: originalPriceNum, quantity: quantity || 1, image }];
         }
         // Save to localStorage
         sessionStorage.setItem('cartItems', JSON.stringify(updated));
@@ -172,11 +173,19 @@ export function CartAside() {
                 {cartItems.map(item => (
                   <li key={item.id} className="border-b border-gray-200 last:border-b-0">
                     <div className="grid grid-cols-12 gap-4 items-center py-4">
-                      {/* Product image placeholder */}
+                      {/* Product image */}
                       <div className="col-span-2 flex-shrink-0">
-                        <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
-                          Bild
-                        </div>
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-12 h-12 object-contain rounded"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
+                            Bild
+                          </div>
+                        )}
                       </div>
 
                       {/* Product title and availability */}

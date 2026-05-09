@@ -164,7 +164,7 @@ export function ProductCard({
       {/* Product Info */}
       <div className="flex-1 flex flex-col">
         {/* Brand */}
-        <p className="text-xs text-gray-500 font-medium mb-2 uppercase">{product.brand}</p>
+        <p className="text-xs text-gray-500 font-medium mb-2 uppercase">{product.brand || '—'}</p>
 
         {/* Title */}
         <h3 className="text-sm font-semibold text-gray-900 mb-3 leading-snug">
@@ -172,37 +172,44 @@ export function ProductCard({
         </h3>
 
         {/* Features */}
-        {config.showFeatures && product.features && product.features.length > 0 && (
+        {config.showFeatures && (
           <ul className="text-xs text-gray-600 mb-3 space-y-1">
-            {product.features.map((feature, idx) => (
-              <li key={idx} className="flex items-start gap-2">
-                <span className="text-gray-400">•</span>
-                <span>{feature}</span>
+            {product.features && product.features.length > 0 ? (
+              product.features.map((feature, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  <span className="text-gray-400">•</span>
+                  <span>{feature}</span>
+                </li>
+              ))
+            ) : (
+              <li className="flex items-start gap-2 text-gray-400">
+                <span>•</span>
+                <span>Ingen beskrivning tillagd</span>
               </li>
-            ))}
+            )}
           </ul>
         )}
 
         {/* Rating */}
-        {product.rating && (
-          <Link href={`${productLink}#reviews`} className="flex items-center gap-1 mb-3 hover:opacity-70 transition-opacity">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <span key={i} className={i < Math.floor(product.rating || 0) ? 'text-black' : 'text-gray-300'}>
-                  ★
-                </span>
-              ))}
-            </div>
-            <span className="text-xs text-gray-600">({product.reviews})</span>
-          </Link>
-        )}
+        <Link href={`${productLink}#reviews`} className="flex items-center gap-1 mb-3 hover:opacity-70 transition-opacity">
+          <div className="flex gap-0.5">
+            {[...Array(5)].map((_, i) => (
+              <span key={i} className={i < Math.floor(product.rating || 0) ? 'text-black' : 'text-gray-300'}>
+                ★
+              </span>
+            ))}
+          </div>
+          <span className="text-xs text-gray-600">({product.reviews || 0})</span>
+        </Link>
 
         {/* Price */}
         <div className="mb-3">
           <div className="flex flex-col">
-            <span className="text-lg font-bold text-gray-900">
-              {product.price.toLocaleString('sv-SE')} kr
-            </span>
+            {product.price !== undefined && (
+              <span className="text-lg font-bold text-gray-900">
+                {product.price.toLocaleString('sv-SE')} kr
+              </span>
+            )}
             {product.originalPrice && (
               <span className="text-sm text-gray-400 line-through">
                 {product.originalPrice.toLocaleString('sv-SE')} kr
@@ -212,69 +219,65 @@ export function ProductCard({
         </div>
 
         {/* Stock Status */}
-        {product.stock && (
-          <p className="text-xs text-green-600 font-semibold mb-3 flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-600 rounded-full"></span>
-            {product.stock}
-          </p>
-        )}
+        <p className={`text-xs font-semibold mb-3 flex items-center gap-2 ${product.stock ? 'text-green-600' : 'text-gray-400'}`}>
+          <span className={`w-2 h-2 rounded-full ${product.stock ? 'bg-green-600' : 'bg-gray-300'}`}></span>
+          {product.stock || 'Lagerstatusmissing'}
+        </p>
 
         {/* Color Selector */}
-        {product.colors && product.colors.length > 0 && (
-          <div className="flex gap-2 mb-3">
-            {product.colors.map((color, idx) => (
+        <div className="flex gap-2 mb-3">
+          {product.colors && product.colors.length > 0 ? (
+            product.colors.map((color, idx) => (
               <button
                 key={idx}
                 className="w-5 h-5 rounded-full border-2 border-gray-300 hover:border-gray-900 transition-colors"
                 style={{ backgroundColor: color }}
                 title={color}
               />
-            ))}
-          </div>
-        )}
+            ))
+          ) : (
+            <span className="text-xs text-gray-400">Inga färger tillagda</span>
+          )}
+        </div>
 
         {/* Button Container */}
-        {product.stock && (
-          <>
-            <div className={`mt-auto border-t border-gray-200 ${isHovered ? 'hidden' : ''}`}></div>
-            <style>{`
-              @keyframes slideUpFill {
-                from {
-                  clip-path: inset(100% 0 0 0);
-                }
-                to {
-                  clip-path: inset(0 0 0 0);
-                }
-              }
-              .button-fill {
-                animation: slideUpFill 0.3s ease-out forwards;
-              }
-            `}</style>
-            <div className={`mt-auto ${isHovered ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}>
-              <button
-              onClick={handleClick}
-              disabled={added}
-              className={`w-full py-2.5 font-semibold text-sm flex items-center justify-center gap-2 bg-black text-white ${isHovered ? 'button-fill' : ''}`}
-            >
-              {added ? (
-                <>
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
-                  Tillagd
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
-                  </svg>
-                  Lägg i varukorg
-                </>
-              )}
-              </button>
-            </div>
-          </>
-        )}
+        <div className={`mt-auto border-t border-gray-200 ${isHovered ? 'hidden' : ''}`}></div>
+        <style>{`
+          @keyframes slideUpFill {
+            from {
+              clip-path: inset(100% 0 0 0);
+            }
+            to {
+              clip-path: inset(0 0 0 0);
+            }
+          }
+          .button-fill {
+            animation: slideUpFill 0.3s ease-out forwards;
+          }
+        `}</style>
+        <div className={`transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+          <button
+            onClick={handleClick}
+            disabled={added}
+            className={`w-full py-2.5 font-semibold text-sm flex items-center justify-center gap-2 bg-black text-white hover:bg-gray-800 ${isHovered ? 'button-fill' : ''}`}
+          >
+            {added ? (
+              <>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                </svg>
+                Tillagd
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                </svg>
+                Lägg i varukorg
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

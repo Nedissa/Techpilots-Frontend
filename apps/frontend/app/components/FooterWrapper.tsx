@@ -38,8 +38,8 @@ export function FooterWrapper() {
               <h3 className="font-bold mb-3 text-sm">Information</h3>
               <ul className="space-y-1 text-sm">
                 <li><Link href="/frakt-och-leverans">Leverans</Link></li>
-                <li><Link href="/returpolicy">Betalning</Link></li>
-                <li><Link href="/villkor">Säkerhet</Link></li>
+                <li><Link href="/villkor#betalning">Betalning</Link></li>
+                <li><Link href="/villkor#dataskydd">Säkerhet</Link></li>
               </ul>
             </div>
 
@@ -58,8 +58,6 @@ export function FooterWrapper() {
               <h3 className="font-bold mb-3 text-sm">Om oss</h3>
               <ul className="space-y-1 text-sm">
                 <li><Link href="/om-oss">Vår historia</Link></li>
-                <li><a href="#">Hållbarhet</a></li>
-                <li><a href="#">Karriär</a></li>
               </ul>
             </div>
 

@@ -36,7 +36,7 @@ export function ProductSeriesContent({
   breadcrumbTrail: BreadcrumbTrail | null;
   products: Product[];
 }) {
-  const maxPrice = Math.max(...products.map(p => p.price));
+  const maxPrice = products.length > 0 ? Math.max(...products.map(p => p.price || 0)) : 20000;
 
   const [filters, setFilters] = useState<FilterOptions>({
     priceRange: [0, maxPrice],

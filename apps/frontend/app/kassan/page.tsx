@@ -10,6 +10,7 @@ interface CartItem {
   price: number;
   originalPrice?: number;
   quantity: number;
+  image?: string;
 }
 
 export default function Checkout() {
@@ -64,7 +65,7 @@ export default function Checkout() {
 
       const handleAddToCart = (event: Event) => {
         const customEvent = event as CustomEvent;
-        const { id, title, price, originalPrice, quantity } = customEvent.detail;
+        const { id, title, price, originalPrice, quantity, image } = customEvent.detail;
         const priceNum = typeof price === 'string' ? parseInt(price) : price;
         const originalPriceNum = originalPrice ? (typeof originalPrice === 'string' ? parseInt(originalPrice) : originalPrice) : undefined;
 
@@ -75,7 +76,7 @@ export default function Checkout() {
               item.id === id ? { ...item, quantity: item.quantity + (quantity || 1) } : item
             );
           }
-          return [...prev, { id, title, price: priceNum, originalPrice: originalPriceNum, quantity: quantity || 1 }];
+          return [...prev, { id, title, price: priceNum, originalPrice: originalPriceNum, quantity: quantity || 1, image }];
         });
 
         setCartTotal(prev => prev + (priceNum * (quantity || 1)));
@@ -164,9 +165,17 @@ export default function Checkout() {
               <div key={item.id} className="flex gap-3 items-center p-3 bg-gray-50 rounded">
                 {/* Product Thumbnail */}
                 <div className="flex-shrink-0">
-                  <div className="w-16 h-16 bg-white border border-gray-200 flex items-center justify-center rounded">
-                    <span className="text-gray-400 text-xs">Bild</span>
-                  </div>
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-16 h-16 object-contain rounded border border-gray-200 bg-white"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 bg-white border border-gray-200 flex items-center justify-center rounded">
+                      <span className="text-gray-400 text-xs">Bild</span>
+                    </div>
+                  )}
                 </div>
                 {/* Product Info */}
                 <div className="flex-1 min-w-0">
