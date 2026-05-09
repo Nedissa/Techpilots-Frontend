@@ -497,15 +497,20 @@ export default function Checkout() {
         <div className="bg-white p-6" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h2 className="text-lg font-bold mb-4">Orderöversikt</h2>
 
+          {/* Cart Items Header */}
+          <div className="flex justify-between text-xs font-bold text-gray-600 mb-3 pb-2 border-b border-gray-300">
+            <span>Produkt</span>
+            <span>Antal</span>
+            <span>Pris</span>
+          </div>
+
           {/* Cart Items */}
           <div className="space-y-2 mb-4 pb-4 border-b border-gray-300">
             {cartItems.map(item => (
               <div key={item.id} className="flex justify-between text-sm">
-                <div>
-                  <p className="font-medium text-gray-900">{item.title}</p>
-                  <p className="text-gray-600">{item.quantity} st</p>
-                </div>
-                <p className="font-semibold text-gray-900">
+                <p className="font-medium text-gray-900 flex-1">{item.title}</p>
+                <p className="text-gray-600 w-12 text-center">{item.quantity} st</p>
+                <p className="font-semibold text-gray-900 w-20 text-right">
                   {(item.price * item.quantity).toLocaleString('sv-SE')} SEK
                 </p>
               </div>
