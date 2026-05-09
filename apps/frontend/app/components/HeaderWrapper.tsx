@@ -325,6 +325,8 @@ export function HeaderWrapper() {
   const [cartTotal, setCartTotal] = useState(0);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [isVibrating, setIsVibrating] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const lastScrollY = useRef(0);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -347,6 +349,23 @@ export function HeaderWrapper() {
         console.error('Failed to load cart from sessionStorage', e);
       }
     }
+
+    // Check if user is logged in
+    const checkLoginStatus = () => {
+      const userData = localStorage.getItem('userData');
+      setIsLoggedIn(!!userData);
+    };
+
+    checkLoginStatus();
+    setIsHydrated(true);
+
+    // Listen for login event
+    window.addEventListener('userLogin', checkLoginStatus);
+    window.addEventListener('userLogout', checkLoginStatus);
+    return () => {
+      window.removeEventListener('userLogin', checkLoginStatus);
+      window.removeEventListener('userLogout', checkLoginStatus);
+    };
   }, []);
 
   useEffect(() => {
@@ -539,7 +558,7 @@ export function HeaderWrapper() {
             </div>
             <div className="hidden md:block w-px h-6 bg-gray-300"></div>
             <Link href="/konto" className="hidden md:flex items-center gap-2 text-black hover:text-gray-600">
-              <span className="text-xs font-semibold">Mitt konto</span>
+              <span className="text-xs font-semibold">{isHydrated && (isLoggedIn ? 'Mina sidor' : 'Logga in')}</span>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
