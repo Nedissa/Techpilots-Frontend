@@ -42,8 +42,7 @@ export async function GET() {
         'NVIDIA Graphics'
       ];
 
-      // Get sectionCategory from product collection if available
-      // Only set if product belongs to a known collection
+      // Get sectionCategory from product.collection.title
       let sectionCategory = '';
       const collectionTitle = product.collection?.title || '';
       if (collectionTitle === 'Populära produkter') sectionCategory = 'popular';
@@ -65,7 +64,7 @@ export async function GET() {
         originalPrice: originalPrice,
         image: image,
         images: (product.images?.map((img: any) => img.url) || []).slice(0, 3),
-        category: collectionTitle,
+        category: '',
         brand: ['ASUS', 'Dell', 'HP', 'Lenovo'][idx % 4],
         colors: colors,
         stock: 'I lager',

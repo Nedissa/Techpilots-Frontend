@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ProductsSection } from './components/ProductsSection';
+import { ProductCard } from './components/ProductCard';
 import { ProductBanner } from './components/ProductBanner';
 import { MainLayout } from './components/MainLayout';
 import { NewsletterPopup } from './components/NewsletterPopup';
@@ -99,10 +99,12 @@ export default async function Home() {
             <>
               {popularProducts.length > 0 && (
                 <div className="px-6">
-                  <ProductsSection
-                    variant="popular"
-                    products={popularProducts}
-                  />
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Populära produkter</h2>
+                  <div className="grid grid-cols-4 gap-6 py-6">
+                    {popularProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} variant="popular" />
+                    ))}
+                  </div>
                 </div>
               )}
               <div className="px-6">
@@ -110,18 +112,22 @@ export default async function Home() {
               </div>
               {recommendedProducts.length > 0 && (
                 <div className="px-6">
-                  <ProductsSection
-                    variant="recommended"
-                    products={recommendedProducts}
-                  />
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Rekommenderade produkter</h2>
+                  <div className="grid grid-cols-4 gap-6 py-6">
+                    {recommendedProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} variant="recommended" />
+                    ))}
+                  </div>
                 </div>
               )}
               {newProducts.length > 0 && (
                 <div className="px-6">
-                  <ProductsSection
-                    variant="new"
-                    products={newProducts}
-                  />
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Nya produkter</h2>
+                  <div className="grid grid-cols-4 gap-6 py-6">
+                    {newProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} variant="new" />
+                    ))}
+                  </div>
                 </div>
               )}
             </>

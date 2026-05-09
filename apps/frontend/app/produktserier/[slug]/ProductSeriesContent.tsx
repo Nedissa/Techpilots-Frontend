@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ProductFilter } from '@/app/components/ProductFilter';
-import { ProductCardGrid } from '@/app/components/ProductCardGrid';
+import { ProductGridWithSorting } from '@/app/components/ProductGridWithSorting';
 import { Breadcrumb } from '@/app/components/Breadcrumb';
 import { ProductData } from '@/app/components/ProductCard';
 
@@ -112,7 +112,7 @@ export function ProductSeriesContent({
               )}
             </div>
           </div>
-          <ProductCardGrid products={filteredProducts} categorySlug={categorySlug} breadcrumbTrail={breadcrumbTrail} sortBy={sortBy} variant="recommended" />
+          <ProductGridWithSorting products={filteredProducts} categorySlug={categorySlug} breadcrumbTrail={breadcrumbTrail} sortBy={sortBy} variant="recommended" />
         </div>
       </div>
     </div>

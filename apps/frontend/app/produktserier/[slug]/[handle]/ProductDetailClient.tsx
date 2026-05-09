@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Product, getCategoryTitle } from '@/app/lib/products';
 import { Breadcrumb } from '@/app/components/Breadcrumb';
 import { ImageZoomDialog } from '@/app/components/ImageZoomDialog';
-import { ProductsSection } from '@/app/components/ProductsSection';
+import { ProductCard, type ProductData } from '@/app/components/ProductCard';
+import { fetchProductsFromMedusa } from '@/app/lib/medusa-client';
 
 const COLORS = {
   'Svart': '#000000',
@@ -50,7 +51,17 @@ export default function ProductDetailClient({
   const [selectedAccessories, setSelectedAccessories] = useState<string[]>([]);
   const [isAdded, setIsAdded] = useState(false);
   const [showZoom, setShowZoom] = useState(false);
+  const [alsoLikeProducts, setAlsoLikeProducts] = useState<ProductData[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    const loadAlsoLikeProducts = async () => {
+      const products = await fetchProductsFromMedusa();
+      const filtered = products.filter((p: any) => p.sectionCategory === 'also-like');
+      setAlsoLikeProducts(filtered);
+    };
+    loadAlsoLikeProducts();
+  }, []);
 
   // Mock product details for display
   const productDetails = {
@@ -607,6 +618,17 @@ export default function ProductDetailClient({
         onClose={() => setShowZoom(false)}
       />
 
+      {/* Du kanske också gillar Section */}
+      {alsoLikeProducts.length > 0 && (
+        <div className="px-6 mt-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Du kanske också gillar</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {alsoLikeProducts.map((product) => (
+              <ProductCard key={product.id} product={product} variant="also-like" />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

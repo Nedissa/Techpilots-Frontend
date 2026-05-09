@@ -58,7 +58,7 @@ export default function ProductsPage() {
   });
 
   // Get products for "Du kanske också gillar" section
-  const alsoLikeProducts = products.filter((product) => product.category === 'also-like');
+  const alsoLikeProducts = products.filter((product) => product.sectionCategory === 'also-like');
 
   const productsPerPage = 12;
   const totalPages = Math.ceil(sorted.length / productsPerPage);

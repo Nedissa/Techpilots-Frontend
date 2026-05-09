@@ -12,7 +12,7 @@ interface BreadcrumbTrail {
   subcategoryTitle: string;
 }
 
-export function ProductCardGrid({
+export function ProductGridWithSorting({
   products,
   categorySlug,
   breadcrumbTrail,
@@ -23,7 +23,7 @@ export function ProductCardGrid({
   categorySlug?: string;
   breadcrumbTrail?: BreadcrumbTrail | null;
   sortBy?: SortOption;
-  variant?: 'popular' | 'recommended' | 'new' | 'related';
+  variant?: 'popular' | 'recommended' | 'new' | 'related' | 'also-like';
 }) {
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
   const [sortBy, setSortBy] = useState<SortOption>(externalSortBy || 'recommended');
