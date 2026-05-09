@@ -45,12 +45,12 @@ export default function ShippingPage() {
         {/* Leveranstider */}
         <section>
           <h2 className="text-2xl font-bold mb-4">Leveranstider</h2>
-          <div className="border border-gray-200 p-6 rounded-lg space-y-4">
-            <div className="flex justify-between items-center py-3 border-b border-gray-200">
+          <div className="p-6 rounded-lg space-y-4" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+            <div className="flex justify-between items-center py-3" style={{ borderBottom: '1px solid #e5e7eb' }}>
               <span className="font-semibold">I lager</span>
               <span className="text-gray-700">1-2 arbetsdagar</span>
             </div>
-            <div className="flex justify-between items-center py-3 border-b border-gray-200">
+            <div className="flex justify-between items-center py-3" style={{ borderBottom: '1px solid #e5e7eb' }}>
               <span className="font-semibold">Ej i lager (beställning från leverantör)</span>
               <span className="text-gray-700">3-5 arbetsdagar</span>
             </div>
@@ -58,7 +58,7 @@ export default function ShippingPage() {
               <span className="font-semibold">Specialorder</span>
               <span className="text-gray-700">5-10 arbetsdagar</span>
             </div>
-            <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-gray-200">
+            <p className="text-sm text-gray-600 mt-4 pt-4" style={{ borderTop: '1px solid #e5e7eb' }}>
               Leveranstider räknas från och med arbetsdagen efter beställning. Helger och helgdagar räknas inte. Leveranstiderna är vägledande och inte garanterade.
             </p>
           </div>
@@ -67,7 +67,7 @@ export default function ShippingPage() {
         {/* Leveransområden */}
         <section>
           <h2 className="text-2xl font-bold mb-6">Leveransområden</h2>
-          <div className="border border-gray-200 p-6 rounded-lg mb-4">
+          <div className="p-6 rounded-lg mb-4" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
             <p className="text-gray-700 mb-6">
               Vi skickar till hela Sverige utan extra kostnad. För leverans till övriga Norden kan vi erbjuda priser på förfrågan.
             </p>
@@ -92,7 +92,7 @@ export default function ShippingPage() {
                 </ul>
               </div>
             </div>
-            <p className="text-sm text-gray-600 mt-6 pt-6 border-t border-gray-200">
+            <p className="text-sm text-gray-600 mt-6 pt-6" style={{ borderTop: '1px solid #e5e7eb' }}>
               Kontakta oss för priser på internationell leverans: +46 10 880 09 81 eller support@techpilots.se
             </p>
           </div>
@@ -102,7 +102,7 @@ export default function ShippingPage() {
         <section>
           <h2 className="text-2xl font-bold mb-6">Spåra din beställning</h2>
           <div className="space-y-4">
-            <div className="flex gap-4 pb-4 border-b border-gray-200">
+            <div className="flex gap-4 pb-4" style={{ borderBottom: '1px solid #e5e7eb' }}>
               <span className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-full flex-shrink-0 font-bold text-sm">1</span>
               <div>
                 <h4 className="font-bold mb-1">Logga in på ditt konto</h4>
@@ -110,7 +110,7 @@ export default function ShippingPage() {
               </div>
             </div>
 
-            <div className="flex gap-4 pb-4 border-b border-gray-200">
+            <div className="flex gap-4 pb-4" style={{ borderBottom: '1px solid #e5e7eb' }}>
               <span className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-full flex-shrink-0 font-bold text-sm">2</span>
               <div>
                 <h4 className="font-bold mb-1">Hitta din beställning</h4>
