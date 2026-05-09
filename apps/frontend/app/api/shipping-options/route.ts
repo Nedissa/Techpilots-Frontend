@@ -1,7 +1,7 @@
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const cartId = searchParams.get('cart_id');
+    const country = searchParams.get('country') || 'se';
 
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
 
@@ -12,15 +12,8 @@ export async function GET(request: Request) {
       );
     }
 
-    if (!cartId) {
-      return Response.json(
-        { error: 'cart_id is required' },
-        { status: 400 }
-      );
-    }
-
     const url = new URL('https://techpilots.medusajs.app/store/shipping-options');
-    url.searchParams.set('cart_id', cartId);
+    url.searchParams.set('is_return', 'false');
 
     const response = await fetch(url.toString(), {
       method: 'GET',
@@ -40,7 +33,18 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    return Response.json(data);
+
+    // Filter shipping options by country
+    const filteredOptions = data.shipping_options?.filter((option: any) => {
+      // Check if the shipping option is available for the selected country
+      return option.service_zone?.geo_zones?.some((zone: any) =>
+        zone.country_code === country.toLowerCase()
+      );
+    }) || [];
+
+    return Response.json({
+      shipping_options: filteredOptions
+    });
   } catch (error) {
     console.error('Shipping options error:', error);
     return Response.json(

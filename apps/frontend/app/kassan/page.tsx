@@ -37,6 +37,8 @@ export default function Checkout() {
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [shippingOptions, setShippingOptions] = useState<any[]>([]);
+  const [loadingShipping, setLoadingShipping] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
   const shippingAddressInputRef = useRef<HTMLInputElement>(null);
 
@@ -169,12 +171,33 @@ export default function Checkout() {
   }, 0);
   const finalTotal = cartTotal + shippingCost;
 
+  const fetchShippingOptions = async (country: string) => {
+    setLoadingShipping(true);
+    try {
+      const response = await fetch(`/api/shipping-options?country=${country}`);
+      const data = await response.json();
+      if (data.shipping_options) {
+        setShippingOptions(data.shipping_options);
+        setShippingMethod(data.shipping_options[0]?.id || 'standard');
+      }
+    } catch (error) {
+      console.error('Failed to fetch shipping options:', error);
+      setShippingOptions([]);
+    } finally {
+      setLoadingShipping(false);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
+
+    if (name === 'country') {
+      fetchShippingOptions(value);
+    }
 
     if (name === 'useShippingAddress' && !(e.target as HTMLInputElement).checked) {
       setFormData(prev => ({
@@ -476,38 +499,33 @@ export default function Checkout() {
             {/* Shipping Method */}
             <section>
               <h2 className="text-2xl font-bold mb-6">Frakt</h2>
-              <div className="space-y-3">
-                <label className="flex items-center gap-4 p-4 border border-gray-300 cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="radio"
-                    name="shippingMethod"
-                    value="standard"
-                    checked={shippingMethod === 'standard'}
-                    onChange={(e) => setShippingMethod(e.target.value)}
-                    className="w-4 h-4"
-                  />
-                  <div className="flex-1">
-                    <p className="font-medium">Standardfrakt</p>
-                    <p className="text-sm text-gray-600">Leverans 1-3 arbetsdagar inom Sverige</p>
-                  </div>
-                  <span className="font-semibold">Gratis</span>
-                </label>
-                <label className="flex items-center gap-4 p-4 border border-gray-300 cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="radio"
-                    name="shippingMethod"
-                    value="express"
-                    checked={shippingMethod === 'express'}
-                    onChange={(e) => setShippingMethod(e.target.value)}
-                    className="w-4 h-4"
-                  />
-                  <div className="flex-1">
-                    <p className="font-medium">Expressfrakt</p>
-                    <p className="text-sm text-gray-600">Leverans nästa arbetsdag (beställ före 12:00)</p>
-                  </div>
-                  <span className="font-semibold">99 SEK</span>
-                </label>
-              </div>
+              {loadingShipping ? (
+                <p className="text-gray-600">Laddar fraktalternativ...</p>
+              ) : shippingOptions.length > 0 ? (
+                <div className="space-y-3">
+                  {shippingOptions.map((option) => (
+                    <label key={option.id} className="flex items-center gap-4 p-4 border border-gray-300 cursor-pointer hover:bg-gray-50">
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={option.id}
+                        checked={shippingMethod === option.id}
+                        onChange={(e) => setShippingMethod(e.target.value)}
+                        className="w-4 h-4"
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium">{option.name}</p>
+                        <p className="text-sm text-gray-600">{option.data?.description || 'Leveransalternativ'}</p>
+                      </div>
+                      <span className="font-semibold">
+                        {option.amount ? `${(option.amount / 100).toFixed(2)} SEK` : 'Gratis'}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-600">Ingen frakt tillgänglig för detta land</p>
+              )}
             </section>
 
 
