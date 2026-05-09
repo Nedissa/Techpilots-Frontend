@@ -18,13 +18,7 @@ export default function RootLayout({
     <html lang="sv" style={{ scrollbarGutter: 'stable' }}>
       <body className="bg-white flex flex-col min-h-screen">
         <RootLayoutClient>
-          <HeaderWrapper />
-          <main className="py-4 pb-24 flex justify-center flex-1 min-h-screen">
-            <div className="w-full max-w-[1280px]">
-              {children}
-            </div>
-          </main>
-          <FooterWrapper />
+          {children}
         </RootLayoutClient>
       </body>
     </html>
