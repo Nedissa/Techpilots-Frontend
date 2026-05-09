@@ -11,6 +11,7 @@ const autofillStyles = `
   input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px white inset !important;
     box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: #000 !important;
   }
 `;
 
