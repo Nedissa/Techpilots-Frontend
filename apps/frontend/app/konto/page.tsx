@@ -69,47 +69,6 @@ export default function AccountPage() {
     setIsEditing(false);
   };
 
-  // Initialize Google Places Autocomplete
-  useEffect(() => {
-    if (!isEditing || !addressInputRef.current) return;
-
-    // Load Google Maps API script
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBVOx1h5lQKkhw2SWhv7T8EpEhDIPqm0Zc&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-
-    script.onload = () => {
-      try {
-        if ((window as any).google && addressInputRef.current) {
-          const autocomplete = new (window as any).google.maps.places.Autocomplete(addressInputRef.current, {
-            types: ['geocode'],
-            componentRestrictions: { country: 'se' }
-          });
-
-          autocomplete.addListener('place_changed', () => {
-            const place = autocomplete.getPlace();
-            if (place.formatted_address) {
-              setEditAddress(place.formatted_address);
-            }
-          });
-        }
-      } catch (error) {
-        console.warn('Google Places Autocomplete failed to initialize:', error);
-      }
-    };
-
-    script.onerror = () => {
-      console.warn('Failed to load Google Maps API');
-    };
-
-    return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-    };
-  }, [isEditing]);
 
 
   if (isLoading) {
