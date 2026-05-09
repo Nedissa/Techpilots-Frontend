@@ -181,10 +181,10 @@ export function CartAside() {
                           <img
                             src={item.image}
                             alt={item.title}
-                            className="w-12 h-12 object-contain rounded"
+                            className="w-16 h-16 object-contain rounded"
                           />
                         ) : (
-                          <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
+                          <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
                             Bild
                           </div>
                         )}
@@ -231,7 +231,7 @@ export function CartAside() {
                       {/* Price and remove */}
                       <div className="col-span-3 flex flex-col items-end gap-2">
                         <p className="text-sm font-semibold text-gray-900">
-                          {(item.price * item.quantity).toLocaleString('sv-SE')} SEK
+                          {(item.price * item.quantity).toLocaleString('sv-SE')} kr
                         </p>
                         <button
                           onClick={() => handleRemoveItem(item.id)}
@@ -253,7 +253,7 @@ export function CartAside() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Delsumma</span>
-                  <span className="text-gray-900">{cartTotal.toLocaleString('sv-SE')} SEK</span>
+                  <span className="text-gray-900">{cartTotal.toLocaleString('sv-SE')} kr</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Frakt från</span>
@@ -262,12 +262,12 @@ export function CartAside() {
                 {calculateTotalDiscount() > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-green-600">Total rabatt</span>
-                    <span className="text-green-600 font-semibold">-{calculateTotalDiscount().toLocaleString('sv-SE')} SEK</span>
+                    <span className="text-green-600 font-semibold">-{calculateTotalDiscount().toLocaleString('sv-SE')} kr</span>
                   </div>
                 )}
                 <div className="flex justify-between text-base font-bold pt-2">
                   <span className="text-gray-900">Summa</span>
-                  <span className="text-gray-900">{cartTotal.toLocaleString('sv-SE')} SEK</span>
+                  <span className="text-gray-900">{cartTotal.toLocaleString('sv-SE')} kr</span>
                 </div>
               </div>
 
