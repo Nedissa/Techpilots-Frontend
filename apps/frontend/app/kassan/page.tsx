@@ -129,11 +129,6 @@ export default function Checkout() {
   }, []);
 
   useEffect(() => {
-    // Fetch initial shipping options for default country
-    fetchShippingOptions(formData.country);
-  }, []);
-
-  useEffect(() => {
     // Check if coming from quick checkout (Handla nu button)
     const quickCheckout = localStorage.getItem('quickCheckout');
     if (quickCheckout) {
@@ -243,7 +238,7 @@ export default function Checkout() {
       <div className="flex justify-center pt-12 pb-16">
       <div className="w-full max-w-[800px] flex flex-col gap-12">
         {/* Cart Items Section */}
-        <section className="bg-white p-6 border border-gray-200" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <section className="bg-white p-6" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h2 className="text-xl font-bold mb-4">Din beställning</h2>
           <div className="space-y-3">
             {cartItems.map(item => (
@@ -254,7 +249,7 @@ export default function Checkout() {
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-16 h-16 object-contain rounded border border-gray-200 bg-white"
+                      className="w-16 h-16 object-contain rounded bg-white"
                     />
                   ) : (
                     <div className="w-16 h-16 bg-white border border-gray-200 flex items-center justify-center rounded">
@@ -323,7 +318,7 @@ export default function Checkout() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="bg-white p-6 border border-gray-200 space-y-8" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+          <form onSubmit={handleSubmit} className="bg-white p-6 space-y-8" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
             {/* Shipping Information */}
             <section>
               <h2 className="text-2xl font-bold mb-6">Leveransadress</h2>
@@ -336,7 +331,8 @@ export default function Checkout() {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                   <input
                     type="text"
@@ -345,7 +341,8 @@ export default function Checkout() {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 </div>
                 {customerType === 'business' && (
@@ -356,7 +353,8 @@ export default function Checkout() {
                     value={formData.companyName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 )}
                 <input
@@ -366,7 +364,8 @@ export default function Checkout() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                  className="w-full px-4 py-3 focus:outline-none"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <input
                   type="tel"
@@ -375,7 +374,8 @@ export default function Checkout() {
                   value={formData.phone}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                  className="w-full px-4 py-3 focus:outline-none"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <input
                   ref={addressInputRef}
@@ -385,7 +385,8 @@ export default function Checkout() {
                   value={formData.address}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                  className="w-full px-4 py-3 focus:outline-none"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <div className="grid grid-cols-2 gap-4">
                   <input
@@ -395,7 +396,8 @@ export default function Checkout() {
                     value={formData.postalCode}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                   <input
                     type="text"
@@ -404,7 +406,8 @@ export default function Checkout() {
                     value={formData.city}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 </div>
               </div>
@@ -418,7 +421,7 @@ export default function Checkout() {
               ) : shippingOptions.length > 0 ? (
                 <div className="space-y-3">
                   {shippingOptions.map((option) => (
-                    <label key={option.id} className="flex items-center gap-4 p-4 border border-gray-300 cursor-pointer hover:bg-gray-50">
+                    <label key={option.id} className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                       <input
                         type="radio"
                         name="shippingMethod"
@@ -440,7 +443,10 @@ export default function Checkout() {
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-600">Ingen frakt tillgänglig för detta land</p>
+                <div className="p-4 bg-gray-50 rounded text-center" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+                  <p className="text-gray-600 mb-2">Fraktalternativ visas när du fyller i din leveransadress</p>
+                  <p className="text-sm text-gray-500">Börja skriva din adress ovan för att se tillgängliga frakter</p>
+                </div>
               )}
             </section>
 
@@ -464,7 +470,7 @@ export default function Checkout() {
 
 
         {/* Order Summary */}
-        <div className="bg-white p-6 border border-gray-200" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <div className="bg-white p-6" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h2 className="text-lg font-bold mb-4">Orderöversikt</h2>
 
           {/* Cart Items */}
@@ -473,7 +479,7 @@ export default function Checkout() {
               <div key={item.id} className="flex justify-between text-sm">
                 <div>
                   <p className="font-medium text-gray-900">{item.title}</p>
-                  <p className="text-gray-600">Qty: {item.quantity}</p>
+                  <p className="text-gray-600">{item.quantity} st</p>
                 </div>
                 <p className="font-semibold text-gray-900">
                   {(item.price * item.quantity).toLocaleString('sv-SE')} SEK
@@ -484,11 +490,6 @@ export default function Checkout() {
 
           {/* Order Summary */}
           <div className="space-y-3">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Delsumma</span>
-              <span className="text-gray-900">{cartTotal.toLocaleString('sv-SE')} SEK</span>
-            </div>
-
             {totalDiscount > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-green-600">Rabatt</span>
