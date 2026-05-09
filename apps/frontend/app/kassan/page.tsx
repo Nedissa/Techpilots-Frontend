@@ -9,8 +9,8 @@ const autofillStyles = `
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #d1d5db inset !important;
-    box-shadow: 0 0 0 30px #d1d5db inset !important;
+    -webkit-box-shadow: 0 0 0 30px #f3f4f6 inset !important;
+    box-shadow: 0 0 0 30px #f3f4f6 inset !important;
     -webkit-text-fill-color: #000 !important;
   }
 `;
@@ -355,7 +355,7 @@ export default function Checkout() {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.firstName ? 'bg-gray-300' : 'bg-white'}`}
+                    className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.firstName ? 'bg-gray-100' : 'bg-white'}`}
                     style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                   <input
