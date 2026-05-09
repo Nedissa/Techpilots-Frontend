@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { MainLayout } from '../components/MainLayout';
 
@@ -37,6 +37,79 @@ export default function Checkout() {
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
+  const addressInputRef = useRef<HTMLInputElement>(null);
+  const shippingAddressInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Load Google Maps Places API script
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      if (addressInputRef.current && (window as any).google?.maps?.places) {
+        const autocomplete = new (window as any).google.maps.places.Autocomplete(addressInputRef.current, {
+          componentRestrictions: { country: 'se' },
+          types: ['address']
+        });
+
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.geometry && place.address_components) {
+            const addressComponents = place.address_components;
+            const address = place.formatted_address || addressInputRef.current!.value;
+            const streetAddress = addressComponents.find((c: any) => c.types.includes('route'))?.long_name || '';
+            const streetNumber = addressComponents.find((c: any) => c.types.includes('street_number'))?.long_name || '';
+            const postalCode = addressComponents.find((c: any) => c.types.includes('postal_code'))?.long_name || '';
+            const city = addressComponents.find((c: any) => c.types.includes('locality'))?.long_name || '';
+
+            setFormData(prev => ({
+              ...prev,
+              address: `${streetAddress} ${streetNumber}`.trim() || address,
+              postalCode,
+              city
+            }));
+          }
+        });
+      }
+    };
+
+    script.onerror = () => {
+      console.warn('Google Maps API failed to load');
+    };
+
+    document.head.appendChild(script);
+  }, []);
+
+  useEffect(() => {
+    // Setup autocomplete for shipping address
+    if (formData.useShippingAddress && shippingAddressInputRef.current && (window as any).google?.maps?.places) {
+      const autocomplete = new (window as any).google.maps.places.Autocomplete(shippingAddressInputRef.current, {
+        componentRestrictions: { country: 'se' },
+        types: ['address']
+      });
+
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (place.geometry && place.address_components) {
+          const addressComponents = place.address_components;
+          const address = place.formatted_address || shippingAddressInputRef.current!.value;
+          const streetAddress = addressComponents.find((c: any) => c.types.includes('route'))?.long_name || '';
+          const streetNumber = addressComponents.find((c: any) => c.types.includes('street_number'))?.long_name || '';
+          const postalCode = addressComponents.find((c: any) => c.types.includes('postal_code'))?.long_name || '';
+          const city = addressComponents.find((c: any) => c.types.includes('locality'))?.long_name || '';
+
+          setFormData(prev => ({
+            ...prev,
+            shippingAddress: `${streetAddress} ${streetNumber}`.trim() || address,
+            shippingPostalCode: postalCode,
+            shippingCity: city
+          }));
+        }
+      });
+    }
+  }, [formData.useShippingAddress]);
 
   useEffect(() => {
     // Check if coming from quick checkout (Handla nu button)
@@ -293,6 +366,7 @@ export default function Checkout() {
                   className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
                 />
                 <input
+                  ref={addressInputRef}
                   type="text"
                   name="address"
                   placeholder="Gata och husnummer"
@@ -369,6 +443,7 @@ export default function Checkout() {
                     />
                   </div>
                   <input
+                    ref={shippingAddressInputRef}
                     type="text"
                     name="shippingAddress"
                     placeholder="Gata och husnummer"
