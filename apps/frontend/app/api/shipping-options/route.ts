@@ -1,5 +1,8 @@
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const cartId = searchParams.get('cart_id');
+
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
 
     if (!publishableKey) {
@@ -9,7 +12,17 @@ export async function GET() {
       );
     }
 
-    const response = await fetch('https://techpilots.medusajs.app/store/shipping-options', {
+    if (!cartId) {
+      return Response.json(
+        { error: 'cart_id is required' },
+        { status: 400 }
+      );
+    }
+
+    const url = new URL('https://techpilots.medusajs.app/store/shipping-options');
+    url.searchParams.set('cart_id', cartId);
+
+    const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
         'x-publishable-api-key': publishableKey,
