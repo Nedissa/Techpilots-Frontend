@@ -4,16 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { MainLayout } from '../components/MainLayout';
 
-const autofillStyles = `
-  input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-    -webkit-text-fill-color: #000 !important;
-  }
-  input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-    -webkit-text-fill-color: #000 !important;
-  }
-`;
+const autofillStyles = ``;
 
 interface CartItem {
   id: string;
