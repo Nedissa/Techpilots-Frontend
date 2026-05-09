@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { MainLayout } from '../components/MainLayout';
+import { fetchProductsFromMedusa } from '@/app/lib/medusa-client';
+import { ProductCard, type ProductData } from '@/app/components/ProductCard';
 
 export default function AccountPage() {
   const router = useRouter();
@@ -19,6 +21,7 @@ export default function AccountPage() {
   const [editEmail, setEditEmail] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editAddress, setEditAddress] = useState('');
+  const [favoriteProducts, setFavoriteProducts] = useState<ProductData[]>([]);
   const addressInputRef = useRef<HTMLInputElement>(null);
 
   // Ladda sparad userData när sidan öppnas
@@ -43,6 +46,18 @@ export default function AccountPage() {
         router.push('/logga-in');
       }
     }
+
+    // Ladda favoriter
+    const loadFavorites = async () => {
+      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+      if (favorites.length > 0) {
+        const allProducts = await fetchProductsFromMedusa();
+        const liked = allProducts.filter((p: any) => favorites.includes(p.id));
+        setFavoriteProducts(liked);
+      }
+    };
+    loadFavorites();
+
     setIsLoading(false);
   }, [router]);
 
@@ -303,11 +318,26 @@ export default function AccountPage() {
                   )}
 
                   {item.id === 'sparade' && (
-                    <div className="space-y-3 text-gray-700">
-                      <p>Du har 5 sparade favoriter</p>
-                      <button className="w-full px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100 font-semibold">
-                        Se dina favoriter
-                      </button>
+                    <div className="space-y-6">
+                      {favoriteProducts.length > 0 ? (
+                        <>
+                          <p className="text-gray-700">Du har {favoriteProducts.length} sparade favoriter</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {favoriteProducts.map((product) => (
+                              <ProductCard key={product.id} product={product} variant="popular" />
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="space-y-3 text-gray-700">
+                          <p>Du har ingen sparade favoriter än</p>
+                          <Link href="/produkter">
+                            <button className="w-full px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold">
+                              Börja shopppa
+                            </button>
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
