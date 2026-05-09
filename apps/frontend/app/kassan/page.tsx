@@ -355,7 +355,7 @@ export default function Checkout() {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.firstName ? 'bg-gray-100' : 'bg-white'}`}
+                    className={`w-full px-4 py-3 focus:outline-none focus:ring-4 focus:ring-black ${formData.firstName ? 'bg-gray-100' : 'bg-white'}`}
                     style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                   <input
@@ -365,7 +365,7 @@ export default function Checkout() {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.lastName ? 'bg-gray-300' : 'bg-white'}`}
+                    className={`w-full px-4 py-3 focus:outline-none focus:ring-4 focus:ring-black ${formData.lastName ? 'bg-gray-300' : 'bg-white'}`}
                     style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 </div>
@@ -377,7 +377,7 @@ export default function Checkout() {
                     value={formData.companyName}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.companyName ? 'bg-gray-300' : 'bg-white'}`}
+                    className={`w-full px-4 py-3 focus:outline-none focus:ring-4 focus:ring-black ${formData.companyName ? 'bg-gray-300' : 'bg-white'}`}
                     style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 )}
@@ -388,7 +388,7 @@ export default function Checkout() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.email ? 'bg-gray-300' : 'bg-white'}`}
+                  className={`w-full px-4 py-3 focus:outline-none focus:ring-4 focus:ring-black ${formData.email ? 'bg-gray-300' : 'bg-white'}`}
                   style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <input
@@ -398,7 +398,7 @@ export default function Checkout() {
                   value={formData.phone}
                   onChange={handleInputChange}
                   required
-                  className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.phone ? 'bg-gray-300' : 'bg-white'}`}
+                  className={`w-full px-4 py-3 focus:outline-none focus:ring-4 focus:ring-black ${formData.phone ? 'bg-gray-300' : 'bg-white'}`}
                   style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <input
@@ -409,7 +409,7 @@ export default function Checkout() {
                   value={formData.address}
                   onChange={handleInputChange}
                   required
-                  className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.address ? 'bg-gray-300' : 'bg-white'}`}
+                  className={`w-full px-4 py-3 focus:outline-none focus:ring-4 focus:ring-black ${formData.address ? 'bg-gray-300' : 'bg-white'}`}
                   style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <div className="grid grid-cols-2 gap-4">
@@ -420,7 +420,7 @@ export default function Checkout() {
                     value={formData.postalCode}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.postalCode ? 'bg-gray-300' : 'bg-white'}`}
+                    className={`w-full px-4 py-3 focus:outline-none focus:ring-4 focus:ring-black ${formData.postalCode ? 'bg-gray-300' : 'bg-white'}`}
                     style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                   <input
@@ -430,7 +430,7 @@ export default function Checkout() {
                     value={formData.city}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black ${formData.city ? 'bg-gray-300' : 'bg-white'}`}
+                    className={`w-full px-4 py-3 focus:outline-none focus:ring-4 focus:ring-black ${formData.city ? 'bg-gray-300' : 'bg-white'}`}
                     style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 </div>
