@@ -1,9 +1,56 @@
 'use client';
 
+import { useState } from 'react';
 import { MainLayout } from '@/app/components/MainLayout';
 import { Breadcrumb } from '@/app/components/Breadcrumb';
 
 export default function ContactPage() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setSuccessMessage('');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          subject,
+          message,
+          recipientEmail: 'info@techpilots.se',
+        }),
+      });
+
+      if (response.ok) {
+        setSuccessMessage('Tack! Ditt meddelande har skickats. Vi svarar inom 24 timmar.');
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+      } else {
+        setErrorMessage('Ett fel uppstod när meddelandet skulle skickas. Försök igen senare.');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setErrorMessage('Ett fel uppstod när meddelandet skulle skickas. Försök igen senare.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <MainLayout>
       <Breadcrumb items={[{ label: 'Kontakta oss' }]} />
@@ -21,25 +68,35 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div>
               <h2 className="text-2xl font-bold mb-8">Skicka oss ett meddelande</h2>
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                {successMessage && (
+                  <div className="p-3 bg-green-100 text-green-700 rounded text-sm">
+                    {successMessage}
+                  </div>
+                )}
+                {errorMessage && (
+                  <div className="p-3 bg-red-100 text-red-700 rounded text-sm">
+                    {errorMessage}
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-medium mb-2">Namn</label>
-                  <input type="text" className="w-full rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100" placeholder="Ditt namn" />
+                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100" placeholder="Ditt namn" required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">E-post</label>
-                  <input type="email" className="w-full rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100" placeholder="din@email.se" />
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100" placeholder="din@email.se" required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Ämne</label>
-                  <input type="text" className="w-full rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100" placeholder="Vad handlar det om?" />
+                  <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100" placeholder="Vad handlar det om?" required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Meddelande</label>
-                  <textarea rows={6} className="w-full rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100" placeholder="Beskriv ditt ärende här..." />
+                  <textarea rows={6} value={message} onChange={(e) => setMessage(e.target.value)} className="w-full rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100" placeholder="Beskriv ditt ärende här..." required />
                 </div>
-                <button className="w-full bg-black text-white px-6 py-3 font-semibold hover:bg-gray-800 rounded transition-colors">
-                  Skicka meddelande
+                <button type="submit" disabled={isLoading} className="w-full bg-black text-white px-6 py-3 font-semibold hover:bg-gray-800 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  {isLoading ? 'Skickar...' : 'Skicka meddelande'}
                 </button>
               </form>
             </div>
