@@ -21,6 +21,12 @@ export default function AccountPage() {
   const [editPhone, setEditPhone] = useState('');
   const [editAddress, setEditAddress] = useState('');
   const [favoriteProducts, setFavoriteProducts] = useState<ProductData[]>([]);
+  const [complaints, setComplaints] = useState<any[]>([]);
+  const [promotions, setPromotions] = useState<any[]>([]);
+  const [loyalty, setLoyalty] = useState<any>(null);
+  const [loadingComplaintsError, setLoadingComplaintsError] = useState('');
+  const [loadingPromotionsError, setLoadingPromotionsError] = useState('');
+  const [loadingLoyaltyError, setLoadingLoyaltyError] = useState('');
   const addressInputRef = useRef<HTMLInputElement>(null);
 
   // Ladda sparad userData när sidan öppnas
@@ -58,6 +64,52 @@ export default function AccountPage() {
     if (savedTab) {
       setActiveTab(savedTab);
     }
+
+    // Load complaints
+    const loadComplaints = async () => {
+      try {
+        const response = await fetch('/api/complaints?customer_id=test-customer');
+        if (response.ok) {
+          const data = await response.json();
+          setComplaints(data.complaints || []);
+        }
+      } catch (error) {
+        console.error('Failed to load complaints:', error);
+        setLoadingComplaintsError('Kunde inte ladda felanmälningar');
+      }
+    };
+
+    // Load promotions
+    const loadPromotions = async () => {
+      try {
+        const response = await fetch('/api/promotions');
+        if (response.ok) {
+          const data = await response.json();
+          setPromotions(data.promotions || []);
+        }
+      } catch (error) {
+        console.error('Failed to load promotions:', error);
+        setLoadingPromotionsError('Kunde inte ladda erbjudanden');
+      }
+    };
+
+    // Load loyalty
+    const loadLoyalty = async () => {
+      try {
+        const response = await fetch('/api/loyalty?customer_id=test-customer');
+        if (response.ok) {
+          const data = await response.json();
+          setLoyalty(data.loyalty);
+        }
+      } catch (error) {
+        console.error('Failed to load loyalty data:', error);
+        setLoadingLoyaltyError('Kunde inte ladda kundklubbinformation');
+      }
+    };
+
+    loadComplaints();
+    loadPromotions();
+    loadLoyalty();
 
     setIsLoading(false);
     setIsHydrated(true);
@@ -476,41 +528,140 @@ export default function AccountPage() {
         {activeTab === 'felanmalan' && (
         <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Felanmälan</h3>
-          <div className="space-y-3 text-gray-700">
-            <p>Du har ingen aktiv felanmälan</p>
-            <button className="w-full px-6 py-2 bg-black text-white  hover:bg-gray-800 font-semibold">
-              Anmäl ett fel
-            </button>
-          </div>
+          {loadingComplaintsError && (
+            <div className="mb-4 p-4 bg-red-50 text-red-700 rounded">
+              {loadingComplaintsError}
+            </div>
+          )}
+          {complaints.length > 0 ? (
+            <div className="space-y-4">
+              <p className="text-gray-700">Du har {complaints.length} felanmälningar</p>
+              {complaints.map((complaint) => (
+                <div key={complaint.id} className="p-4 border border-gray-200">
+                  <p className="font-semibold">Beställning #{complaint.order_id}</p>
+                  <p className="text-sm text-gray-600 mt-1">{complaint.description}</p>
+                  <p className="text-sm font-semibold mt-2">
+                    Status: <span className="text-blue-600">{complaint.status}</span>
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-3 text-gray-700">
+              <p>Du har ingen aktiv felanmälan</p>
+              <button className="w-full px-6 py-2 bg-black text-white  hover:bg-gray-800 font-semibold">
+                Anmäl ett fel
+              </button>
+            </div>
+          )}
         </div>
         )}
 
         {activeTab === 'erbjudanden' && (
         <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Erbjudanden</h3>
-          <div className="space-y-3 text-gray-700">
-            <p>Du har 3 aktiva erbjudanden</p>
-            <p className="text-sm">Se dina personliga erbjudanden baserat på dina köp</p>
-            <button className="w-full px-6 py-2 bg-black text-white  hover:bg-gray-800 font-semibold">
-              Se alla erbjudanden
-            </button>
-          </div>
+          {loadingPromotionsError && (
+            <div className="mb-4 p-4 bg-red-50 text-red-700 rounded">
+              {loadingPromotionsError}
+            </div>
+          )}
+          {promotions.length > 0 ? (
+            <div className="space-y-4">
+              <p className="text-gray-700">Du har {promotions.length} aktiva erbjudanden</p>
+              {promotions.map((promo) => (
+                <div key={promo.id} className="p-4 border border-gray-200">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="font-semibold">{promo.code}</p>
+                      <p className="text-sm text-gray-600">{promo.description}</p>
+                    </div>
+                    <div className="text-right">
+                      {promo.percentage_discount && (
+                        <p className="text-lg font-bold text-green-600">{promo.percentage_discount}% rabatt</p>
+                      )}
+                      {promo.fixed_discount && (
+                        <p className="text-lg font-bold text-green-600">{promo.fixed_discount} SEK rabatt</p>
+                      )}
+                    </div>
+                  </div>
+                  {promo.valid_from && promo.valid_to && (
+                    <p className="text-xs text-gray-500">
+                      Gäller t.o.m. {new Date(promo.valid_to).toLocaleDateString('sv-SE')}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-3 text-gray-700">
+              <p>Du har inga aktiva erbjudanden just nu</p>
+              <p className="text-sm">Nya erbjudanden baserat på dina köp visas här</p>
+            </div>
+          )}
         </div>
         )}
 
         {activeTab === 'kundklubb' && (
         <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-          <h3 className="text-xl font-bold mb-4">Kundklubb</h3>
-          <p className="text-gray-600 mb-4">Du är medlem i vår kundklubb och får exklusiva erbjudanden</p>
-          <div className="mb-6">
-            <p className="font-semibold mb-2">Dina poäng: 1,250 points</p>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-black h-2 rounded-full" style={{ width: '62.5%' }}></div>
+          <h3 className="text-xl font-bold mb-6">Kundklubb</h3>
+          {loadingLoyaltyError && (
+            <div className="mb-4 p-4 bg-red-50 text-red-700 rounded">
+              {loadingLoyaltyError}
             </div>
-          </div>
-          <button className="px-6 py-2 border-2 border-black text-black  hover:bg-gray-50 font-semibold">
-            Se mina benefits
-          </button>
+          )}
+          {loyalty ? (
+            <div className="space-y-6">
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <div>
+                    <p className="font-semibold text-lg">{loyalty.current_tier}-medlem</p>
+                    <p className="text-sm text-gray-600">Dina poäng: {loyalty.total_points}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600">Nästa nivå</p>
+                    <p className="font-semibold">{loyalty.points_to_next_tier} poäng</p>
+                  </div>
+                </div>
+                <div className="w-full bg-gray-200 h-3">
+                  <div
+                    className="bg-black h-3"
+                    style={{ width: `${Math.min(100, (loyalty.total_points / (loyalty.total_points + loyalty.points_to_next_tier)) * 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 border border-gray-200">
+                  <p className="text-sm text-gray-600">Totala köp</p>
+                  <p className="font-semibold text-lg">{loyalty.lifetime_orders} beställningar</p>
+                </div>
+                <div className="p-4 border border-gray-200">
+                  <p className="text-sm text-gray-600">Totalt värde</p>
+                  <p className="font-semibold text-lg">{(loyalty.lifetime_spend / 100).toLocaleString('sv-SE')} SEK</p>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-3">Dina benefits</h4>
+                <ul className="space-y-2">
+                  {loyalty.benefits.map((benefit: string, idx: number) => (
+                    <li key={idx} className="flex items-center gap-2 text-gray-700">
+                      <span className="w-2 h-2 bg-black rounded-full"></span>
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <p className="text-sm text-gray-600">
+                Medlem sedan: {new Date(loyalty.member_since).toLocaleDateString('sv-SE')}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3 text-gray-700">
+              <p>Laddar kundklubbinformation...</p>
+            </div>
+          )}
         </div>
         )}
       </div>
