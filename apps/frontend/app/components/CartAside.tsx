@@ -20,21 +20,34 @@ export function CartAside() {
   const [cartTotal, setCartTotal] = useState(0);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  useEffect(() => {
-    // Load from sessionStorage after hydration
-    const savedCartItems = sessionStorage.getItem('cartItems');
+  const loadCartFromStorage = () => {
+    const savedCartItems = localStorage.getItem('cartItems');
     if (savedCartItems) {
       try {
         const items = JSON.parse(savedCartItems);
         setCartItems(items);
         const total = items.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
         setCartTotal(total);
-        console.log('Loaded cart items from sessionStorage:', items);
+        console.log('Loaded cart items from localStorage:', items);
       } catch (e) {
-        console.error('Failed to load cart items from sessionStorage', e);
+        console.error('Failed to load cart items from localStorage', e);
       }
     }
+  };
+
+  useEffect(() => {
+    // Load from localStorage on mount
+    loadCartFromStorage();
     setIsHydrated(true);
+
+    // Also listen for storage changes from other tabs
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'cartItems') {
+        loadCartFromStorage();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   useEffect(() => {
@@ -62,8 +75,8 @@ export function CartAside() {
         } else {
           updated = [...prev, { id, title, price: priceNum, originalPrice: originalPriceNum, quantity: quantity || 1, image }];
         }
-        // Save to sessionStorage
-        sessionStorage.setItem('cartItems', JSON.stringify(updated));
+        // Save to localStorage
+        localStorage.setItem('cartItems', JSON.stringify(updated));
         console.log('Cart updated:', updated);
         return updated;
       });
@@ -92,7 +105,7 @@ export function CartAside() {
       const updated = cartItems.filter(i => i.id !== id);
       setCartTotal(newTotal);
       setCartItems(updated);
-      sessionStorage.setItem('cartItems', JSON.stringify(updated));
+      localStorage.setItem('cartItems', JSON.stringify(updated));
       window.dispatchEvent(new CustomEvent('cartUpdated', {
         detail: { totalAmount: newTotal, itemCount: cartItems.length - 1 }
       }));
@@ -121,7 +134,7 @@ export function CartAside() {
       const updated = cartItems.map(i => (i.id === id ? { ...i, quantity: newQuantity } : i));
       setCartTotal(newTotal);
       setCartItems(updated);
-      sessionStorage.setItem('cartItems', JSON.stringify(updated));
+      localStorage.setItem('cartItems', JSON.stringify(updated));
       window.dispatchEvent(new CustomEvent('cartUpdated', {
         detail: { totalAmount: newTotal, itemCount: cartItems.length }
       }));
