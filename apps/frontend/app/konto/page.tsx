@@ -389,7 +389,7 @@ export default function AccountPage() {
               {favoriteProducts.map((product) => (
                 <div key={product.id} className="flex items-stretch gap-0 py-8 border-b border-gray-200 last:border-b-0">
                   {/* Product image */}
-                  <div className="flex-1 flex items-center justify-center">
+                  <div className="flex-1 flex items-center justify-start">
                     <img
                       src={product.image}
                       alt={product.title}
@@ -398,7 +398,7 @@ export default function AccountPage() {
                   </div>
 
                   {/* Product title and availability */}
-                  <div className="flex-1 flex items-center justify-center">
+                  <div className="flex-1 flex items-center justify-start">
                     <div>
                       <Link
                         href={`/produkter/${product.handle}`}
@@ -416,14 +416,14 @@ export default function AccountPage() {
                   </div>
 
                   {/* Price */}
-                  <div className="flex-1 flex items-center justify-center">
+                  <div className="flex-1 flex items-center justify-start">
                     <p className="text-sm font-semibold text-gray-900">
                       {product.price.toLocaleString('sv-SE')} kr
                     </p>
                   </div>
 
                   {/* Add to cart and remove buttons */}
-                  <div className="flex-1 flex items-center justify-center gap-8">
+                  <div className="flex-1 flex items-center justify-start gap-8">
                     <button
                       onClick={() => {
                         const event = new CustomEvent('addToCart', {
