@@ -4,7 +4,7 @@ export async function GET() {
   try {
     // Fetch products with publishable API key
     const response = await fetch(
-      getMedusaURL('/store/products?limit=100'),
+      getMedusaURL('/store/products?limit=100&fields=*variants.calculated_price,*variants.prices'),
       {
         method: 'GET',
         headers: {
