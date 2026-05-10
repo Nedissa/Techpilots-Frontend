@@ -273,18 +273,6 @@ export default function AccountPage() {
             </div>
           </div>
 
-          {/* Köphistorik */}
-          <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-            <h3 className="text-xl font-bold mb-6">Köphistorik</h3>
-            <div className="space-y-3 text-gray-700">
-              <p>Du har köpt 15 produkter totalt</p>
-              <p className="text-sm">Total värde: 156,243 SEK</p>
-              <button className="w-full px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100 font-semibold">
-                Se komplett köphistorik
-              </button>
-            </div>
-          </div>
-
           {/* Felanmälan */}
           <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
             <h3 className="text-xl font-bold mb-6">Felanmälan</h3>
