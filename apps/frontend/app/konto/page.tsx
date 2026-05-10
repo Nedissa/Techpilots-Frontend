@@ -202,76 +202,149 @@ export default function AccountPage() {
         <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Mina kunduppgifter</h3>
           {!isEditing ? (
-            <div className="space-y-4">
-              <div><span className="font-semibold">Namn:</span> {firstName && lastName ? `${firstName} ${lastName}` : '—'}</div>
-              <div><span className="font-semibold">E-post:</span> {registerEmail || '—'}</div>
-              <div><span className="font-semibold">Telefon:</span> {editPhone || '—'}</div>
-              <div><span className="font-semibold">Adress:</span> {editAddress || '—'}</div>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-sm font-semibold text-gray-600 mb-2">Personnummer (YYYYMMDD-XXXX)</p>
+                  <p className="text-gray-900">{editPhone ? '198701011093' : '—'}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-600 mb-2">Kundnummer</p>
+                  <p className="text-gray-900">500973402</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-sm font-semibold text-gray-600 mb-2">Förnamn</p>
+                  <p className="text-gray-900">{firstName || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-600 mb-2">Efternamn</p>
+                  <p className="text-gray-900">{lastName || '—'}</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-gray-600 mb-2">Adress</p>
+                <p className="text-gray-900">{editAddress || '—'}</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-sm font-semibold text-gray-600 mb-2">Postnummer</p>
+                  <p className="text-gray-900">50631</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-600 mb-2">Ort</p>
+                  <p className="text-gray-900">Borås</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-sm font-semibold text-gray-600 mb-2">Mobiltelefonnummer</p>
+                  <p className="text-gray-900">{editPhone || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-600 mb-2">E-postadress</p>
+                  <p className="text-gray-900">{registerEmail || '—'}</p>
+                </div>
+              </div>
+
               <button
                 onClick={() => setIsEditing(true)}
-                className="mt-4 px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100 font-semibold"
+                className="mt-6 px-8 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
               >
                 Redigera uppgifter
               </button>
             </div>
           ) : (
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold mb-2">Förnamn</label>
-                <input
-                  type="text"
-                  value={editFirstName}
-                  onChange={(e) => setEditFirstName(e.target.value)}
-                  className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none bg-gray-100 mb-4"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Förnamn *</label>
+                  <input
+                    type="text"
+                    value={editFirstName}
+                    onChange={(e) => setEditFirstName(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Efternamn *</label>
+                  <input
+                    type="text"
+                    value={editLastName}
+                    onChange={(e) => setEditLastName(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
               </div>
+
               <div>
-                <label className="block text-sm font-semibold mb-2">Efternamn</label>
-                <input
-                  type="text"
-                  value={editLastName}
-                  onChange={(e) => setEditLastName(e.target.value)}
-                  className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none bg-gray-100 mb-4"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold mb-2">E-post</label>
-                <input
-                  type="email"
-                  value={editEmail}
-                  onChange={(e) => setEditEmail(e.target.value)}
-                  className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none bg-gray-100 mb-4"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold mb-2">Telefon</label>
-                <input
-                  type="tel"
-                  value={editPhone}
-                  onChange={(e) => setEditPhone(e.target.value)}
-                  className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none bg-gray-100 mb-4"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold mb-2">Adress</label>
+                <label className="block text-sm font-semibold mb-2">Adress *</label>
                 <input
                   ref={addressInputRef}
                   type="text"
                   value={editAddress}
                   onChange={(e) => setEditAddress(e.target.value)}
-                  className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none bg-gray-100"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
-              <div className="flex gap-2 mt-4">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Postnummer *</label>
+                  <input
+                    type="text"
+                    value="50631"
+                    disabled
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Ort *</label>
+                  <input
+                    type="text"
+                    value="Borås"
+                    disabled
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Mobiltelefonnummer *</label>
+                  <input
+                    type="tel"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">E-postadress *</label>
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-6">
                 <button
                   onClick={handleSaveChanges}
-                  className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold"
+                  className="px-8 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
                 >
                   Spara
                 </button>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100 font-semibold"
+                  className="px-8 py-2 border-2 border-gray-300 text-gray-900 rounded-lg hover:bg-gray-100 font-semibold"
                 >
                   Avbryt
                 </button>
