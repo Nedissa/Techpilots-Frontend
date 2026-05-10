@@ -12,7 +12,7 @@ export async function GET() {
 
     // Fetch products with publishable API key
     const response = await fetch(
-      `${medusaUrl}/store/products?limit=100&region_id=reg_01KR9R4SFABTKM0CVFN7AVZ4RW&fields=*variants.prices,*images`,
+      `${medusaUrl}/store/products?limit=100&region_id=reg_01KR9R4SFABTKM0CVFN7AVZ4RW`,
       {
         method: 'GET',
         headers: {
