@@ -50,6 +50,7 @@ export async function POST(request: Request) {
       success_url: `${origin}/order-bekraftelse?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/kassan`,
       customer_email: formData.email,
+      payment_method_types: ['card'],
       metadata: {
         firstName: formData.firstName,
         lastName: formData.lastName,
