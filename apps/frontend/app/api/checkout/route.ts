@@ -42,11 +42,13 @@ export async function POST(request: Request) {
       });
     }
 
+    const origin = request.headers.get('origin') || 'http://localhost:3000';
+
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${request.headers.get('origin')}/order-bekraftelse?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${request.headers.get('origin')}/kassan`,
+      success_url: `${origin}/order-bekraftelse?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/kassan`,
       customer_email: formData.email,
       metadata: {
         firstName: formData.firstName,
