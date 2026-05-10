@@ -181,8 +181,7 @@ export default function AccountPage() {
             { id: 'ordrar', title: 'Ordrar' },
             { id: 'kophistorik', title: 'Köphistorik' },
             { id: 'felanmalan', title: 'Felanmälan' },
-            { id: 'erbjudanden', title: 'Erbjudanden' },
-            { id: 'sparade', title: 'Sparade favoriter' }
+            { id: 'erbjudanden', title: 'Erbjudanden' }
           ].map((item) => (
             <div key={item.id} className="rounded-lg overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
               <button
@@ -329,30 +328,6 @@ export default function AccountPage() {
                       <button className="w-full px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100 font-semibold">
                         Se alla erbjudanden
                       </button>
-                    </div>
-                  )}
-
-                  {item.id === 'sparade' && (
-                    <div className="space-y-6">
-                      {favoriteProducts.length > 0 ? (
-                        <>
-                          <p className="text-gray-700">Du har {favoriteProducts.length} sparade favoriter</p>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {favoriteProducts.map((product) => (
-                              <ProductCard key={product.id} product={product} variant="popular" />
-                            ))}
-                          </div>
-                        </>
-                      ) : (
-                        <div className="space-y-3 text-gray-700">
-                          <p>Du har ingen sparade favoriter än</p>
-                          <Link href="/produkter">
-                            <button className="w-full px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold">
-                              Börja shopppa
-                            </button>
-                          </Link>
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>

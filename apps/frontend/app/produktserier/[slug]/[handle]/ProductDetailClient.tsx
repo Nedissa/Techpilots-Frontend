@@ -64,8 +64,8 @@ export default function ProductDetailClient({
     loadAlsoLikeProducts();
 
     // Load favorite status from localStorage
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    setIsFavorite(favorites.includes(product.id));
+    const favoritesList = JSON.parse(localStorage.getItem('favoritesList') || '[]');
+    setIsFavorite(favoritesList.some((item: any) => item.id === product.id));
   }, [product.id]);
 
   const handleFavoriteToggle = () => {
