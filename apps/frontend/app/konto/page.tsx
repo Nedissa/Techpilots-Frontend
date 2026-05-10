@@ -102,7 +102,7 @@ export default function AccountPage() {
     <MainLayout bordered={false}>
       <div className="w-full max-w-4xl mx-auto px-6 py-16">
         {/* Welcome Section */}
-        <div className="bg-gray-50 p-8 rounded-lg mb-8 shadow-sm flex justify-between items-center" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <div className="bg-gray-50 p-8  mb-8 shadow-sm flex justify-between items-center" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <div>
             <h2 className="text-2xl font-bold mb-2 select-none">Välkommen, {firstName && lastName ? firstName : firstName || registerEmail?.split('@')[0] || 'Johan'}!</h2>
             <p className="text-gray-600">Hantera ditt konto och se dina beställningar</p>
@@ -199,7 +199,7 @@ export default function AccountPage() {
 
         {/* Tab Content */}
         {activeTab === 'profil' && (
-        <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Mina kunduppgifter</h3>
           {!isEditing ? (
             <div className="space-y-6">
@@ -254,7 +254,7 @@ export default function AccountPage() {
 
               <button
                 onClick={() => setIsEditing(true)}
-                className="mt-6 px-8 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold"
+                className="mt-6 px-8 py-2 bg-black text-white  hover:bg-gray-800 font-semibold"
               >
                 Redigera uppgifter
               </button>
@@ -268,7 +268,7 @@ export default function AccountPage() {
                     type="text"
                     value={editFirstName}
                     onChange={(e) => setEditFirstName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <div>
@@ -277,7 +277,7 @@ export default function AccountPage() {
                     type="text"
                     value={editLastName}
                     onChange={(e) => setEditLastName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function AccountPage() {
                   type="text"
                   value={editAddress}
                   onChange={(e) => setEditAddress(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
 
@@ -300,7 +300,7 @@ export default function AccountPage() {
                     type="text"
                     value="50631"
                     disabled
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+                    className="w-full px-4 py-2 border border-gray-300  bg-gray-100"
                   />
                 </div>
                 <div>
@@ -309,7 +309,7 @@ export default function AccountPage() {
                     type="text"
                     value="Borås"
                     disabled
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+                    className="w-full px-4 py-2 border border-gray-300  bg-gray-100"
                   />
                 </div>
               </div>
@@ -321,7 +321,7 @@ export default function AccountPage() {
                     type="tel"
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <div>
@@ -330,7 +330,7 @@ export default function AccountPage() {
                     type="email"
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
               </div>
@@ -338,13 +338,13 @@ export default function AccountPage() {
               <div className="flex gap-2 mt-6">
                 <button
                   onClick={handleSaveChanges}
-                  className="px-8 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold"
+                  className="px-8 py-2 bg-black text-white  hover:bg-gray-800 font-semibold"
                 >
                   Spara
                 </button>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-8 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100 font-semibold"
+                  className="px-8 py-2 border-2 border-black text-black  hover:bg-gray-100 font-semibold"
                 >
                   Avbryt
                 </button>
@@ -355,7 +355,7 @@ export default function AccountPage() {
         )}
 
         {activeTab === 'orderhistorik' && (
-        <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Orderhistorik</h3>
           <div className="space-y-4">
             <div className="pb-4 border-b">
@@ -369,7 +369,7 @@ export default function AccountPage() {
               <p className="text-sm text-green-600 font-semibold">Levererad</p>
             </div>
             <Link href="/konto/bestallningar">
-              <button className="w-full px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold">
+              <button className="w-full px-6 py-2 bg-black text-white  hover:bg-gray-800 font-semibold">
                 Se alla ordrar
               </button>
             </Link>
@@ -378,7 +378,7 @@ export default function AccountPage() {
         )}
 
         {activeTab === 'favoriter' && (
-        <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Favoriter</h3>
           {favoriteProducts.length > 0 ? (
             <div className="space-y-4">
@@ -464,7 +464,7 @@ export default function AccountPage() {
             <div className="space-y-3 text-gray-700">
               <p>Du har ingen sparade favoriter än</p>
               <Link href="/produkter">
-                <button className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold">
+                <button className="px-6 py-2 bg-black text-white  hover:bg-gray-800 font-semibold">
                   Börja shoppa
                 </button>
               </Link>
@@ -474,11 +474,11 @@ export default function AccountPage() {
         )}
 
         {activeTab === 'felanmalan' && (
-        <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Felanmälan</h3>
           <div className="space-y-3 text-gray-700">
             <p>Du har ingen aktiv felanmälan</p>
-            <button className="w-full px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold">
+            <button className="w-full px-6 py-2 bg-black text-white  hover:bg-gray-800 font-semibold">
               Anmäl ett fel
             </button>
           </div>
@@ -486,12 +486,12 @@ export default function AccountPage() {
         )}
 
         {activeTab === 'erbjudanden' && (
-        <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Erbjudanden</h3>
           <div className="space-y-3 text-gray-700">
             <p>Du har 3 aktiva erbjudanden</p>
             <p className="text-sm">Se dina personliga erbjudanden baserat på dina köp</p>
-            <button className="w-full px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold">
+            <button className="w-full px-6 py-2 bg-black text-white  hover:bg-gray-800 font-semibold">
               Se alla erbjudanden
             </button>
           </div>
@@ -499,7 +499,7 @@ export default function AccountPage() {
         )}
 
         {activeTab === 'kundklubb' && (
-        <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-4">Kundklubb</h3>
           <p className="text-gray-600 mb-4">Du är medlem i vår kundklubb och får exklusiva erbjudanden</p>
           <div className="mb-6">
@@ -508,7 +508,7 @@ export default function AccountPage() {
               <div className="bg-black h-2 rounded-full" style={{ width: '62.5%' }}></div>
             </div>
           </div>
-          <button className="px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-50 font-semibold">
+          <button className="px-6 py-2 border-2 border-black text-black  hover:bg-gray-50 font-semibold">
             Se mina benefits
           </button>
         </div>
