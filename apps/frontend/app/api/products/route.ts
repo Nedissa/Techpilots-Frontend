@@ -1,15 +1,23 @@
-import { getMedusaURL } from '@/lib/medusa-client';
-
 export async function GET() {
   try {
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
+
+    if (!publishableKey) {
+      return Response.json(
+        { error: 'Medusa publishable key not configured' },
+        { status: 500 }
+      );
+    }
+
     // Fetch products with publishable API key
     const response = await fetch(
-      getMedusaURL('/store/products?limit=100&fields=*variants.calculated_price,*variants.prices'),
+      `${medusaUrl}/store/products?limit=100&region_id=reg_01KR9R4SFABTKM0CVFN7AVZ4RW&fields=*variants.calculated_price`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'x-publishable-api-key': 'pk_36e601e5ae7f344b990cd62847fba7b6b951c4336b9e4d4445642fc2948f2279',
+          'x-publishable-api-key': publishableKey,
         },
       }
     );
@@ -25,7 +33,12 @@ export async function GET() {
     const products = data.products || [];
 
     const transformedProducts = products.map((product: any, idx: number) => {
-      const image = product.images?.[0]?.url || product.thumbnail || '';
+      // Fix image URLs - replace localhost with VPS IP
+      let imageUrl = product.images?.[0]?.url || product.thumbnail || '';
+      if (imageUrl && imageUrl.includes('localhost:9000')) {
+        imageUrl = imageUrl.replace('localhost:9000', '194.14.207.94:9000');
+      }
+      const image = imageUrl;
 
       // Get price from calculated_price
       let price = 0;
@@ -76,7 +89,13 @@ export async function GET() {
         price: price,
         originalPrice: originalPrice,
         image: image,
-        images: (product.images?.map((img: any) => img.url) || []).slice(0, 3),
+        images: (product.images?.map((img: any) => {
+          let url = img.url;
+          if (url && url.includes('localhost:9000')) {
+            url = url.replace('localhost:9000', '194.14.207.94:9000');
+          }
+          return url;
+        }) || []).slice(0, 3),
         category: collectionTitle,
         brand: product.brand || '',
         colors: product.colors || [],
