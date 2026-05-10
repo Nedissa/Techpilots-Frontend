@@ -367,11 +367,26 @@ export default function AccountPage() {
 
         {activeTab === 'favoriter' && (
         <div className="p-6 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-          <h3 className="text-xl font-bold mb-4">Favoriter</h3>
-          <p className="text-gray-600 mb-4">Du har 3 produkter på din önskelista</p>
-          <button className="px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-50 font-semibold">
-            Se önskelista
-          </button>
+          <h3 className="text-xl font-bold mb-6">Favoriter</h3>
+          {favoriteProducts.length > 0 ? (
+            <>
+              <p className="text-gray-700 mb-6">Du har {favoriteProducts.length} sparade favoriter</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {favoriteProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} variant="popular" />
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="space-y-3 text-gray-700">
+              <p>Du har ingen sparade favoriter än</p>
+              <Link href="/produkter">
+                <button className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 font-semibold">
+                  Börja shoppa
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
         )}
 
