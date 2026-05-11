@@ -89,6 +89,7 @@ export function ProductCard({
       {/* Image Container with Badges */}
       <div
         className={`relative bg-gray-100 overflow-hidden mb-4 ${config.imageHeight} flex items-center justify-center`}
+        style={{ position: 'relative' }}
         onMouseMove={(e) => {
           if (!product.images || product.images.length === 0) return;
           const rect = e.currentTarget.getBoundingClientRect();
@@ -141,11 +142,10 @@ export function ProductCard({
             }
           `}</style>
           {(product.images?.[imageIndex] || product.image) ? (
-            <Image
+            <img
               key={imageIndex}
               src={product.images?.[imageIndex] || product.image}
               alt={product.title}
-              fill
               className={`w-full h-full object-contain p-8 ${imageIndex > 0 ? 'fade-in' : ''}`}
               onError={(e) => {
                 console.error('Image failed to load:', e.currentTarget.src);
