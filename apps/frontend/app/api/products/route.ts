@@ -19,6 +19,7 @@ export async function GET() {
           'Content-Type': 'application/json',
           'x-publishable-api-key': publishableKey,
         },
+        next: { revalidate: 3600 }
       }
     );
 
@@ -104,7 +105,11 @@ export async function GET() {
       };
     });
 
-    return Response.json({ products: transformedProducts });
+    return Response.json({ products: transformedProducts }, {
+      headers: {
+        'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      },
+    });
   } catch (error) {
     console.error('Error in /api/products:', error);
     return Response.json(
