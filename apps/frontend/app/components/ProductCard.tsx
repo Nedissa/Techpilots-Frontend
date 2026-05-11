@@ -80,6 +80,10 @@ export function ProductCard({
     ? `/produktserier/${categorySlug}/${product.handle}`
     : `/produkter/${product.handle}`;
 
+  const getProxiedImageUrl = (url: string) => {
+    return `/api/image?url=${encodeURIComponent(url)}`;
+  };
+
   return (
     <div
       className="flex flex-col bg-white h-full"
@@ -144,7 +148,7 @@ export function ProductCard({
           {(product.images?.[imageIndex] || product.image) ? (
             <img
               key={imageIndex}
-              src={product.images?.[imageIndex] || product.image}
+              src={getProxiedImageUrl(product.images?.[imageIndex] || product.image)}
               alt={product.title}
               className={`w-full h-full object-contain p-8 ${imageIndex > 0 ? 'fade-in' : ''}`}
               onError={(e) => {
