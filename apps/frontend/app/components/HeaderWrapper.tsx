@@ -338,6 +338,7 @@ export function HeaderWrapper() {
   };
 
   const getCartCount = () => {
+    if (typeof window === 'undefined') return cartCount;
     try {
       const savedCartItems = localStorage.getItem('cartItems');
       if (savedCartItems) {
@@ -351,6 +352,7 @@ export function HeaderWrapper() {
   };
 
   const getCartTotal = () => {
+    if (typeof window === 'undefined') return cartTotal;
     try {
       const savedCartItems = localStorage.getItem('cartItems');
       if (savedCartItems) {
