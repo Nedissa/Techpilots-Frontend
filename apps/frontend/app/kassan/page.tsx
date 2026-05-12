@@ -140,6 +140,23 @@ export default function Checkout() {
   }, [formData.country]);
 
   useEffect(() => {
+    // Load from localStorage on mount (after hydration) - happens when returning from Stripe
+    const checkoutData = localStorage.getItem('checkoutData');
+    if (checkoutData) {
+      try {
+        const data = JSON.parse(checkoutData);
+        console.log('Loaded from checkoutData:', data);
+        setCartItems(data.cartItems || []);
+        setFormData(data.formData || formData);
+        setShippingMethod(data.shippingMethod || 'standard');
+        const total = (data.cartItems || []).reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
+        setCartTotal(total);
+        return; // Exit early if we loaded from checkoutData
+      } catch (e) {
+        console.error('Failed to load checkout data from localStorage', e);
+      }
+    }
+
     // Check if coming from quick checkout (Handla nu button)
     const quickCheckout = localStorage.getItem('quickCheckout');
     if (quickCheckout) {
@@ -150,68 +167,44 @@ export default function Checkout() {
       setCartItems([{ id: item.id, title: item.title, price: priceNum, originalPrice: originalPriceNum, quantity: item.quantity }]);
       setCartTotal(priceNum * item.quantity);
       localStorage.removeItem('quickCheckout');
-    } else {
-      // Load from sessionStorage (CartAside uses this)
-      const savedCartItems = sessionStorage.getItem('cartItems');
-      if (savedCartItems) {
-        try {
-          const items = JSON.parse(savedCartItems);
-          setCartItems(items);
-          const total = items.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
-          setCartTotal(total);
-        } catch (e) {
-          console.error('Failed to load cart items from sessionStorage', e);
-        }
-      } else {
-        // If no sessionStorage cart, try to restore from Stripe redirect
-        const checkoutData = localStorage.getItem('checkoutData');
-        if (checkoutData) {
-          try {
-            const data = JSON.parse(checkoutData);
-            setCartItems(data.cartItems);
-            const total = data.cartItems.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
-            setCartTotal(total);
-          } catch (e) {
-            console.error('Failed to load checkout data from localStorage', e);
-          }
-        }
-      }
-
-      const handleAddToCart = (event: Event) => {
-        const customEvent = event as CustomEvent;
-        const { id, title, price, originalPrice, quantity, image } = customEvent.detail;
-        const priceNum = typeof price === 'string' ? parseInt(price) : price;
-        const originalPriceNum = originalPrice ? (typeof originalPrice === 'string' ? parseInt(originalPrice) : originalPrice) : undefined;
-
-        setCartItems(prev => {
-          const existingItem = prev.find(item => item.id === id);
-          if (existingItem) {
-            return prev.map(item =>
-              item.id === id ? { ...item, quantity: item.quantity + (quantity || 1) } : item
-            );
-          }
-          return [...prev, { id, title, price: priceNum, originalPrice: originalPriceNum, quantity: quantity || 1, image }];
-        });
-
-        setCartTotal(prev => prev + (priceNum * (quantity || 1)));
-      };
-
-      window.addEventListener('addToCart', handleAddToCart);
-      return () => window.removeEventListener('addToCart', handleAddToCart);
+      return;
     }
 
-    // Load form data from checkoutData if it exists (user might want to keep their entered info)
-    const checkoutData = localStorage.getItem('checkoutData');
-    if (checkoutData) {
+    // Load from sessionStorage (CartAside uses this) - current session cart
+    const savedCartItems = sessionStorage.getItem('cartItems');
+    if (savedCartItems) {
       try {
-        const data = JSON.parse(checkoutData);
-        setFormData(data.formData);
-        setShippingMethod(data.shippingMethod);
+        const items = JSON.parse(savedCartItems);
+        setCartItems(items);
+        const total = items.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
+        setCartTotal(total);
       } catch (e) {
-        console.error('Failed to load form data from checkoutData', e);
+        console.error('Failed to load cart items from sessionStorage', e);
       }
     }
-  }, []);
+
+    const handleAddToCart = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { id, title, price, originalPrice, quantity, image } = customEvent.detail;
+      const priceNum = typeof price === 'string' ? parseInt(price) : price;
+      const originalPriceNum = originalPrice ? (typeof originalPrice === 'string' ? parseInt(originalPrice) : originalPrice) : undefined;
+
+      setCartItems(prev => {
+        const existingItem = prev.find(item => item.id === id);
+        if (existingItem) {
+          return prev.map(item =>
+            item.id === id ? { ...item, quantity: item.quantity + (quantity || 1) } : item
+          );
+        }
+        return [...prev, { id, title, price: priceNum, originalPrice: originalPriceNum, quantity: quantity || 1, image }];
+      });
+
+      setCartTotal(prev => prev + (priceNum * (quantity || 1)));
+    };
+
+    window.addEventListener('addToCart', handleAddToCart);
+    return () => window.removeEventListener('addToCart', handleAddToCart);
+  }, [formData]);
 
   const selectedShippingOption = shippingOptions.find(opt => opt.id === shippingMethod);
   const shippingCost = selectedShippingOption?.amount || 0;
