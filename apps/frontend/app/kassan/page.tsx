@@ -287,6 +287,17 @@ export default function Checkout() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // IMMEDIATELY save state before anything else happens
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem('checkoutFormData', JSON.stringify(formData));
+    localStorage.setItem('checkoutStateBeforePayment', JSON.stringify({
+      cartItems,
+      formData,
+      shippingMethod,
+      customerType
+    }));
+
     setIsProcessing(true);
 
     try {
@@ -311,16 +322,6 @@ export default function Checkout() {
       }
 
       if (data.url) {
-        // Save checkout state before redirecting to Stripe
-        // Also save cartItems to regular cartItems key as backup
-        localStorage.setItem('cartItems', JSON.stringify(cartItems));
-        localStorage.setItem('checkoutFormData', JSON.stringify(formData));
-        localStorage.setItem('checkoutStateBeforePayment', JSON.stringify({
-          cartItems,
-          formData,
-          shippingMethod,
-          customerType
-        }));
         window.location.href = data.url;
       } else {
         throw new Error('No checkout URL returned');
