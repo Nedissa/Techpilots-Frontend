@@ -338,15 +338,17 @@ export function HeaderWrapper() {
   };
 
   useEffect(() => {
-    // Load cart from sessionStorage on mount
-    const savedCart = sessionStorage.getItem('cart');
-    if (savedCart) {
+    // Load cart from cartItems in localStorage on mount
+    const savedCartItems = localStorage.getItem('cartItems');
+    if (savedCartItems) {
       try {
-        const { count, total } = JSON.parse(savedCart);
+        const items = JSON.parse(savedCartItems);
+        const count = items.length;
+        const total = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
         setCartCount(count);
         setCartTotal(total);
       } catch (e) {
-        console.error('Failed to load cart from sessionStorage', e);
+        console.error('Failed to load cart from localStorage', e);
       }
     }
 
