@@ -343,7 +343,7 @@ export function HeaderWrapper() {
       const savedCartItems = localStorage.getItem('cartItems');
       if (savedCartItems) {
         const items = JSON.parse(savedCartItems);
-        return items.length;
+        return items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
       }
     } catch (e) {
       console.error('Failed to get cart count', e);
