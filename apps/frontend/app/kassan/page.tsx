@@ -205,6 +205,12 @@ export default function Checkout() {
     }
   }, []);
 
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
+
   const selectedShippingOption = shippingOptions.find(opt => opt.id === shippingMethod);
   const shippingCost = selectedShippingOption?.amount || 0;
   const totalDiscount = cartItems.reduce((total, item) => {
