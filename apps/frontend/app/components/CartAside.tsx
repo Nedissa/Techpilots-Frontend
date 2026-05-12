@@ -160,6 +160,16 @@ export function CartAside() {
     }
   };
 
+  if (!isHydrated) {
+    return (
+      <Aside type="cart" heading="Din varukorg">
+        <div className="flex flex-col h-full bg-white items-center justify-center">
+          <p className="text-gray-600">Laddar...</p>
+        </div>
+      </Aside>
+    );
+  }
+
   return (
     <Aside type="cart" heading="Din varukorg">
       <div className="flex flex-col h-full bg-white">
