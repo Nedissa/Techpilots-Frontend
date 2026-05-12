@@ -429,8 +429,8 @@ export function HeaderWrapper() {
     const handleCartUpdated = (event: Event) => {
       const customEvent = event as CustomEvent;
       const { totalAmount, itemCount } = customEvent.detail;
-      setCartTotal(totalAmount);
-      setCartCount(itemCount);
+      setCartCount(Number(itemCount));
+      setCartTotal(Number(totalAmount));
 
       // Save to localStorage
       localStorage.setItem('cart', JSON.stringify({ count: itemCount, total: totalAmount }));
