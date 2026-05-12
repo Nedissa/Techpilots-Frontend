@@ -361,6 +361,16 @@ export function HeaderWrapper() {
     checkLoginStatus();
     setIsHydrated(true);
 
+    // Listen for cart updates
+    const handleCartUpdated = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { totalAmount, itemCount } = customEvent.detail;
+      setCartCount(Number(itemCount));
+      setCartTotal(Number(totalAmount));
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdated);
+
     // Fetch products from API for search
     const fetchProducts = async () => {
       try {
