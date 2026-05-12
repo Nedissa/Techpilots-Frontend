@@ -449,12 +449,10 @@ export function HeaderWrapper() {
     };
 
     window.addEventListener('addToCart', handleAddToCart);
-    window.addEventListener('cartUpdated', handleCartUpdated);
     return () => {
       window.removeEventListener('addToCart', handleAddToCart);
-      window.removeEventListener('cartUpdated', handleCartUpdated);
     };
-  }, [cartCount, cartTotal]);
+  }, []);
 
   // Handle scroll to show/hide header
   useEffect(() => {
