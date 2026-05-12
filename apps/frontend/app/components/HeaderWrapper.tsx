@@ -361,12 +361,20 @@ export function HeaderWrapper() {
     checkLoginStatus();
     setIsHydrated(true);
 
-    // Listen for cart updates
-    const handleCartUpdated = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const { totalAmount, itemCount } = customEvent.detail;
-      setCartCount(Number(itemCount));
-      setCartTotal(Number(totalAmount));
+    // Listen for cart updates - read from localStorage
+    const handleCartUpdated = () => {
+      const savedCartItems = localStorage.getItem('cartItems');
+      if (savedCartItems) {
+        try {
+          const items = JSON.parse(savedCartItems);
+          const count = items.length;
+          const total = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
+          setCartCount(count);
+          setCartTotal(total);
+        } catch (e) {
+          console.error('Failed to update cart from localStorage', e);
+        }
+      }
     };
 
     window.addEventListener('cartUpdated', handleCartUpdated);
