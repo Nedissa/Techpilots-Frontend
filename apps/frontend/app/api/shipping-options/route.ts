@@ -5,6 +5,7 @@ export async function GET(request: Request) {
     const cartId = searchParams.get('cart_id');
 
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
 
     if (!publishableKey) {
       return Response.json(
@@ -13,16 +14,18 @@ export async function GET(request: Request) {
       );
     }
 
-    // If no cart_id provided, create one first
+    // If no cart_id provided, create one first with the correct region
     let actualCartId = cartId;
     if (!actualCartId) {
-      const createCartResponse = await fetch('https://techpilots.medusajs.app/store/carts', {
+      const createCartResponse = await fetch(`${medusaUrl}/store/carts`, {
         method: 'POST',
         headers: {
           'x-publishable-api-key': publishableKey,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          region_id: 'reg_01KR9R4SFABTKM0CVFN7AVZ4RW',
+        }),
       });
 
       if (!createCartResponse.ok) {
@@ -47,7 +50,7 @@ export async function GET(request: Request) {
     }
 
     // Now fetch shipping options for the cart
-    const url = new URL('https://techpilots.medusajs.app/store/shipping-options');
+    const url = new URL(`${medusaUrl}/store/shipping-options`);
     url.searchParams.set('cart_id', actualCartId);
 
     const response = await fetch(url.toString(), {
@@ -70,7 +73,26 @@ export async function GET(request: Request) {
     const data = await response.json();
 
     // Get all shipping options
-    const allOptions = data.shipping_options || [];
+    let allOptions = data.shipping_options || [];
+
+    // If backend returns no options, use temporary defaults while Medusa is being configured
+    // This will be removed once shipping options are properly set up in Medusa
+    if (allOptions.length === 0) {
+      allOptions = [
+        {
+          id: 'standard_shipping',
+          name: 'Standardfrakt',
+          prices: [{ amount: 0 }],
+          type: { code: 'standard' }
+        },
+        {
+          id: 'express_shipping',
+          name: 'Expressfrakt',
+          prices: [{ amount: 99 }],
+          type: { code: 'express' }
+        }
+      ];
+    }
 
     // Map to simplified format - include all options
     const shippingOptions = allOptions.map((option: any) => {

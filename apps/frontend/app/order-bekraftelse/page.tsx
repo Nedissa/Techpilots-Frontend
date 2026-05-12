@@ -1,9 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { MainLayout } from '../components/MainLayout';
 
 export default function OrderConfirmation() {
+  useEffect(() => {
+    // Clear checkout data from localStorage after successful order
+    localStorage.removeItem('checkoutData');
+  }, []);
+
   return (
     <MainLayout bordered={false}>
       <div className="max-w-2xl mx-auto py-12 text-center">
