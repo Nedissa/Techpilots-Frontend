@@ -163,7 +163,7 @@ export function CartAside() {
   return (
     <Aside type="cart" heading="Din varukorg">
       <div className="flex flex-col h-full bg-white">
-        {!isHydrated || cartItems.length === 0 ? (
+        {cartItems.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
             <p className="text-gray-600 text-sm mb-6 text-center">Inte säker på var du ska börja?<br />Prova dessa kategorier:</p>
 
