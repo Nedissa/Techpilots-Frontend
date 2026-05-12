@@ -227,6 +227,13 @@ export default function Checkout() {
     }
   }, []);
 
+  // Save cart items to localStorage whenever they change
+  useEffect(() => {
+    if (isHydrated && cartItems.length > 0) {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+  }, [cartItems, isHydrated]);
+
   useEffect(() => {
     if (cartItems.length > 0) {
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
