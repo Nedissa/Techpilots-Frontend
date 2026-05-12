@@ -90,8 +90,9 @@ export function CartAside() {
         const savedCartItems = localStorage.getItem('cartItems');
         const items = savedCartItems ? JSON.parse(savedCartItems) : [];
         const newTotal = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
+        const totalItems = items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
         window.dispatchEvent(new CustomEvent('cartUpdated', {
-          detail: { totalAmount: newTotal, itemCount: items.length }
+          detail: { totalAmount: newTotal, itemCount: totalItems }
         }));
       }, 0);
     };
@@ -115,12 +116,13 @@ export function CartAside() {
     if (item) {
       const newTotal = cartTotal - (item.price * item.quantity);
       const updated = cartItems.filter(i => i.id !== id);
+      const totalItems = updated.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
       setCartTotal(newTotal);
       setCartItems(updated);
       localStorage.setItem('cartItems', JSON.stringify(updated));
       sessionStorage.setItem('cartItems', JSON.stringify(updated));
       window.dispatchEvent(new CustomEvent('cartUpdated', {
-        detail: { totalAmount: newTotal, itemCount: cartItems.length - 1 }
+        detail: { totalAmount: newTotal, itemCount: totalItems }
       }));
     }
   };
@@ -146,12 +148,13 @@ export function CartAside() {
       const diff = newQuantity - item.quantity;
       const newTotal = cartTotal + (item.price * diff);
       const updated = cartItems.map(i => (i.id === id ? { ...i, quantity: newQuantity } : i));
+      const totalItems = updated.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
       setCartTotal(newTotal);
       setCartItems(updated);
       localStorage.setItem('cartItems', JSON.stringify(updated));
       sessionStorage.setItem('cartItems', JSON.stringify(updated));
       window.dispatchEvent(new CustomEvent('cartUpdated', {
-        detail: { totalAmount: newTotal, itemCount: cartItems.length }
+        detail: { totalAmount: newTotal, itemCount: totalItems }
       }));
     }
   };

@@ -484,14 +484,20 @@ export function HeaderWrapper() {
       }
     };
 
-    const handleCartUpdated = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const { totalAmount, itemCount } = customEvent.detail;
-      setCartCount(Number(itemCount));
-      setCartTotal(Number(totalAmount));
-
-      // Save to localStorage
-      localStorage.setItem('cart', JSON.stringify({ count: itemCount, total: totalAmount }));
+    const handleCartUpdated = () => {
+      // Always recalculate from localStorage - don't trust event data
+      const savedCartItems = localStorage.getItem('cartItems');
+      if (savedCartItems) {
+        try {
+          const items = JSON.parse(savedCartItems);
+          const count = items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
+          const total = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
+          setCartCount(count);
+          setCartTotal(total);
+        } catch (e) {
+          console.error('Failed to update cart from event', e);
+        }
+      }
     };
 
     window.addEventListener('addToCart', handleAddToCart);
