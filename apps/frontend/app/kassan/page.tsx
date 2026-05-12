@@ -34,19 +34,89 @@ declare global {
 
 export default function Checkout() {
   const router = useRouter();
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [cartTotal, setCartTotal] = useState(0);
+
+  // Initialize state from localStorage immediately so data shows on first render
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const checkoutState = localStorage.getItem('checkoutStateBeforePayment');
+      if (checkoutState) {
+        const state = JSON.parse(checkoutState);
+        localStorage.removeItem('checkoutStateBeforePayment');
+        return state.cartItems || [];
+      }
+      const saved = localStorage.getItem('cartItems');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error('Failed to load cart items from localStorage', e);
+      return [];
+    }
+  });
+
+  const [cartTotal, setCartTotal] = useState(() => {
+    if (typeof window === 'undefined') return 0;
+    try {
+      const checkoutState = localStorage.getItem('checkoutStateBeforePayment');
+      if (checkoutState) {
+        const state = JSON.parse(checkoutState);
+        return state.cartItems.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
+      }
+      const saved = localStorage.getItem('cartItems');
+      if (saved) {
+        const items = JSON.parse(saved);
+        return items.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
+      }
+      return 0;
+    } catch (e) {
+      return 0;
+    }
+  });
+
   const [customerType, setCustomerType] = useState<'private' | 'business'>('private');
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    postalCode: '',
-    city: '',
-    country: 'Sverige',
-    companyName: '',
+
+  const [formData, setFormData] = useState(() => {
+    if (typeof window === 'undefined') return {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      postalCode: '',
+      city: '',
+      country: 'Sverige',
+      companyName: '',
+    };
+    try {
+      const checkoutState = localStorage.getItem('checkoutStateBeforePayment');
+      if (checkoutState) {
+        const state = JSON.parse(checkoutState);
+        return state.formData;
+      }
+      const saved = localStorage.getItem('checkoutFormData');
+      return saved ? JSON.parse(saved) : {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: '',
+        postalCode: '',
+        city: '',
+        country: 'Sverige',
+        companyName: '',
+      };
+    } catch (e) {
+      return {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: '',
+        postalCode: '',
+        city: '',
+        country: 'Sverige',
+        companyName: '',
+      };
+    }
   });
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState('card');
