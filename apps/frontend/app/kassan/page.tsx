@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { MainLayout } from '../components/MainLayout';
 
 const autofillStyles = `
@@ -32,6 +33,7 @@ declare global {
 }
 
 export default function Checkout() {
+  const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartTotal, setCartTotal] = useState(0);
   const [customerType, setCustomerType] = useState<'private' | 'business'>('private');
@@ -52,6 +54,12 @@ export default function Checkout() {
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [loadingShipping, setLoadingShipping] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
+
+  const handleContinueShopping = () => {
+    // Clear the saved form data when leaving checkout
+    sessionStorage.removeItem('checkoutFormData');
+    router.push('/');
+  };
 
   const countryCodeMap: Record<string, string> = {
     'Sverige': 'se',
@@ -269,6 +277,8 @@ export default function Checkout() {
       }
 
       if (data.url) {
+        // Clear form data before redirecting
+        sessionStorage.removeItem('checkoutFormData');
         window.location.href = data.url;
       } else {
         throw new Error('No checkout URL returned');
@@ -535,12 +545,12 @@ export default function Checkout() {
               {isProcessing ? 'Bearbetar...' : 'Slutför köp'}
             </button>
 
-            <Link
-              href="/"
-              className="block text-center text-gray-600 hover:text-gray-900 font-medium"
+            <button
+              onClick={handleContinueShopping}
+              className="w-full block text-center text-gray-600 hover:text-gray-900 font-medium py-2"
             >
               ← Fortsätt handla
-            </Link>
+            </button>
           </form>
       </div>
       </div>
