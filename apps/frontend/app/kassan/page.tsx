@@ -157,6 +157,17 @@ export default function Checkout() {
   }, []);
 
   useEffect(() => {
+    // Load form data from sessionStorage if available
+    const savedFormData = sessionStorage.getItem('checkoutFormData');
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData);
+        setFormData(parsedData);
+      } catch (e) {
+        console.error('Failed to load form data from sessionStorage', e);
+      }
+    }
+
     // Check if coming from quick checkout (Handla nu button)
     const quickCheckout = localStorage.getItem('quickCheckout');
     if (quickCheckout) {
@@ -223,10 +234,13 @@ export default function Checkout() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    const newFormData = {
+      ...formData,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }));
+    };
+    setFormData(newFormData);
+    // Save to sessionStorage so it persists if user navigates back
+    sessionStorage.setItem('checkoutFormData', JSON.stringify(newFormData));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
