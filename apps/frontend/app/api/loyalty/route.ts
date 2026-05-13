@@ -2,6 +2,8 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const customerId = searchParams.get('customer_id');
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
 
     if (!customerId) {
       return Response.json(
@@ -11,10 +13,10 @@ export async function GET(request: Request) {
     }
 
     const response = await fetch(
-      `https://techpilots.medusajs.app/admin/customers/${customerId}`,
+      `${medusaUrl}/admin/customers/${customerId}`,
       {
         headers: {
-          'x-publishable-api-key': 'pk_ab6e93368dc9440a191c0540f0ab9227b81f916924bc422b654c61d371652e29',
+          'x-publishable-api-key': publishableKey,
         },
       }
     );
@@ -57,6 +59,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const { customerId, points, reason } = await request.json();
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
 
     if (!customerId || !points || !reason) {
       return Response.json(
@@ -66,12 +70,12 @@ export async function POST(request: Request) {
     }
 
     const customerResponse = await fetch(
-      `https://techpilots.medusajs.app/admin/customers/${customerId}`,
+      `${medusaUrl}/admin/customers/${customerId}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-publishable-api-key': 'pk_ab6e93368dc9440a191c0540f0ab9227b81f916924bc422b654c61d371652e29',
+          'x-publishable-api-key': publishableKey,
         },
         body: JSON.stringify({
           metadata: {

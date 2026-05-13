@@ -1,6 +1,7 @@
 export async function POST(request: Request) {
   try {
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
 
     if (!publishableKey) {
       return Response.json(
@@ -11,7 +12,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const response = await fetch('https://techpilots.medusajs.app/store/carts', {
+    const response = await fetch(`${medusaUrl}/store/carts`, {
       method: 'POST',
       headers: {
         'x-publishable-api-key': publishableKey,
