@@ -123,9 +123,18 @@ export default function ProductDetailClient({
     }
   };
 
+  const defaultHighlights = [
+    { value: 'Högkvalitativ produkt', label: 'Kvalitet' },
+    { value: 'Snabb leverans', label: 'Leverans' },
+    { value: 'Säker betalning', label: 'Betalning' },
+    { value: '2 års garanti', label: 'Garanti' },
+    { value: 'Fri frakt över 500 kr', label: 'Frakt' },
+    { value: '30 dagars returrätt', label: 'Retur' },
+  ];
+
   const productDetails = {
     quantityAvailable: 12,
-    description: product.features?.join('\n') || 'Produktbeskrivning från katalog.',
+    description: product.features?.join('\n') || `${product.title}\n\nEn premium-produkt med utmärkt kvalitet och pris. Perfekt för dina behov.`,
     featuredImage: {
       url: product.image,
       altText: product.title,
@@ -133,10 +142,12 @@ export default function ProductDetailClient({
     images: product.images?.length ?
       product.images.map((url, idx) => ({ id: String(idx + 1), url, altText: `${product.title} ${idx + 1}` }))
       : [{ id: '1', url: product.image, altText: product.title }],
-    highlights: product.features?.slice(0, 6).map((feature, idx) => ({
-      value: feature,
-      label: `Specifikation ${idx + 1}`
-    })) || [],
+    highlights: product.features?.length > 0 ?
+      product.features.slice(0, 6).map((feature, idx) => ({
+        value: feature,
+        label: `Specifikation ${idx + 1}`
+      }))
+      : defaultHighlights,
   };
 
   const discountPercent = product.originalPrice
