@@ -306,7 +306,7 @@ export function CartAside() {
               <div className="flex justify-around items-start pt-4 border-t border-gray-200">
                 <button
                   onClick={handleShare}
-                  className="flex flex-col items-center gap-1 text-gray-700 hover:text-gray-900 text-xs font-medium"
+                  className="flex flex-col items-center gap-1 text-gray-700 hover:text-gray-900 text-xs font-medium flex-1"
                 >
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
@@ -488,16 +488,16 @@ export function CartAside() {
                       setTimeout(() => printWindow.print(), 250);
                     }
                   }}
-                  className="flex flex-col items-center gap-1 text-gray-700 hover:text-gray-900 text-xs font-medium"
+                  className="flex flex-col items-center gap-1 text-gray-700 hover:text-gray-900 text-xs font-medium flex-1"
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v3h12V3z"/>
                   </svg>
                   Skriv ut
                 </button>
                 <button
                   onClick={handleClearCart}
-                  className="flex flex-col items-center gap-1 text-gray-700 hover:text-red-600 text-xs font-medium"
+                  className="flex flex-col items-center gap-1 text-gray-700 hover:text-red-600 text-xs font-medium flex-1"
                 >
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"/>
