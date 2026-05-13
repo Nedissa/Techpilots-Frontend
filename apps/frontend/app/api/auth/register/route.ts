@@ -11,22 +11,22 @@ export async function POST(request: Request) {
       );
     }
 
-    const adminKey = process.env.MEDUSA_ADMIN_KEY;
-    if (!adminKey) {
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    if (!publishableKey) {
       return Response.json(
         { error: 'Server configuration error' },
         { status: 500 }
       );
     }
 
-    // Create customer using Secret API Key (backend-to-backend)
+    // Create customer using Store API (register endpoint)
     const registerResponse = await fetch(
-      `${MEDUSA_URL}/admin/customers`,
+      `${MEDUSA_URL}/store/customers`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminKey}`,
+          'x-publishable-api-key': publishableKey,
         },
         body: JSON.stringify({
           first_name: firstName,
