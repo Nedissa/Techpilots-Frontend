@@ -1,6 +1,3 @@
-const MEDUSA_API_URL = 'https://techpilots.medusajs.app';
-const PUBLISHABLE_API_KEY = 'pk_ab6e93368dc9440a191c0540f0ab9227b81f916924bc422b654c61d371652e29';
-
 export interface MedusaProduct {
   id: string;
   title: string;
@@ -27,10 +24,7 @@ export interface Product {
 
 export async function fetchProductsFromMedusa(): Promise<Product[]> {
   try {
-    console.log('Fetching products from API route...');
     const response = await fetch('/api/products');
-
-    console.log('API response status:', response.status);
 
     if (!response.ok) {
       console.error('Failed to fetch products from API:', response.status);
@@ -38,14 +32,12 @@ export async function fetchProductsFromMedusa(): Promise<Product[]> {
     }
 
     const data = await response.json();
-    console.log('API response:', data);
 
     if (!data.products || !Array.isArray(data.products)) {
       console.error('Invalid response format from API:', data);
       return [];
     }
 
-    console.log('Found', data.products.length, 'products');
     return data.products.map((product: any) => ({
       id: product.id,
       title: product.title,
@@ -61,7 +53,6 @@ export async function fetchProductsFromMedusa(): Promise<Product[]> {
     }));
   } catch (error) {
     console.error('Error fetching products from Medusa:', error);
-    console.error('Full error:', JSON.stringify(error));
     return [];
   }
 }

@@ -6,6 +6,7 @@ export async function GET(request: Request) {
 
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
     const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
+    const regionId = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID || 'reg_01KR9R4SFABTKM0CVFN7AVZ4RW';
 
     if (!publishableKey) {
       return Response.json(
@@ -24,7 +25,7 @@ export async function GET(request: Request) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          region_id: 'reg_01KR9R4SFABTKM0CVFN7AVZ4RW',
+          region_id: regionId,
         }),
       });
 
@@ -75,23 +76,11 @@ export async function GET(request: Request) {
     // Get all shipping options
     let allOptions = data.shipping_options || [];
 
-    // If backend returns no options, use temporary defaults while Medusa is being configured
-    // This will be removed once shipping options are properly set up in Medusa
     if (allOptions.length === 0) {
-      allOptions = [
-        {
-          id: 'standard_shipping',
-          name: 'Standardfrakt',
-          prices: [{ amount: 0 }],
-          type: { code: 'standard' }
-        },
-        {
-          id: 'express_shipping',
-          name: 'Expressfrakt',
-          prices: [{ amount: 99 }],
-          type: { code: 'express' }
-        }
-      ];
+      return Response.json(
+        { error: 'No shipping options available' },
+        { status: 404 }
+      );
     }
 
     // Map to simplified format - include all options

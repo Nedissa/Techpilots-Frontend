@@ -1,7 +1,5 @@
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const customerId = searchParams.get('customer_id');
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
     const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
 

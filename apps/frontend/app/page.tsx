@@ -24,9 +24,7 @@ function CampaignBannersSection() {
 
 async function fetchProductsFromAPI() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    console.log('Fetching from:', `${baseUrl}/api/products`);
-    const response = await fetch(`${baseUrl}/api/products?limit=100`, {
+    const response = await fetch('/api/products?limit=100', {
       cache: 'no-store',
     });
 
@@ -37,7 +35,6 @@ async function fetchProductsFromAPI() {
 
     const data = await response.json();
     const products = data.products || [];
-    console.log('Fetched products:', products.length);
 
     return products;
   } catch (error) {

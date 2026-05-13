@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Product, getCategoryTitle } from '@/app/lib/products';
+import { Product } from '@/app/lib/products';
 import { Breadcrumb } from '@/app/components/Breadcrumb';
 import { ImageZoomDialog } from '@/app/components/ImageZoomDialog';
 import { ProductCard, type ProductData } from '@/app/components/ProductCard';
@@ -123,30 +123,20 @@ export default function ProductDetailClient({
     }
   };
 
-  // Mock product details for display
   const productDetails = {
-    sku: 'ASUS-ROG-16-001',
     quantityAvailable: 12,
-    compareAtPrice: 17999,
-    description: 'En kraftfull gaming-laptop med senaste teknik. Perfekt för gaming och professionellt arbete.\n\nUtstyrd med Intel Core i9-13900H, NVIDIA RTX 4080, 32GB DDR5 RAM och 1TB SSD. 16" 3.2K 165Hz display för en otrolig visuell upplevelse.',
+    description: product.features?.join('\n') || 'Produktbeskrivning från katalog.',
     featuredImage: {
       url: product.image,
       altText: product.title,
     },
-    images: [
-      { id: '1', url: product.image, altText: `${product.title} 1` },
-      { id: '2', url: product.image, altText: `${product.title} 2` },
-      { id: '3', url: product.image, altText: `${product.title} 3` },
-      { id: '4', url: product.image, altText: `${product.title} 4` },
-    ],
-    highlights: [
-      { value: 'Intel Core i9', label: 'Processor' },
-      { value: '32GB DDR5', label: 'RAM' },
-      { value: '1TB SSD', label: 'Lagring' },
-      { value: '16" 3.2K 165Hz', label: 'Display' },
-      { value: 'RTX 4080', label: 'GPU' },
-      { value: '8-10h', label: 'Batteritid' },
-    ],
+    images: product.images?.length ?
+      product.images.map((url, idx) => ({ id: String(idx + 1), url, altText: `${product.title} ${idx + 1}` }))
+      : [{ id: '1', url: product.image, altText: product.title }],
+    highlights: product.features?.slice(0, 6).map((feature, idx) => ({
+      value: feature,
+      label: `Specifikation ${idx + 1}`
+    })) || [],
   };
 
   const discountPercent = product.originalPrice

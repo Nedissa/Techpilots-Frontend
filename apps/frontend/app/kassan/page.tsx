@@ -139,7 +139,6 @@ export default function Checkout() {
     if (checkoutData) {
       try {
         const data = JSON.parse(checkoutData);
-        console.log('Loaded from checkoutData:', data);
         setCartItems(data.cartItems || []);
         if (data.formData) {
           setFormData(data.formData);

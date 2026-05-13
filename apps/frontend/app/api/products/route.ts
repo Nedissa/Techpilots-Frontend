@@ -2,6 +2,7 @@ export async function GET() {
   try {
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
     const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
+    const regionId = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID || 'reg_01KR9R4SFABTKM0CVFN7AVZ4RW';
 
     if (!publishableKey) {
       return Response.json(
@@ -12,7 +13,7 @@ export async function GET() {
 
     // Fetch products with publishable API key
     const response = await fetch(
-      `${medusaUrl}/store/products?limit=100&region_id=reg_01KR9R4SFABTKM0CVFN7AVZ4RW&fields=*variants.prices`,
+      `${medusaUrl}/store/products?limit=100&region_id=${regionId}&fields=*variants.prices`,
       {
         method: 'GET',
         headers: {
@@ -37,7 +38,8 @@ export async function GET() {
       // Fix image URLs - replace localhost with VPS IP
       let imageUrl = product.images?.[0]?.url || product.thumbnail || '';
       if (imageUrl && imageUrl.includes('localhost:9000')) {
-        imageUrl = imageUrl.replace('localhost:9000', '194.14.207.94:9000');
+        const backendHost = new URL(medusaUrl).host;
+        imageUrl = imageUrl.replace('localhost:9000', backendHost);
       }
       const image = imageUrl;
 

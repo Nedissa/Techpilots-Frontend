@@ -1,13 +1,21 @@
-const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:3000';
+const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://194.14.207.94:9000';
 
 export async function POST(request: Request) {
   try {
     const { firstName, lastName, email, password } = await request.json();
+    const adminKey = process.env.MEDUSA_ADMIN_KEY;
 
     if (!firstName || !lastName || !email || !password) {
       return Response.json(
         { error: 'Missing required fields' },
         { status: 400 }
+      );
+    }
+
+    if (!adminKey) {
+      return Response.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
       );
     }
 
@@ -18,7 +26,7 @@ export async function POST(request: Request) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer sk_5b6b8a1196850bb79bfd7bfba30f1866c8ae86220dad8f973fa5e5eb68322683`,
+          'Authorization': `Bearer ${adminKey}`,
         },
         body: JSON.stringify({
           first_name: firstName,
