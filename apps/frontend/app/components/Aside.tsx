@@ -51,10 +51,13 @@ export function Aside({
 
   return (
     <div
-      className={`fixed inset-0 overflow-hidden z-40 transition-opacity duration-300 ${
+      className={`fixed inset-0 overflow-hidden z-40 ${
         expanded ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
-      style={{ visibility: isVisible ? 'visible' : 'hidden' }}
+      style={{
+        visibility: isVisible ? 'visible' : 'hidden',
+        transition: 'opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
       role="dialog"
       aria-modal="true"
     >
@@ -66,9 +69,12 @@ export function Aside({
       />
 
       {/* Aside Panel */}
-      <aside className={`fixed right-0 top-0 h-screen w-full max-w-md bg-white shadow-lg transition-transform duration-300 z-50 ${
+      <aside className={`fixed right-0 top-0 h-screen w-full max-w-md bg-white shadow-lg z-50 flex flex-col ${
         expanded ? 'translate-x-0' : 'translate-x-full'
-      } flex flex-col`}>
+      }`}
+      style={{
+        transition: 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)'
+      }}>
         {/* Header */}
         <header className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-black">{heading}</h2>
