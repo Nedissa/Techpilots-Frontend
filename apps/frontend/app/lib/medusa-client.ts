@@ -24,7 +24,12 @@ export interface Product {
 
 export async function fetchProductsFromMedusa(): Promise<Product[]> {
   try {
-    const response = await fetch(`/api/products`, {
+    const baseUrl = typeof window !== 'undefined'
+      ? ''
+      : (process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
+    const response = await fetch(`${baseUrl}/api/products`, {
       next: { revalidate: 60 },
     });
 
@@ -60,7 +65,12 @@ export async function fetchProductsFromMedusa(): Promise<Product[]> {
 
 export async function fetchProductByHandle(handle: string): Promise<Product | null> {
   try {
-    const response = await fetch(`/api/products?handle=${handle}`, {
+    const baseUrl = typeof window !== 'undefined'
+      ? ''
+      : (process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
+    const response = await fetch(`${baseUrl}/api/products?handle=${handle}`, {
       next: { revalidate: 60 },
     });
 
