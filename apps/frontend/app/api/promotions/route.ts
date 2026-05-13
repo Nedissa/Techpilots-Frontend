@@ -1,6 +1,7 @@
 export async function GET(request: Request) {
   try {
     const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
     const { searchParams } = new URL(request.url);
     const customerId = searchParams.get('customer_id');
 
@@ -8,7 +9,7 @@ export async function GET(request: Request) {
       `${medusaUrl}/store/discounts`,
       {
         headers: {
-          'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
+          'x-publishable-api-key': publishableKey as string,
         },
       }
     );

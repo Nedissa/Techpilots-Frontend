@@ -76,13 +76,13 @@ export default function Checkout() {
     script.async = false;
     script.defer = true;
 
-    window.initGoogleMapsAutocomplete = () => {
+    (window as any).initGoogleMapsAutocomplete = () => {
       if (addressInputRef.current && (window as any).google?.maps?.places) {
         try {
           new (window as any).google.maps.places.Autocomplete(addressInputRef.current, {
             types: ['address'],
             componentRestrictions: { country: ['se', 'no', 'dk', 'fi'] }
-          }).addListener('place_changed', function() {
+          }).addListener('place_changed', function(this: any) {
             const place = this.getPlace();
             if (place.geometry && place.address_components) {
               const addressComponents = place.address_components;

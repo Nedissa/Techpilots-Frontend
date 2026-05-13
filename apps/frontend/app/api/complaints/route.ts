@@ -1,6 +1,7 @@
 export async function POST(request: Request) {
   try {
     const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
     const { orderId, productId, description, customerId } = await request.json();
 
     if (!orderId || !productId || !description || !customerId) {
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
+          'x-publishable-api-key': publishableKey as string,
         },
         body: JSON.stringify({
           order_id: orderId,
@@ -49,6 +50,8 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
+    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
     const { searchParams } = new URL(request.url);
     const customerId = searchParams.get('customer_id');
 
@@ -60,10 +63,10 @@ export async function GET(request: Request) {
     }
 
     const response = await fetch(
-      `https://techpilots.medusajs.app/admin/complaints?customer_id=${customerId}`,
+      `${medusaUrl}/admin/complaints?customer_id=${customerId}`,
       {
         headers: {
-          'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
+          'x-publishable-api-key': publishableKey as string,
         },
       }
     );

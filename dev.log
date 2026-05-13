@@ -7,13 +7,12 @@
 > next dev
 
 [32m✔[0m [33mConsole Ninja[0m extension is connected to [33mNext.js[0m, see [36mhttps://tinyurl.com/2vt8jxzw[0m
-⚠ Console Ninja Turbopack support is a PRO feature, [33mcurrently available to community users while in preview[0m
-⚠ Port 3000 is in use by process 3952, using available port 3001 instead.
 ▲ Next.js 16.2.4 (Turbopack)
-- Local:         http://localhost:3001
-- Network:       http://192.168.0.9:3001
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.9:3000
 - Environments: .env.local
-✓ Ready in 734ms
+✓ Ready in 670ms
+⚠ Console Ninja Turbopack support is a PRO feature, [33mcurrently available to community users while in preview[0m
 ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
  We detected multiple lockfiles and selected the directory of F:\Techpilots-Webshopp\package-lock.json as the root directory.
  To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
@@ -21,19 +20,44 @@
  Detected additional lockfiles: 
    * F:\Techpilots-Webshopp\Techpilots-Frontend\package-lock.json
 
-⨯ Another next dev server is already running.
 
-- Local:        http://localhost:3000
-- PID:          3952
-- Dir:          F:\Techpilots-Webshopp\Techpilots-Frontend\apps\frontend
-- Log:          .next\dev\logs\next-development.log
-
-Run taskkill /PID 3952 /F to stop it.
-[?25h
-npm error Lifecycle script `dev` failed with error:
-npm error code 1
-npm error path F:\Techpilots-Webshopp\Techpilots-Frontend\apps\frontend
-npm error workspace techpilots-frontend@0.1.0
-npm error location F:\Techpilots-Webshopp\Techpilots-Frontend\apps\frontend
-npm error command failed
-npm error command C:\Windows\system32\cmd.exe /d /s /c next dev
+Fetching from: http://localhost:3000/api/products
+ GET /api/products?limit=100 200 in 407ms (next.js: 38ms, application-code: 369ms)
+Fetched products: 4
+ GET / 200 in 1414ms (next.js: 775ms, application-code: 640ms)
+Fetching from: http://localhost:3000/api/products
+ GET /api/products?limit=100 200 in 316ms (next.js: 1467µs, application-code: 314ms)
+Fetched products: 4
+ GET / 200 in 364ms (next.js: 3ms, application-code: 361ms)
+Fetching from: http://localhost:3000/api/products
+Fetched products: 4
+ GET / 200 in 65ms (next.js: 21ms, application-code: 44ms)
+Fetching from: http://localhost:3000/api/products
+Fetched products: 4
+ GET / 200 in 73ms (next.js: 30ms, application-code: 43ms)
+Fetching from: http://localhost:3000/api/products
+ GET /api/products?limit=100 200 in 380ms (next.js: 15ms, application-code: 365ms)
+Fetched products: 4
+ GET / 200 in 461ms (next.js: 3ms, application-code: 458ms)
+Fetching from: http://localhost:3000/api/products
+ GET /api/products?limit=100 200 in 310ms (next.js: 1459µs, application-code: 309ms)
+Fetched products: 4
+ GET / 200 in 358ms (next.js: 2ms, application-code: 356ms)
+Fetching from: http://localhost:3000/api/products
+Fetched products: 4
+✓ Compiled in 271ms
+ GET / 200 in 64ms (next.js: 24ms, application-code: 40ms)
+Fetching from: http://localhost:3000/api/products
+ GET /api/products?limit=100 200 in 352ms (next.js: 19ms, application-code: 334ms)
+Fetched products: 4
+ GET / 200 in 458ms (next.js: 3ms, application-code: 456ms)
+Fetching from: http://localhost:3000/api/products
+ GET /api/products?limit=100 200 in 294ms (next.js: 2ms, application-code: 292ms)
+Fetched products: 4
+ GET / 200 in 369ms (next.js: 3ms, application-code: 366ms)
+Fetching from: http://localhost:3000/api/products
+Fetched products: 4
+ GET / 200 in 80ms (next.js: 32ms, application-code: 48ms)
+Fetching from: http://localhost:3000/api/products
+Fetched products: 4
+ GET / 200 in 52ms (next.js: 24ms, application-code: 28ms)

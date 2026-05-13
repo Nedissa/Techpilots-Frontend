@@ -608,25 +608,24 @@ export default function ProductDetailClient({
               });
               window.dispatchEvent(event);
               setIsAdded(true);
-              setTimeout(() => setIsAdded(false), 2000);
+              setTimeout(() => setIsAdded(false), 100);
             }}
-            disabled={isAdded}
-            className="w-full bg-black text-white text-sm font-semibold py-3 px-4 mb-2 flex items-center justify-center gap-2"
+            className="w-full bg-black text-white text-sm font-semibold py-3 px-4 mb-2 flex items-center justify-center gap-2 hover:bg-gray-800"
           >
             {isAdded ? (
-              <>
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <span className="transition-none">
+                <svg className="w-4 h-4 fill-currentColor inline" viewBox="0 0 24 24">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                 </svg>
-                Tillagd
-              </>
+                <span className="ml-2 inline">Tillagd</span>
+              </span>
             ) : (
-              <>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" fill="none"/>
+              <span className="transition-none">
+                <svg className="w-5 h-5 fill-none stroke-currentColor inline" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+                  <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z"/>
                 </svg>
-                Lägg i varukorg
-              </>
+                <span className="ml-2 inline">Lägg i varukorg</span>
+              </span>
             )}
           </button>
 
