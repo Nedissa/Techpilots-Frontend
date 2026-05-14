@@ -11,6 +11,11 @@ export default function AccountPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [city, setCity] = useState('');
+  const [addressPhone, setAddressPhone] = useState('');
   const [activeTab, setActiveTab] = useState('profil');
   const [isHydrated, setIsHydrated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +41,23 @@ export default function AccountPage() {
   const [saveMessage, setSaveMessage] = useState('');
   const [saveError, setSaveError] = useState('');
   const [isSaved, setIsSaved] = useState(false);
+  const [showComplaintForm, setShowComplaintForm] = useState(false);
+  const [complaintOrderId, setComplaintOrderId] = useState('');
+  const [complaintDescription, setComplaintDescription] = useState('');
   const addressInputRef = useRef<HTMLInputElement>(null);
+
+  // Check if all required fields are filled
+  const isFormComplete = editFirstName && editLastName && editEmail && editAddress && editPostalCode && editCity;
+
+  // Track if any changes have been made
+  const hasChanges = editFirstName !== firstName ||
+    editLastName !== lastName ||
+    editEmail !== registerEmail ||
+    editPhone !== phone ||
+    editAddress !== address ||
+    editPostalCode !== postalCode ||
+    editCity !== city ||
+    editAddressPhone !== addressPhone;
 
   // Ladda sparad userData när sidan öppnas
   useEffect(() => {
@@ -46,21 +67,6 @@ export default function AccountPage() {
       return;
     }
 
-    try {
-      const userData = JSON.parse(savedData);
-      setFirstName(userData.firstName);
-      setLastName(userData.lastName);
-      setRegisterEmail(userData.email);
-    } catch (e) {
-      console.error('Failed to load user data', e);
-      router.push('/logga-in');
-      return;
-    }
-
-    // Ladda favoriter från localStorage (cache)
-    const favoritesList = JSON.parse(localStorage.getItem('favoritesList') || '[]');
-    setFavoriteProducts(favoritesList);
-
     // Ladda sparad tab
     const savedTab = localStorage.getItem('accountTab');
     if (savedTab) {
@@ -68,20 +74,8 @@ export default function AccountPage() {
     }
 
     const loadData = async () => {
+      let customerId = '';
       try {
-        const savedData = localStorage.getItem('userData');
-        if (!savedData) {
-          console.error('No user data found in localStorage');
-          return;
-        }
-
-        const userData = JSON.parse(savedData);
-        const customerId = userData.id;
-
-        if (!customerId) {
-          console.error('No customer ID found');
-          return;
-        }
 
       // Load profile from Medusa
       try {
@@ -92,8 +86,13 @@ export default function AccountPage() {
         }
         const meData = await meResponse.json();
         const customer = meData.customer;
+        customerId = customer.id;
 
         // Populate form fields with Medusa data
+        setFirstName(customer.first_name || '');
+        setLastName(customer.last_name || '');
+        setRegisterEmail(customer.email || '');
+        setPhone(customer.phone || '');
         setEditFirstName(customer.first_name || '');
         setEditLastName(customer.last_name || '');
         setEditEmail(customer.email || '');
@@ -145,16 +144,31 @@ export default function AccountPage() {
         if (addressResponse.ok) {
           const addressData = await addressResponse.json();
           const loadedAddresses = addressData.addresses || [];
+          console.log('Loaded addresses:', loadedAddresses);
           setAddresses(loadedAddresses);
 
           // Populate form fields with first address if available
           if (loadedAddresses.length > 0) {
             const firstAddress = loadedAddresses[0];
+            console.log('Setting currentAddressId to:', firstAddress.id);
             setCurrentAddressId(firstAddress.id);
+            // Store original address data
+            setAddress(firstAddress.address_1 || '');
+            setPostalCode(firstAddress.postal_code || '');
+            setCity(firstAddress.city || '');
+            setAddressPhone(firstAddress.phone || '');
+            // Store edit values
             setEditAddress(firstAddress.address_1 || '');
             setEditPostalCode(firstAddress.postal_code || '');
             setEditCity(firstAddress.city || '');
             setEditAddressPhone(firstAddress.phone || '');
+          } else {
+            console.log('No addresses loaded');
+            setCurrentAddressId(null);
+            setAddress('');
+            setPostalCode('');
+            setCity('');
+            setAddressPhone('');
           }
         }
       } catch (error) {
@@ -163,12 +177,11 @@ export default function AccountPage() {
 
       // Load favorites from Medusa
       try {
-        const favResponse = await fetch(`/api/favorites?customer_id=${customerId}`);
+        const favResponse = await fetch('/api/favorites');
         if (favResponse.ok) {
           const favData = await favResponse.json();
-          const wishlist = favData.wishlist || [];
-          setFavoriteProducts(wishlist);
-          localStorage.setItem('favoritesList', JSON.stringify(wishlist));
+          const favorites = favData.favorites || [];
+          setFavoriteProducts(favorites);
         }
       } catch (error) {
         console.error('Failed to load favorites:', error);
@@ -191,9 +204,43 @@ export default function AccountPage() {
       console.error('Logout error:', error);
     }
     localStorage.removeItem('userData');
-    localStorage.removeItem('favoritesList');
     window.dispatchEvent(new Event('userLogout'));
     router.push('/logga-in');
+  };
+
+  const handleAddComplaint = async () => {
+    if (!complaintOrderId || !complaintDescription) {
+      setSaveError('Fyll i alla fält');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/complaints', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          order_id: complaintOrderId,
+          description: complaintDescription,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        setSaveError(error.error || 'Kunde inte spara felanmälan');
+        return;
+      }
+
+      const data = await response.json();
+      setComplaints([...complaints, data.complaint]);
+      setComplaintOrderId('');
+      setComplaintDescription('');
+      setShowComplaintForm(false);
+      setSaveMessage('Felanmälan sparad');
+      setTimeout(() => setSaveMessage(''), 3000);
+    } catch (error) {
+      console.error('Error adding complaint:', error);
+      setSaveError('Ett fel uppstod');
+    }
   };
 
   const handleSaveChanges = async () => {
@@ -221,69 +268,93 @@ export default function AccountPage() {
       const data = await response.json();
       const customer = data.customer;
 
-      const savedData = localStorage.getItem('userData');
-      if (savedData) {
-        const userData = JSON.parse(savedData);
-        userData.firstName = customer.first_name;
-        userData.lastName = customer.last_name;
-        userData.email = customer.email;
-        userData.phone = customer.phone;
-        localStorage.setItem('userData', JSON.stringify(userData));
-      }
-
       setFirstName(customer.first_name);
       setLastName(customer.last_name);
       setRegisterEmail(customer.email);
+      setPhone(customer.phone || '');
       setEditFirstName(customer.first_name);
       setEditLastName(customer.last_name);
+      setEditEmail(customer.email);
       setEditPhone(customer.phone || '');
 
       // Save/Update address if provided
       if (editAddress && editPostalCode && editCity) {
-        let addressResponse;
+        try {
+          // If we have existing address, try to update it first
+          if (currentAddressId) {
+            console.log('Attempting to update address:', currentAddressId);
+            const updateResponse = await fetch(`/api/auth/addresses/${currentAddressId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                first_name: editFirstName,
+                last_name: editLastName,
+                address_1: editAddress,
+                postal_code: editPostalCode,
+                city: editCity,
+                phone: editAddressPhone || undefined,
+                country_code: 'SE',
+              }),
+            });
 
-        if (currentAddressId) {
-          // Update existing address
-          addressResponse = await fetch(`/api/auth/addresses/${currentAddressId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              first_name: editFirstName,
-              last_name: editLastName,
-              address_1: editAddress,
-              postal_code: editPostalCode,
-              city: editCity,
-              phone: editAddressPhone || undefined,
-              country_code: 'SE',
-            }),
-          });
-        } else {
-          // Create new address
-          addressResponse = await fetch('/api/auth/addresses', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              first_name: editFirstName,
-              last_name: editLastName,
-              address_1: editAddress,
-              postal_code: editPostalCode,
-              city: editCity,
-              phone: editAddressPhone || undefined,
-              country_code: 'SE',
-            }),
-          });
-        }
-
-        if (addressResponse.ok) {
-          const addressData = await addressResponse.json();
-          const newAddressId = addressData.address?.id;
-          if (newAddressId && !currentAddressId) {
-            setCurrentAddressId(newAddressId);
-            setAddresses([addressData.address]);
+            if (updateResponse.ok) {
+              console.log('Address updated successfully');
+              // Reload addresses to get fresh data
+              const reloadResponse = await fetch('/api/auth/addresses');
+              if (reloadResponse.ok) {
+                const reloadData = await reloadResponse.json();
+                const loadedAddresses = reloadData.addresses || [];
+                setAddresses(loadedAddresses);
+              }
+              return;
+            } else {
+              console.log('Update failed, will create new address instead');
+            }
           }
-        } else {
-          const errorData = await addressResponse.json();
-          console.error('Failed to save address:', errorData);
+
+          // Create new address if no existing or update failed
+          console.log('Creating new address');
+          const createResponse = await fetch('/api/auth/addresses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              first_name: editFirstName,
+              last_name: editLastName,
+              address_1: editAddress,
+              postal_code: editPostalCode,
+              city: editCity,
+              phone: editAddressPhone || undefined,
+              country_code: 'SE',
+            }),
+          });
+
+          if (createResponse.ok) {
+            console.log('Address created successfully');
+            // Reload addresses from server
+            const reloadResponse = await fetch('/api/auth/addresses');
+            if (reloadResponse.ok) {
+              const reloadData = await reloadResponse.json();
+              const loadedAddresses = reloadData.addresses || [];
+              console.log('Reloaded addresses:', loadedAddresses);
+              setAddresses(loadedAddresses);
+              if (loadedAddresses.length > 0) {
+                const addr = loadedAddresses[0];
+                setCurrentAddressId(addr.id);
+                // Update original address data so hasChanges resets
+                setAddress(addr.address_1 || '');
+                setPostalCode(addr.postal_code || '');
+                setCity(addr.city || '');
+                setAddressPhone(addr.phone || '');
+              }
+            }
+          } else {
+            const errorData = await createResponse.json();
+            console.error('Failed to create address:', errorData);
+            setSaveError(`Kunde inte spara adress: ${errorData.error || 'Okänt fel'}`);
+          }
+        } catch (error) {
+          console.error('Address save error:', error);
+          setSaveError('Ett fel uppstod när adressen skulle sparas');
         }
       }
 
@@ -410,7 +481,8 @@ export default function AccountPage() {
                   type="text"
                   value={editFirstName}
                   onChange={(e) => setEditFirstName(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  className="w-full px-4 py-2 focus:outline-none border-2 border-transparent focus:border-black"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
               </div>
               <div>
@@ -419,19 +491,21 @@ export default function AccountPage() {
                   type="text"
                   value={editLastName}
                   onChange={(e) => setEditLastName(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  className="w-full px-4 py-2 focus:outline-none border-2 border-transparent focus:border-black"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-2">Mobiltelefonnummer</label>
+                <label className="block text-sm font-semibold mb-2">Telefon</label>
                 <input
                   type="tel"
                   value={editPhone}
                   onChange={(e) => setEditPhone(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  className="w-full px-4 py-2 focus:outline-none border-2 border-transparent focus:border-black"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
               </div>
               <div>
@@ -440,31 +514,34 @@ export default function AccountPage() {
                   type="email"
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  className="w-full px-4 py-2 focus:outline-none border-2 border-transparent focus:border-black"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
               </div>
             </div>
 
             {/* Address Fields */}
-            <div className="pt-4 border-t border-gray-200">
+            <div>
               <div>
                 <label className="block text-sm font-semibold mb-2">Adress</label>
                 <input
                   type="text"
                   value={editAddress}
                   onChange={(e) => setEditAddress(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  className="w-full px-4 py-2 focus:outline-none border-2 border-transparent focus:border-black"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   placeholder="Gata och husnummer"
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                 <div>
                   <label className="block text-sm font-semibold mb-2">Postnummer</label>
                   <input
                     type="text"
                     value={editPostalCode}
                     onChange={(e) => setEditPostalCode(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    className="w-full px-4 py-2 focus:outline-none border-2 border-transparent focus:border-black"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                     placeholder="00000"
                   />
                 </div>
@@ -474,26 +551,18 @@ export default function AccountPage() {
                     type="text"
                     value={editCity}
                     onChange={(e) => setEditCity(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    className="w-full px-4 py-2 focus:outline-none border-2 border-transparent focus:border-black"
+                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                     placeholder="Stad"
                   />
                 </div>
-              </div>
-              <div className="mt-4">
-                <label className="block text-sm font-semibold mb-2">Telefon</label>
-                <input
-                  type="tel"
-                  value={editAddressPhone}
-                  onChange={(e) => setEditAddressPhone(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                  placeholder="Telefonnummer"
-                />
               </div>
             </div>
 
             <button
               onClick={handleSaveChanges}
-              className="mt-6 px-8 py-2 bg-black text-white hover:bg-gray-800 font-semibold whitespace-nowrap"
+              disabled={isFormComplete && (!hasChanges || isSaved)}
+              className="mt-6 px-8 py-2 bg-black text-white hover:bg-gray-800 font-semibold whitespace-nowrap disabled:cursor-not-allowed"
               style={{ minWidth: '180px', textAlign: 'center' }}
             >
               {isSaved ? '✓ Sparad' : 'Spara ändringar'}
@@ -614,10 +683,10 @@ export default function AccountPage() {
                             await fetch('/api/favorites', {
                               method: 'POST',
                               headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ customerId, wishlist: updated }),
+                              body: JSON.stringify({ wishlist: updated }),
                             });
                             setFavoriteProducts(updated);
-                            localStorage.setItem('favoritesList', JSON.stringify(updated));
+                            console.log('Favorite removed:', product.id);
                           } catch (error) {
                             console.error('Failed to remove favorite:', error);
                           }
@@ -664,11 +733,58 @@ export default function AccountPage() {
               ))}
             </div>
           ) : (
-            <div className="space-y-3 text-gray-700">
+            <div className="space-y-4 text-gray-700">
               <p>Du har ingen aktiv felanmälan</p>
-              <button className="w-full px-6 py-2 bg-black text-white  hover:bg-gray-800 font-semibold">
-                Anmäl ett fel
-              </button>
+              {!showComplaintForm ? (
+                <button
+                  onClick={() => setShowComplaintForm(true)}
+                  className="w-full px-6 py-2 bg-black text-white hover:bg-gray-800 font-semibold">
+                  Anmäl ett fel
+                </button>
+              ) : (
+                <div className="p-4 space-y-4" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Beställningsnummer</label>
+                    <input
+                      type="text"
+                      value={complaintOrderId}
+                      onChange={(e) => setComplaintOrderId(e.target.value)}
+                      placeholder="t.ex. #12345"
+                      className="w-full px-4 py-2 focus:outline-none"
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Beskrivning av problemet</label>
+                    <textarea
+                      value={complaintDescription}
+                      onChange={(e) => setComplaintDescription(e.target.value)}
+                      placeholder="Beskriv vad som gick fel..."
+                      rows={4}
+                      className="w-full px-4 py-2 focus:outline-none"
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleAddComplaint}
+                      className="px-6 py-2 bg-black text-white hover:bg-gray-800 font-semibold"
+                    >
+                      Spara felanmälan
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowComplaintForm(false);
+                        setComplaintOrderId('');
+                        setComplaintDescription('');
+                      }}
+                      className="px-6 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold"
+                    >
+                      Avbryt
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

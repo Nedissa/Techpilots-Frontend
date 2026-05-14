@@ -39,6 +39,7 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
+    console.log('Medusa addresses response:', JSON.stringify(data, null, 2));
     return Response.json({ addresses: data.addresses || [] });
   } catch (error) {
     console.error('Fetch addresses error:', error);

@@ -134,6 +134,44 @@ export default function Checkout() {
   }, [fetchShippingOptions]);
 
   useEffect(() => {
+    // Load customer data from Medusa if logged in
+    const loadCustomerData = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (response.ok) {
+          const data = await response.json();
+          const customer = data.customer;
+
+          // Load addresses from Medusa
+          const addressResponse = await fetch('/api/auth/addresses');
+          if (addressResponse.ok) {
+            const addressData = await addressResponse.json();
+            const addresses = addressData.addresses || [];
+            console.log('Loaded addresses:', addresses);
+
+            setFormData(prev => ({
+              ...prev,
+              firstName: customer.first_name || '',
+              lastName: customer.last_name || '',
+              email: customer.email || '',
+              phone: customer.phone || '',
+              address: addresses[0]?.address_1 || '',
+              postalCode: addresses[0]?.postal_code || '',
+              city: addresses[0]?.city || '',
+            }));
+
+            if (addresses[0]?.city) {
+              fetchShippingOptions('Sverige');
+            }
+          } else {
+            console.error('Failed to load addresses');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load customer data:', error);
+      }
+    };
+
     // Load from localStorage on mount (after hydration) - happens when returning from Stripe
     const checkoutData = localStorage.getItem('checkoutData');
     if (checkoutData) {
@@ -149,10 +187,14 @@ export default function Checkout() {
         if (data.formData?.country) {
           fetchShippingOptions(data.formData.country);
         }
-        return; // Exit early if we loaded from checkoutData
+        // Still load fresh customer data to ensure address is up to date
+        loadCustomerData();
       } catch (e) {
         console.error('Failed to load checkout data from localStorage', e);
+        loadCustomerData();
       }
+    } else {
+      loadCustomerData();
     }
 
     // Check if coming from quick checkout (Handla nu button)
@@ -203,8 +245,19 @@ export default function Checkout() {
       setCartTotal(prev => prev + (priceNum * (quantity || 1)));
     };
 
+    // Refresh customer data when page becomes visible (user returns from another tab)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadCustomerData();
+      }
+    };
+
     window.addEventListener('addToCart', handleAddToCart);
-    return () => window.removeEventListener('addToCart', handleAddToCart);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('addToCart', handleAddToCart);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [fetchShippingOptions]);
 
   const selectedShippingOption = shippingOptions.find(opt => opt.id === shippingMethod);
@@ -276,7 +329,7 @@ export default function Checkout() {
       <div className="flex justify-center pt-12 pb-16">
       <div className="w-full max-w-[800px] flex flex-col gap-12">
         {/* Cart Items Section */}
-        <section className="bg-white p-6 border border-gray-200" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+        <section className="bg-white p-6" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <h2 className="text-xl font-bold mb-4">Orderöversikt</h2>
           <div className="space-y-3">
             {cartItems.map(item => (
@@ -366,7 +419,7 @@ export default function Checkout() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="bg-white p-6 border border-gray-200 space-y-8" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+          <form onSubmit={handleSubmit} className="bg-white p-6 space-y-8" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
             {/* Shipping Information */}
             <section>
               <h2 className="text-2xl font-bold mb-6">Leveransadress</h2>
@@ -379,7 +432,8 @@ export default function Checkout() {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none border-2 border-transparent focus:border-black"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                   <input
                     type="text"
@@ -388,7 +442,8 @@ export default function Checkout() {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none border-2 border-transparent focus:border-black"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 </div>
                 {customerType === 'business' && (
@@ -399,7 +454,8 @@ export default function Checkout() {
                     value={formData.companyName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none border-2 border-transparent focus:border-black"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 )}
                 <input
@@ -409,7 +465,8 @@ export default function Checkout() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                  className="w-full px-4 py-3 focus:outline-none border-2 border-transparent focus:border-black"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <input
                   type="tel"
@@ -418,7 +475,8 @@ export default function Checkout() {
                   value={formData.phone}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                  className="w-full px-4 py-3 focus:outline-none border-2 border-transparent focus:border-black"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <input
                   ref={addressInputRef}
@@ -428,7 +486,8 @@ export default function Checkout() {
                   value={formData.address}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                  className="w-full px-4 py-3 focus:outline-none border-2 border-transparent focus:border-black"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                 />
                 <div className="grid grid-cols-2 gap-4">
                   <input
@@ -438,7 +497,8 @@ export default function Checkout() {
                     value={formData.postalCode}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none border-2 border-transparent focus:border-black"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                   <input
                     type="text"
@@ -447,7 +507,8 @@ export default function Checkout() {
                     value={formData.city}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="w-full px-4 py-3 focus:outline-none border-2 border-transparent focus:border-black"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 </div>
               </div>
@@ -461,7 +522,7 @@ export default function Checkout() {
               ) : shippingOptions.length > 0 ? (
                 <div className="space-y-3">
                   {shippingOptions.map((option) => (
-                    <label key={option.id} className="flex items-center gap-4 p-4 border border-gray-300 cursor-pointer hover:bg-gray-50">
+                    <label key={option.id} className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                       <input
                         type="radio"
                         name="shippingMethod"

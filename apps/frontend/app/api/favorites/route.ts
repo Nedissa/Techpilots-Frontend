@@ -10,21 +10,23 @@ export async function GET(request: Request) {
       );
     }
 
-    const { searchParams } = new URL(request.url);
-    const customerId = searchParams.get('customer_id');
+    const cookies = request.headers.get('cookie') || '';
+    const tokenMatch = cookies.match(/medusa_token=([^;]+)/);
+    const token = tokenMatch ? tokenMatch[1] : null;
 
-    if (!customerId) {
+    if (!token) {
       return Response.json(
-        { error: 'customer_id required' },
-        { status: 400 }
+        { error: 'No authentication token' },
+        { status: 401 }
       );
     }
 
     const response = await fetch(
-      `${MEDUSA_URL}/admin/customers/${customerId}`,
+      `${MEDUSA_URL}/store/customers/me`,
       {
         headers: {
-          'x-publishable-api-key': publishableKey as string,
+          'Authorization': `Bearer ${token}`,
+          'x-publishable-api-key': publishableKey,
         },
       }
     );
@@ -36,10 +38,11 @@ export async function GET(request: Request) {
       );
     }
 
-    const customer = await response.json();
-    const wishlist = customer.metadata?.wishlist || [];
+    const data = await response.json();
+    const customer = data.customer;
+    const favorites = customer.metadata?.favorites || [];
 
-    return Response.json({ wishlist });
+    return Response.json({ favorites });
   } catch (error) {
     console.error('Error fetching favorites:', error);
     return Response.json(
@@ -59,39 +62,79 @@ export async function POST(request: Request) {
       );
     }
 
-    const { customerId, wishlist } = await request.json();
+    const cookies = request.headers.get('cookie') || '';
+    const tokenMatch = cookies.match(/medusa_token=([^;]+)/);
+    const token = tokenMatch ? tokenMatch[1] : null;
 
-    if (!customerId || !Array.isArray(wishlist)) {
+    if (!token) {
+      return Response.json(
+        { error: 'No authentication token' },
+        { status: 401 }
+      );
+    }
+
+    const { wishlist } = await request.json();
+
+    if (!Array.isArray(wishlist)) {
       return Response.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
+    // First fetch current customer to get existing metadata
+    const meResponse = await fetch(
+      `${MEDUSA_URL}/store/customers/me`,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'x-publishable-api-key': publishableKey,
+        },
+      }
+    );
+
+    if (!meResponse.ok) {
+      return Response.json(
+        { error: 'Failed to fetch customer' },
+        { status: meResponse.status }
+      );
+    }
+
+    const meData = await meResponse.json();
+    const currentMetadata = meData.customer?.metadata || {};
+
+    // Merge with existing metadata to preserve other data
+    const updatedMetadata = {
+      ...currentMetadata,
+      favorites: wishlist,
+    };
+
     const response = await fetch(
-      `${MEDUSA_URL}/admin/customers/${customerId}`,
+      `${MEDUSA_URL}/store/customers/me`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-publishable-api-key': publishableKey as string,
+          'Authorization': `Bearer ${token}`,
+          'x-publishable-api-key': publishableKey,
         },
         body: JSON.stringify({
-          metadata: {
-            wishlist,
-          },
+          metadata: updatedMetadata,
         }),
       }
     );
 
     if (!response.ok) {
+      const error = await response.json();
+      console.error('Failed to update metadata:', error);
       return Response.json(
-        { error: 'Failed to update wishlist' },
+        { error: 'Failed to update favorites' },
         { status: response.status }
       );
     }
 
-    return Response.json({ success: true, wishlist });
+    const data = await response.json();
+    return Response.json({ success: true, wishlist: data.customer?.metadata?.favorites || wishlist });
   } catch (error) {
     console.error('Error updating favorites:', error);
     return Response.json(

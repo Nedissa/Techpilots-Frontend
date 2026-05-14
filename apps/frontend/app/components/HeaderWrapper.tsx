@@ -687,8 +687,8 @@ export function HeaderWrapper() {
             <div className="hidden md:block w-px h-6 bg-gray-300"></div>
             <Link href="/konto" className="hidden md:flex items-center gap-2 text-black hover:text-gray-600">
               <span className="text-xs font-semibold">{isHydrated && (isLoggedIn ? 'Mina sidor' : 'Logga in')}</span>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
               </svg>
             </Link>
             <div className="hidden md:block w-px h-6 bg-gray-300"></div>
