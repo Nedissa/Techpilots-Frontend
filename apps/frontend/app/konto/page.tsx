@@ -101,9 +101,9 @@ export default function AccountPage() {
         console.error('Session verification failed:', error);
       }
 
-      // Load orders
+      // Load orders from Medusa
       try {
-        const response = await fetch(`/api/order-details?customer_id=${customerId}`);
+        const response = await fetch('/api/orders');
         if (response.ok) {
           const data = await response.json();
           setOrders(data.orders || []);
