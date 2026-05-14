@@ -282,7 +282,8 @@ export default function AccountPage() {
             setAddresses([addressData.address]);
           }
         } else {
-          console.error('Failed to save address');
+          const errorData = await addressResponse.json();
+          console.error('Failed to save address:', errorData);
         }
       }
 
