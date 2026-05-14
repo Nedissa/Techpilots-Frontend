@@ -131,6 +131,7 @@ export function CartAside() {
     window.dispatchEvent(new CustomEvent('cartUpdated', {
       detail: { totalAmount: 0, itemCount: 0 }
     }));
+    window.dispatchEvent(new CustomEvent('cartCleared'));
   };
 
   const handleUpdateQuantity = (id: string, newQuantity: number) => {

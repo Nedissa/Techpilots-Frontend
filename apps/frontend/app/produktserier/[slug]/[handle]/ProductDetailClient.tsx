@@ -66,6 +66,25 @@ export default function ProductDetailClient({
     // Load favorite status from localStorage (cache)
     const favoritesList = JSON.parse(localStorage.getItem('favoritesList') || '[]');
     setIsFavorite(favoritesList.some((item: any) => item.id === product.id));
+
+    // Listen for cart clear event
+    const handleCartCleared = () => {
+      setSelectedAccessories([]);
+    };
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'cartItems' && !e.newValue) {
+        setSelectedAccessories([]);
+      }
+    };
+
+    window.addEventListener('cartCleared', handleCartCleared);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('cartCleared', handleCartCleared);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [product.id]);
 
   const handleFavoriteToggle = async () => {
@@ -508,33 +527,36 @@ export default function ProductDetailClient({
           {/* Add to Cart Button */}
           <button
             onClick={() => {
-              const event = new CustomEvent('addToCart', {
-                detail: {
-                  id: product.id,
-                  title: product.title,
-                  price: product.price,
-                  originalPrice: product.originalPrice,
-                  quantity: quantity,
-                  image: product.image,
-                },
-              });
-              window.dispatchEvent(event);
-
-              selectedAccessories.forEach((accessoryId) => {
-                const accessory = RECOMMENDED_ACCESSORIES.find(a => a.id === accessoryId);
-                if (accessory) {
-                  const accessoryEvent = new CustomEvent('addToCart', {
-                    detail: {
-                      id: accessory.id,
-                      title: accessory.name,
-                      price: Number(accessory.price),
-                      quantity: 1,
-                      image: accessory.image,
-                    },
-                  });
-                  window.dispatchEvent(accessoryEvent);
-                }
-              });
+              if (selectedAccessories.length === 0) {
+                const event = new CustomEvent('addToCart', {
+                  detail: {
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    originalPrice: product.originalPrice,
+                    quantity: quantity,
+                    image: product.image,
+                  },
+                });
+                window.dispatchEvent(event);
+              } else {
+                selectedAccessories.forEach((accessoryId) => {
+                  const accessory = RECOMMENDED_ACCESSORIES.find(a => a.id === accessoryId);
+                  if (accessory) {
+                    const accessoryEvent = new CustomEvent('addToCart', {
+                      detail: {
+                        id: accessory.id,
+                        title: accessory.name,
+                        price: Number(accessory.price),
+                        quantity: 1,
+                        image: accessory.image,
+                      },
+                    });
+                    window.dispatchEvent(accessoryEvent);
+                  }
+                });
+                setSelectedAccessories([]);
+              }
 
               setIsAdded(true);
               setTimeout(() => setIsAdded(false), 100);
