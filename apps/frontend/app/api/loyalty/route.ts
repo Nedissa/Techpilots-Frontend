@@ -1,52 +1,56 @@
+const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
+
 export async function GET(request: Request) {
   try {
-    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-    const { searchParams } = new URL(request.url);
-    const customerId = searchParams.get('customer_id');
-
-    if (!customerId) {
+    if (!publishableKey) {
       return Response.json(
-        { error: 'customer_id required' },
-        { status: 400 }
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
+    const cookies = request.headers.get('cookie') || '';
+    const tokenMatch = cookies.match(/medusa_token=([^;]+)/);
+    const token = tokenMatch ? tokenMatch[1] : null;
+
+    if (!token) {
+      return Response.json(
+        { error: 'No authentication token' },
+        { status: 401 }
       );
     }
 
     const response = await fetch(
-      `${medusaUrl}/admin/customers/${customerId}`,
+      `${MEDUSA_URL}/store/customers/me`,
       {
         headers: {
-          'x-publishable-api-key': publishableKey as string,
+          'Authorization': `Bearer ${token}`,
+          'x-publishable-api-key': publishableKey,
         },
       }
     );
 
     if (!response.ok) {
       return Response.json(
-        { error: 'Failed to fetch customer loyalty data' },
+        { error: 'Failed to fetch customer data' },
         { status: response.status }
       );
     }
 
-    const customer = await response.json();
+    const data = await response.json();
+    const customer = data.customer || data;
+    const loyalty = customer.metadata?.loyalty || {
+      current_tier: 'Silver',
+      total_points: 0,
+      points_to_next_tier: 500,
+      lifetime_orders: 0,
+      lifetime_spend: 0,
+      benefits: ['Fri frakt på beställningar över 500 kr', 'Medlemsexklusiv rabatt'],
+      member_since: new Date().toISOString(),
+    };
 
-    const loyaltyPoints = customer.metadata?.loyalty_points || 0;
-    const tier = calculateTier(loyaltyPoints);
-    const nextTierPoints = getNextTierThreshold(tier);
-    const pointsToNextTier = Math.max(0, nextTierPoints - loyaltyPoints);
-
-    return Response.json({
-      loyalty: {
-        customer_id: customerId,
-        total_points: loyaltyPoints,
-        current_tier: tier,
-        points_to_next_tier: pointsToNextTier,
-        lifetime_orders: customer.orders?.length || 0,
-        lifetime_spend: customer.orders?.reduce((sum: number, order: any) => sum + (order.total || 0), 0) || 0,
-        member_since: customer.created_at,
-        benefits: getTierBenefits(tier),
-      },
-    });
+    return Response.json({ loyalty });
   } catch (error) {
     console.error('Error fetching loyalty data:', error);
     return Response.json(
@@ -58,43 +62,61 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-    const { customerId, points, reason } = await request.json();
-
-    if (!customerId || !points || !reason) {
+    if (!publishableKey) {
       return Response.json(
-        { error: 'Missing required fields' },
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
+    const cookies = request.headers.get('cookie') || '';
+    const tokenMatch = cookies.match(/medusa_token=([^;]+)/);
+    const token = tokenMatch ? tokenMatch[1] : null;
+
+    if (!token) {
+      return Response.json(
+        { error: 'No authentication token' },
+        { status: 401 }
+      );
+    }
+
+    const { points } = await request.json();
+
+    if (points === undefined) {
+      return Response.json(
+        { error: 'Missing points value' },
         { status: 400 }
       );
     }
 
-    const customerResponse = await fetch(
-      `${medusaUrl}/admin/customers/${customerId}`,
+    const response = await fetch(
+      `${MEDUSA_URL}/store/customers/me`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-publishable-api-key': publishableKey as string,
+          'Authorization': `Bearer ${token}`,
+          'x-publishable-api-key': publishableKey,
         },
         body: JSON.stringify({
           metadata: {
-            loyalty_points: (points),
-            last_points_update: new Date().toISOString(),
-            points_update_reason: reason,
+            loyalty: {
+              total_points: points,
+            },
           },
         }),
       }
     );
 
-    if (!customerResponse.ok) {
+    if (!response.ok) {
       return Response.json(
         { error: 'Failed to update loyalty points' },
-        { status: customerResponse.status }
+        { status: response.status }
       );
     }
 
-    return Response.json({ success: true, message: 'Loyalty points updated' });
+    return Response.json({ success: true });
   } catch (error) {
     console.error('Error updating loyalty points:', error);
     return Response.json(
@@ -102,31 +124,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-
-function calculateTier(points: number): string {
-  if (points >= 5000) return 'Gold';
-  if (points >= 2000) return 'Silver';
-  if (points >= 500) return 'Bronze';
-  return 'Standard';
-}
-
-function getNextTierThreshold(currentTier: string): number {
-  const tiers: { [key: string]: number } = {
-    Standard: 500,
-    Bronze: 2000,
-    Silver: 5000,
-    Gold: 10000,
-  };
-  return tiers[currentTier] || 10000;
-}
-
-function getTierBenefits(tier: string): string[] {
-  const benefits: { [key: string]: string[] } = {
-    Standard: ['Grundläggande medlemskap', 'Earn 1 point per SEK'],
-    Bronze: ['5% rabatt på alla köp', 'Earn 1.5 points per SEK', 'Prioriterad support'],
-    Silver: ['10% rabatt på alla köp', 'Earn 2 points per SEK', 'Exklusiva erbjudanden', 'Fri frakt'],
-    Gold: ['15% rabatt på alla köp', 'Earn 3 points per SEK', 'VIP support', 'Fri frakt', 'Tidig tillgång till nya produkter'],
-  };
-  return benefits[tier] || benefits.Standard;
 }

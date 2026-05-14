@@ -1,10 +1,80 @@
+const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
+
+export async function GET(request: Request) {
+  try {
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    if (!publishableKey) {
+      return Response.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
+    const cookies = request.headers.get('cookie') || '';
+    const tokenMatch = cookies.match(/medusa_token=([^;]+)/);
+    const token = tokenMatch ? tokenMatch[1] : null;
+
+    if (!token) {
+      return Response.json(
+        { error: 'No authentication token' },
+        { status: 401 }
+      );
+    }
+
+    const response = await fetch(
+      `${MEDUSA_URL}/store/customers/me`,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'x-publishable-api-key': publishableKey,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      return Response.json(
+        { error: 'Failed to fetch customer data' },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    const complaints = data.customer?.metadata?.complaints || [];
+
+    return Response.json({ complaints });
+  } catch (error) {
+    console.error('Error fetching complaints:', error);
+    return Response.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
-    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-    const { orderId, productId, description, customerId } = await request.json();
+    if (!publishableKey) {
+      return Response.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
 
-    if (!orderId || !productId || !description || !customerId) {
+    const cookies = request.headers.get('cookie') || '';
+    const tokenMatch = cookies.match(/medusa_token=([^;]+)/);
+    const token = tokenMatch ? tokenMatch[1] : null;
+
+    if (!token) {
+      return Response.json(
+        { error: 'No authentication token' },
+        { status: 401 }
+      );
+    }
+
+    const { orderId, description } = await request.json();
+
+    if (!orderId || !description) {
       return Response.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -12,20 +82,26 @@ export async function POST(request: Request) {
     }
 
     const response = await fetch(
-      `${medusaUrl}/admin/complaints`,
+      `${MEDUSA_URL}/store/customers/me`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-publishable-api-key': publishableKey as string,
+          'Authorization': `Bearer ${token}`,
+          'x-publishable-api-key': publishableKey,
         },
         body: JSON.stringify({
-          order_id: orderId,
-          product_id: productId,
-          description,
-          customer_id: customerId,
-          status: 'open',
-          created_at: new Date().toISOString(),
+          metadata: {
+            complaints: [
+              {
+                id: Date.now().toString(),
+                order_id: orderId,
+                description: description,
+                status: 'pending',
+                created_at: new Date().toISOString(),
+              },
+            ],
+          },
         }),
       }
     );
@@ -37,51 +113,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = await response.json();
-    return Response.json({ complaint: data });
+    return Response.json({ success: true });
   } catch (error) {
     console.error('Error submitting complaint:', error);
-    return Response.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: Request) {
-  try {
-    const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
-    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-    const { searchParams } = new URL(request.url);
-    const customerId = searchParams.get('customer_id');
-
-    if (!customerId) {
-      return Response.json(
-        { error: 'customer_id required' },
-        { status: 400 }
-      );
-    }
-
-    const response = await fetch(
-      `${medusaUrl}/admin/complaints?customer_id=${customerId}`,
-      {
-        headers: {
-          'x-publishable-api-key': publishableKey as string,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      return Response.json(
-        { error: 'Failed to fetch complaints' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    return Response.json({ complaints: data.complaints || [] });
-  } catch (error) {
-    console.error('Error fetching complaints:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }

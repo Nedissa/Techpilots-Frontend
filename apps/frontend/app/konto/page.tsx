@@ -113,9 +113,9 @@ export default function AccountPage() {
         setLoadingOrdersError('Kunde inte ladda orderhistorik');
       }
 
-      // Load complaints
+      // Load complaints from Medusa
       try {
-        const response = await fetch(`/api/complaints?customer_id=${customerId}`);
+        const response = await fetch('/api/complaints');
         if (response.ok) {
           const data = await response.json();
           setComplaints(data.complaints || []);
@@ -124,9 +124,9 @@ export default function AccountPage() {
         console.error('Failed to load complaints:', error);
       }
 
-      // Load loyalty
+      // Load loyalty from Medusa
       try {
-        const response = await fetch(`/api/loyalty?customer_id=${customerId}`);
+        const response = await fetch('/api/loyalty');
         if (response.ok) {
           const data = await response.json();
           setLoyalty(data.loyalty || {});
