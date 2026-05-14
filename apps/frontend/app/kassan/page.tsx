@@ -30,12 +30,12 @@ export default function Checkout() {
 
   // Detect if we're coming back from Stripe and force a hard reload
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('from') === 'stripe') {
-        // This is a hard reload from Stripe - reload the entire page
-        window.location.href = '/kassan';
-      }
+    console.log('[KASSAN] Component mounted, URL:', window.location.href);
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('from') === 'stripe') {
+      console.log('[KASSAN] Detected return from Stripe, reloading page');
+      // This is a hard reload from Stripe - reload the entire page
+      window.location.href = '/kassan';
     }
   }, []);
   const [formData, setFormData] = useState({
@@ -164,12 +164,15 @@ export default function Checkout() {
 
   useEffect(() => {
     // Load cart on mount
+    console.log('[KASSAN] Loading cart on mount');
     loadCartData();
 
     // Reload cart when page is shown (after browser back/forward)
     const handlePageShow = (event: PageTransitionEvent) => {
+      console.log('[KASSAN] Pageshow event fired, persisted:', event.persisted);
       if (event.persisted) {
         // Page was restored from cache (back button)
+        console.log('[KASSAN] Page restored from cache, reloading cart');
         loadCartData();
       }
     };
