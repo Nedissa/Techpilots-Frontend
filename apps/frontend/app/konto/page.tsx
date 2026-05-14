@@ -416,7 +416,7 @@ export default function AccountPage() {
             {/* Address Fields */}
             <div className="pt-4 border-t border-gray-200">
               <div>
-                <label className="block text-sm font-semibold mb-2">Gatuadress</label>
+                <label className="block text-sm font-semibold mb-2">Adress</label>
                 <input
                   type="text"
                   value={editAddress}
@@ -448,7 +448,7 @@ export default function AccountPage() {
                 </div>
               </div>
               <div className="mt-4">
-                <label className="block text-sm font-semibold mb-2">Telefon (valfritt)</label>
+                <label className="block text-sm font-semibold mb-2">Telefon</label>
                 <input
                   type="tel"
                   value={editAddressPhone}
