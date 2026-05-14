@@ -117,9 +117,11 @@ export function CartAside() {
       setCartItems(updated);
       localStorage.setItem('cartItems', JSON.stringify(updated));
       sessionStorage.setItem('cartItems', JSON.stringify(updated));
-      window.dispatchEvent(new CustomEvent('cartUpdated', {
-        detail: { totalAmount: newTotal, itemCount: totalItems }
-      }));
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('cartUpdated', {
+          detail: { totalAmount: newTotal, itemCount: totalItems }
+        }));
+      }, 0);
     }
   };
 
@@ -128,10 +130,12 @@ export function CartAside() {
     sessionStorage.removeItem('cartItems');
     setCartItems([]);
     setCartTotal(0);
-    window.dispatchEvent(new CustomEvent('cartUpdated', {
-      detail: { totalAmount: 0, itemCount: 0 }
-    }));
-    window.dispatchEvent(new CustomEvent('cartCleared'));
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('cartUpdated', {
+        detail: { totalAmount: 0, itemCount: 0 }
+      }));
+      window.dispatchEvent(new CustomEvent('cartCleared'));
+    }, 0);
   };
 
   const handleUpdateQuantity = (id: string, newQuantity: number) => {
@@ -150,9 +154,11 @@ export function CartAside() {
       setCartItems(updated);
       localStorage.setItem('cartItems', JSON.stringify(updated));
       sessionStorage.setItem('cartItems', JSON.stringify(updated));
-      window.dispatchEvent(new CustomEvent('cartUpdated', {
-        detail: { totalAmount: newTotal, itemCount: totalItems }
-      }));
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('cartUpdated', {
+          detail: { totalAmount: newTotal, itemCount: totalItems }
+        }));
+      }, 0);
     }
   };
 

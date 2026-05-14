@@ -402,20 +402,26 @@ export function HeaderWrapper() {
         } catch (e) {
           console.error('Failed to update cart from localStorage', e);
         }
+      } else {
+        setCartCount(0);
+        setCartTotal(0);
+      }
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'cartItems') {
+        if (!e.newValue) {
+          setCartCount(0);
+          setCartTotal(0);
+        } else {
+          handleCartUpdated();
+        }
       }
     };
 
     window.addEventListener('cartUpdated', handleCartUpdated);
-
-    // Backup: poll localStorage every 500ms to ensure cart count stays in sync
-    const pollInterval = setInterval(() => {
-      handleCartUpdated();
-    }, 500);
-
-    return () => {
-      window.removeEventListener('cartUpdated', handleCartUpdated);
-      clearInterval(pollInterval);
-    };
+    window.addEventListener('cartCleared', handleCartUpdated);
+    window.addEventListener('storage', handleStorageChange);
 
     // Fetch products from API for search
     const fetchProducts = async () => {
@@ -447,6 +453,9 @@ export function HeaderWrapper() {
     window.addEventListener('userLogin', checkLoginStatus);
     window.addEventListener('userLogout', checkLoginStatus);
     return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdated);
+      window.removeEventListener('cartCleared', handleCartUpdated);
+      window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('userLogin', checkLoginStatus);
       window.removeEventListener('userLogout', checkLoginStatus);
     };
@@ -500,9 +509,26 @@ export function HeaderWrapper() {
       }
     };
 
+    const handleCartUpdatedEvent = () => {
+      const savedCartItems = localStorage.getItem('cartItems');
+      if (savedCartItems) {
+        try {
+          const items = JSON.parse(savedCartItems);
+          const count = items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
+          const total = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
+          setCartCount(count);
+          setCartTotal(total);
+        } catch (e) {
+          console.error('Failed to update cart from event', e);
+        }
+      }
+    };
+
     window.addEventListener('addToCart', handleAddToCart);
+    window.addEventListener('cartUpdated', handleCartUpdatedEvent);
     return () => {
       window.removeEventListener('addToCart', handleAddToCart);
+      window.removeEventListener('cartUpdated', handleCartUpdatedEvent);
     };
   }, []);
 
