@@ -27,6 +27,17 @@ export default function Checkout() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartTotal, setCartTotal] = useState(0);
   const [customerType, setCustomerType] = useState<'private' | 'business'>('private');
+
+  // Detect if we're coming back from Stripe and force a hard reload
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('from') === 'stripe') {
+        // This is a hard reload from Stripe - reload the entire page
+        window.location.href = '/kassan';
+      }
+    }
+  }, []);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
