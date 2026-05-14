@@ -19,13 +19,38 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create customer using Store API
-    const registerResponse = await fetch(
-      `${MEDUSA_URL}/store/customers`,
+    // Step 1: Get registration token
+    const tokenResponse = await fetch(
+      `${MEDUSA_URL}/store/auth/register`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-publishable-api-key': publishableKey,
+        },
+      }
+    );
+
+    if (!tokenResponse.ok) {
+      const errorData = await tokenResponse.json();
+      console.error('Token error:', errorData);
+      return Response.json(
+        { error: 'Failed to get registration token' },
+        { status: 400 }
+      );
+    }
+
+    const tokenData = await tokenResponse.json();
+    const registrationToken = tokenData.token;
+
+    // Step 2: Register customer with token
+    const registerResponse = await fetch(
+      `${MEDUSA_URL}/store/auth/register`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${registrationToken}`,
           'x-publishable-api-key': publishableKey,
         },
         body: JSON.stringify({
@@ -41,7 +66,7 @@ export async function POST(request: Request) {
       const errorData = await registerResponse.json();
       console.error('Register error:', errorData);
       return Response.json(
-        { error: errorData.message || 'Failed to create customer' },
+        { error: errorData.message || 'Failed to register customer' },
         { status: registerResponse.status }
       );
     }
@@ -49,7 +74,7 @@ export async function POST(request: Request) {
     const customerData = await registerResponse.json();
     const customer = customerData.customer || customerData;
 
-    // Now authenticate the user
+    // Step 3: Authenticate the user
     const authResponse = await fetch(
       `${MEDUSA_URL}/auth/customer/emailpass`,
       {
