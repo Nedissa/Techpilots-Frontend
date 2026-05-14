@@ -28,16 +28,6 @@ export default function Checkout() {
   const [cartTotal, setCartTotal] = useState(0);
   const [customerType, setCustomerType] = useState<'private' | 'business'>('private');
 
-  // Detect if we're coming back from Stripe and force a hard reload
-  useEffect(() => {
-    console.log('[KASSAN] Component mounted, URL:', window.location.href);
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('from') === 'stripe') {
-      console.log('[KASSAN] Detected return from Stripe, reloading page');
-      // This is a hard reload from Stripe - reload the entire page
-      window.location.href = '/kassan';
-    }
-  }, []);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
