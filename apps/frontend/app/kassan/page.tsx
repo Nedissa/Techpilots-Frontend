@@ -341,10 +341,10 @@ export default function Checkout() {
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-16 h-16 object-contain rounded border border-gray-200 bg-white"
+                      className="w-16 h-16 object-contain"
                     />
                   ) : (
-                    <div className="w-16 h-16 bg-white border border-gray-200 flex items-center justify-center rounded">
+                    <div className="w-16 h-16 flex items-center justify-center">
                       <span className="text-gray-400 text-xs">Bild</span>
                     </div>
                   )}
