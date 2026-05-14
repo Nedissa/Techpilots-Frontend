@@ -148,9 +148,9 @@ export default function LoginPage() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border-0 rounded-lg bg-gray-100"
+                        className="border-0 rounded-lg"
                         style={{
-                          WebkitAutofillBoxShadow: '0 0 0 1000px #f3f4f6 inset',
+                          WebkitAutofillBoxShadow: '0 0 0 1000px #f9fafb inset',
                           WebkitAutofillTextFillColor: '#000'
                         } as React.CSSProperties}
                         required
@@ -162,9 +162,9 @@ export default function LoginPage() {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="border-0 rounded-lg bg-gray-100"
+                        className="border-0 rounded-lg"
                         style={{
-                          WebkitAutofillBoxShadow: '0 0 0 1000px #f3f4f6 inset',
+                          WebkitAutofillBoxShadow: '0 0 0 1000px #f9fafb inset',
                           WebkitAutofillTextFillColor: '#000'
                         } as React.CSSProperties}
                         required
@@ -193,7 +193,7 @@ export default function LoginPage() {
                         type="text"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className="border-0 rounded-lg bg-gray-100"
+                        className="border-0 rounded-lg"
                         required
                       />
                     </div>
@@ -203,7 +203,7 @@ export default function LoginPage() {
                         type="text"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="border-0 rounded-lg bg-gray-100"
+                        className="border-0 rounded-lg"
                         required
                       />
                     </div>
@@ -213,7 +213,7 @@ export default function LoginPage() {
                         type="email"
                         value={registerEmail}
                         onChange={(e) => setRegisterEmail(e.target.value)}
-                        className="border-0 rounded-lg bg-gray-100"
+                        className="border-0 rounded-lg"
                         required
                       />
                     </div>
@@ -223,7 +223,7 @@ export default function LoginPage() {
                         type="password"
                         value={registerPassword}
                         onChange={(e) => setRegisterPassword(e.target.value)}
-                        className="border-0 rounded-lg bg-gray-100"
+                        className="border-0 rounded-lg"
                         required
                       />
                     </div>
