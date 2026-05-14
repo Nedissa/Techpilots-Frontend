@@ -2,8 +2,6 @@ export async function GET(request: Request) {
   try {
     const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-    const { searchParams } = new URL(request.url);
-    const customerId = searchParams.get('customer_id');
 
     const response = await fetch(
       `${medusaUrl}/store/discounts`,

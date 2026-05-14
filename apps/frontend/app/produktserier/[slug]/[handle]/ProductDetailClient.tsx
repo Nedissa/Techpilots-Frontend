@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Product, getCategoryTitle } from '@/app/lib/products';
+import { Product } from '@/app/lib/products';
 import { Breadcrumb } from '@/app/components/Breadcrumb';
 import { ImageZoomDialog } from '@/app/components/ImageZoomDialog';
 import { ProductCard, type ProductData } from '@/app/components/ProductCard';
