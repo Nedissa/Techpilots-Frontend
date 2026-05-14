@@ -466,47 +466,6 @@ export default function AccountPage() {
               Spara ändringar
             </button>
 
-            {/* Saved Addresses */}
-            {addresses.length > 0 && (
-              <div className="mt-12 pt-12 border-t border-gray-200">
-                <h4 className="text-lg font-bold mb-6">Sparade adresser</h4>
-                <div className="space-y-4">
-                  {addresses.map((address, index) => (
-                    <div key={address.id || index} className="p-4 border border-gray-200 rounded">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-semibold">{address.first_name} {address.last_name}</p>
-                          <p className="text-sm text-gray-600">{address.address_1}</p>
-                          <p className="text-sm text-gray-600">{address.postal_code} {address.city}</p>
-                          {address.phone && <p className="text-sm text-gray-600">{address.phone}</p>}
-                        </div>
-                        <button
-                          onClick={async () => {
-                            if (confirm('Ta bort denna adress?')) {
-                              try {
-                                const response = await fetch(`/api/auth/addresses/${address.id}`, {
-                                  method: 'DELETE',
-                                });
-                                if (response.ok) {
-                                  setAddresses(addresses.filter(a => a.id !== address.id));
-                                  setSaveMessage('Adress borttagen!');
-                                  setTimeout(() => setSaveMessage(''), 3000);
-                                }
-                              } catch (error) {
-                                console.error('Failed to delete address:', error);
-                              }
-                            }
-                          }}
-                          className="text-red-600 hover:text-red-800 text-sm font-semibold"
-                        >
-                          Ta bort
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
         )}
