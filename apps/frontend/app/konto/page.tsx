@@ -471,8 +471,8 @@ export default function AccountPage() {
               <div className="mt-12 pt-12 border-t border-gray-200">
                 <h4 className="text-lg font-bold mb-6">Sparade adresser</h4>
                 <div className="space-y-4">
-                  {addresses.map((address) => (
-                    <div key={address.id} className="p-4 border border-gray-200 rounded">
+                  {addresses.map((address, index) => (
+                    <div key={address.id || index} className="p-4 border border-gray-200 rounded">
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-semibold">{address.first_name} {address.last_name}</p>
