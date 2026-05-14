@@ -155,15 +155,16 @@ export default function Checkout() {
     // Load cart on mount
     loadCartData();
 
-    // Reload cart when page becomes visible (after browser back from Stripe)
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
+    // Reload cart when page is shown (after browser back/forward)
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        // Page was restored from cache (back button)
         loadCartData();
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
   }, [loadCartData]);
 
   useEffect(() => {
