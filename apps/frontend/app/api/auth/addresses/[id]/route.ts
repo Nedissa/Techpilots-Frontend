@@ -1,7 +1,8 @@
 const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
 
-export async function GET(request: Request) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
     if (!publishableKey) {
       return Response.json(
@@ -21,36 +22,41 @@ export async function GET(request: Request) {
       );
     }
 
+    const { first_name, last_name, address_1, city, postal_code, country_code, phone } = await request.json();
+
     const response = await fetch(
-      `${MEDUSA_URL}/store/customers/me`,
+      `${MEDUSA_URL}/store/customers/me/addresses/${id}`,
       {
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'x-publishable-api-key': publishableKey as string,
+          'x-publishable-api-key': publishableKey,
         },
+        body: JSON.stringify({
+          first_name,
+          last_name,
+          address_1,
+          city,
+          postal_code,
+          country_code,
+          phone,
+        }),
       }
     );
 
     if (!response.ok) {
+      const error = await response.json();
       return Response.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: error.message || 'Failed to update address' },
+        { status: response.status }
       );
     }
 
-    const customer = await response.json();
-
-    return Response.json({
-      customer: {
-        id: customer.customer?.id || customer.id,
-        first_name: customer.customer?.first_name || customer.first_name,
-        last_name: customer.customer?.last_name || customer.last_name,
-        email: customer.customer?.email || customer.email,
-        phone: customer.customer?.phone || customer.phone,
-      },
-    });
+    const data = await response.json();
+    return Response.json({ address: data.address || data });
   } catch (error) {
-    console.error('Auth verification error:', error);
+    console.error('Update address error:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -58,8 +64,9 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
     if (!publishableKey) {
       return Response.json(
@@ -79,46 +86,27 @@ export async function POST(request: Request) {
       );
     }
 
-    const { firstName, lastName, phone } = await request.json();
-
-    const updateData: any = {};
-    if (firstName) updateData.first_name = firstName;
-    if (lastName) updateData.last_name = lastName;
-    if (phone !== undefined) updateData.phone = phone;
-
     const response = await fetch(
-      `${MEDUSA_URL}/store/customers/me`,
+      `${MEDUSA_URL}/store/customers/me/addresses/${id}`,
       {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'x-publishable-api-key': publishableKey as string,
+          'x-publishable-api-key': publishableKey,
         },
-        body: JSON.stringify(updateData),
       }
     );
 
     if (!response.ok) {
       return Response.json(
-        { error: 'Failed to update profile' },
+        { error: 'Failed to delete address' },
         { status: response.status }
       );
     }
 
-    const customer = await response.json();
-
-    return Response.json({
-      customer: {
-        id: customer.customer?.id || customer.id,
-        first_name: customer.customer?.first_name || customer.first_name,
-        last_name: customer.customer?.last_name || customer.last_name,
-        email: customer.customer?.email || customer.email,
-        phone: customer.customer?.phone || customer.phone,
-      },
-    });
+    return Response.json({ success: true });
   } catch (error) {
-    console.error('Profile update error:', error);
+    console.error('Delete address error:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }

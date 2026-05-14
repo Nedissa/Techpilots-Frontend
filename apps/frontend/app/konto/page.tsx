@@ -14,12 +14,14 @@ export default function AccountPage() {
   const [activeTab, setActiveTab] = useState('profil');
   const [isHydrated, setIsHydrated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
   const [editFirstName, setEditFirstName] = useState('');
   const [editLastName, setEditLastName] = useState('');
   const [editEmail, setEditEmail] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editAddress, setEditAddress] = useState('');
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [favoriteProducts, setFavoriteProducts] = useState<ProductData[]>([]);
   const [complaints, setComplaints] = useState<any[]>([]);
   const [loyalty, setLoyalty] = useState<any>(null);
@@ -27,6 +29,8 @@ export default function AccountPage() {
   const [loadingComplaintsError, setLoadingComplaintsError] = useState('');
   const [loadingLoyaltyError, setLoadingLoyaltyError] = useState('');
   const [loadingOrdersError, setLoadingOrdersError] = useState('');
+  const [saveMessage, setSaveMessage] = useState('');
+  const [saveError, setSaveError] = useState('');
   const addressInputRef = useRef<HTMLInputElement>(null);
 
   // Ladda sparad userData när sidan öppnas
@@ -127,6 +131,17 @@ export default function AccountPage() {
         setLoyalty({});
       }
 
+      // Load addresses
+      try {
+        const addressResponse = await fetch('/api/auth/addresses');
+        if (addressResponse.ok) {
+          const addressData = await addressResponse.json();
+          setAddresses(addressData.addresses || []);
+        }
+      } catch (error) {
+        console.error('Failed to load addresses:', error);
+      }
+
       // Load favorites from Medusa
       try {
         const favResponse = await fetch(`/api/favorites?customer_id=${customerId}`);
@@ -163,6 +178,9 @@ export default function AccountPage() {
   };
 
   const handleSaveChanges = async () => {
+    setSaveMessage('');
+    setSaveError('');
+
     try {
       const response = await fetch('/api/auth/me', {
         method: 'POST',
@@ -171,12 +189,13 @@ export default function AccountPage() {
           firstName: editFirstName,
           lastName: editLastName,
           phone: editPhone,
-          address: editAddress,
         }),
       });
 
       if (!response.ok) {
-        console.error('Failed to update profile');
+        const error = await response.json();
+        setSaveError(error.error || 'Kunde inte spara ändringar');
+        console.error('Failed to update profile:', error);
         return;
       }
 
@@ -190,18 +209,22 @@ export default function AccountPage() {
         userData.lastName = customer.last_name;
         userData.email = customer.email;
         userData.phone = customer.phone;
-        userData.metadata = customer.metadata;
         localStorage.setItem('userData', JSON.stringify(userData));
       }
 
       setFirstName(customer.first_name);
       setLastName(customer.last_name);
       setRegisterEmail(customer.email);
+      setEditFirstName(customer.first_name);
+      setEditLastName(customer.last_name);
       setEditPhone(customer.phone || '');
+
+      setSaveMessage('Ändringar sparade!');
+      setTimeout(() => setSaveMessage(''), 3000);
     } catch (error) {
+      setSaveError('Ett fel uppstod när ändringar skulle sparas');
       console.error('Profile update error:', error);
     }
-    setIsEditing(false);
   };
 
 
@@ -306,156 +329,67 @@ export default function AccountPage() {
         {activeTab === 'profil' && (
         <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Mina kunduppgifter</h3>
-          {!isEditing ? (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Personnummer (YYYYMMDD-XXXX)</p>
-                  <p className="text-gray-900">{editPhone ? '198701011093' : '—'}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Kundnummer</p>
-                  <p className="text-gray-900">500973402</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Förnamn</p>
-                  <p className="text-gray-900">{firstName || '—'}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Efternamn</p>
-                  <p className="text-gray-900">{lastName || '—'}</p>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold text-gray-600 mb-2">Adress</p>
-                <p className="text-gray-900">{editAddress || '—'}</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Postnummer</p>
-                  <p className="text-gray-900">50631</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Ort</p>
-                  <p className="text-gray-900">Borås</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Mobiltelefonnummer</p>
-                  <p className="text-gray-900">{editPhone || '—'}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">E-postadress</p>
-                  <p className="text-gray-900">{registerEmail || '—'}</p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setIsEditing(true)}
-                className="mt-6 px-8 py-2 bg-black text-white  hover:bg-gray-800 font-semibold"
-              >
-                Redigera uppgifter
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Förnamn *</label>
-                  <input
-                    type="text"
-                    value={editFirstName}
-                    onChange={(e) => setEditFirstName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Efternamn *</label>
-                  <input
-                    type="text"
-                    value={editLastName}
-                    onChange={(e) => setEditLastName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-2">Adress *</label>
-                <input
-                  ref={addressInputRef}
-                  type="text"
-                  value={editAddress}
-                  onChange={(e) => setEditAddress(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Postnummer *</label>
-                  <input
-                    type="text"
-                    value="50631"
-                    disabled
-                    className="w-full px-4 py-2 border border-gray-300  bg-gray-100"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Ort *</label>
-                  <input
-                    type="text"
-                    value="Borås"
-                    disabled
-                    className="w-full px-4 py-2 border border-gray-300  bg-gray-100"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Mobiltelefonnummer *</label>
-                  <input
-                    type="tel"
-                    value={editPhone}
-                    onChange={(e) => setEditPhone(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2">E-postadress *</label>
-                  <input
-                    type="email"
-                    value={editEmail}
-                    onChange={(e) => setEditEmail(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-2 mt-6">
-                <button
-                  onClick={handleSaveChanges}
-                  className="px-8 py-2 bg-black text-white  hover:bg-gray-800 font-semibold"
-                >
-                  Spara
-                </button>
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="px-8 py-2 border-2 border-black text-black  hover:bg-gray-100 font-semibold"
-                >
-                  Avbryt
-                </button>
-              </div>
+          {saveMessage && (
+            <div className="mb-4 p-4 bg-green-50 text-green-700 rounded">
+              {saveMessage}
             </div>
           )}
+          {saveError && (
+            <div className="mb-4 p-4 bg-red-50 text-red-700 rounded">
+              {saveError}
+            </div>
+          )}
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold mb-2">Förnamn</label>
+                <input
+                  type="text"
+                  value={editFirstName}
+                  onChange={(e) => setEditFirstName(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">Efternamn</label>
+                <input
+                  type="text"
+                  value={editLastName}
+                  onChange={(e) => setEditLastName(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                />
+              </div>
+            </div>
+
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold mb-2">Mobiltelefonnummer</label>
+                <input
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">E-postadress</label>
+                <input
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleSaveChanges}
+              className="mt-6 px-8 py-2 bg-black text-white hover:bg-gray-800 font-semibold"
+            >
+              Spara ändringar
+            </button>
+          </div>
         </div>
         )}
 
