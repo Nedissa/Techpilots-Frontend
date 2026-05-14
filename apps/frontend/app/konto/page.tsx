@@ -34,6 +34,7 @@ export default function AccountPage() {
   const [loadingOrdersError, setLoadingOrdersError] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
   const [saveError, setSaveError] = useState('');
+  const [isSaved, setIsSaved] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
 
   // Ladda sparad userData när sidan öppnas
@@ -246,8 +247,8 @@ export default function AccountPage() {
         }
       }
 
-      setSaveMessage('Ändringar sparade!');
-      setTimeout(() => setSaveMessage(''), 3000);
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 3000);
     } catch (error) {
       setSaveError('Ett fel uppstod när ändringar skulle sparas');
       console.error('Profile update error:', error);
@@ -356,11 +357,6 @@ export default function AccountPage() {
         {activeTab === 'profil' && (
         <div className="p-6  shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
           <h3 className="text-xl font-bold mb-6">Mina uppgifter</h3>
-          {saveMessage && (
-            <div className="mb-4 p-4 bg-green-50 text-green-700 rounded">
-              {saveMessage}
-            </div>
-          )}
           {saveError && (
             <div className="mb-4 p-4 bg-red-50 text-red-700 rounded">
               {saveError}
@@ -457,9 +453,13 @@ export default function AccountPage() {
 
             <button
               onClick={handleSaveChanges}
-              className="mt-6 px-8 py-2 bg-black text-white hover:bg-gray-800 font-semibold"
+              className={`mt-6 px-8 py-2 font-semibold transition-all ${
+                isSaved
+                  ? 'bg-green-600 text-white hover:bg-green-700'
+                  : 'bg-black text-white hover:bg-gray-800'
+              }`}
             >
-              Spara ändringar
+              {isSaved ? '✓ Sparad' : 'Spara ändringar'}
             </button>
 
           </div>
