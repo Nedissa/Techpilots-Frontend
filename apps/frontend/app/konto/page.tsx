@@ -453,11 +453,7 @@ export default function AccountPage() {
 
             <button
               onClick={handleSaveChanges}
-              className={`mt-6 px-8 py-2 font-semibold transition-all ${
-                isSaved
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-black text-white hover:bg-gray-800'
-              }`}
+              className="mt-6 px-8 py-2 bg-black text-white hover:bg-gray-800 font-semibold"
             >
               {isSaved ? '✓ Sparad' : 'Spara ändringar'}
             </button>
