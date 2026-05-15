@@ -138,6 +138,36 @@ function CheckoutContent() {
     return () => clearTimeout(timer);
   }, [cartItems, formData, shippingMethod, shippingOptions]);
 
+  // Restore data when user presses back button (popstate event)
+  useEffect(() => {
+    const handlePopState = () => {
+      console.log('[KASSAN] Popstate detected, restoring checkout data');
+      const checkoutData = localStorage.getItem('checkoutData') || sessionStorage.getItem('checkoutData');
+      if (checkoutData) {
+        try {
+          const data = JSON.parse(checkoutData);
+          if (data.cartItems?.length > 0) {
+            setCartItems(data.cartItems);
+            const total = data.cartItems.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
+            setCartTotal(total);
+          }
+          if (data.formData) {
+            setFormData(data.formData);
+          }
+          if (data.shippingMethod) {
+            setShippingMethod(data.shippingMethod);
+          }
+          console.log('[KASSAN] Successfully restored data on back button');
+        } catch (e) {
+          console.error('[KASSAN] Error restoring data on popstate:', e);
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   useEffect(() => {
     // Load Google Maps Places API script once
     if ((window as any).google?.maps?.places) {
