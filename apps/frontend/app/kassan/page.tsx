@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useLayoutEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { MainLayout } from '../components/MainLayout';
 import { InputWithCheck } from '../components/InputWithCheck';
 
@@ -22,11 +22,16 @@ const countryCodeMap: Record<string, string> = {
   'Finland': 'fi'
 };
 
-export default function Checkout() {
+function CheckoutContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isFromStripe = searchParams.get('from') === 'stripe';
+
+  // Always start empty to match server render (avoids hydration mismatch)
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartTotal, setCartTotal] = useState(0);
   const [customerType, setCustomerType] = useState<'private' | 'business'>('private');
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -40,7 +45,6 @@ export default function Checkout() {
     companyName: '',
   });
   const [shippingMethod, setShippingMethod] = useState('standard');
-  const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [loadingShipping, setLoadingShipping] = useState(false);
@@ -63,6 +67,76 @@ export default function Checkout() {
       setLoadingShipping(false);
     }
   }, []);
+
+  // Store whether we've restored checkout data to prevent other effects from clearing it
+  const hasRestoredCheckoutDataRef = useRef(false);
+
+  // Use useLayoutEffect to restore data BEFORE the browser paints
+  // This runs EVERY time the component mounts, ensuring we always try to restore
+  useLayoutEffect(() => {
+    console.log('[KASSAN-RESTORE] Layout effect running - restoring from storage');
+    try {
+      const checkoutData = localStorage.getItem('checkoutData') || sessionStorage.getItem('checkoutData');
+      if (checkoutData) {
+        const data = JSON.parse(checkoutData);
+        console.log('[KASSAN-RESTORE] Found checkout data:', { items: data.cartItems?.length, hasForm: !!data.formData });
+
+        if (data.cartItems?.length > 0) {
+          setCartItems(data.cartItems);
+          const total = data.cartItems.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
+          setCartTotal(total);
+          hasRestoredCheckoutDataRef.current = true;
+          console.log('[KASSAN-RESTORE] Successfully restored checkout data');
+        }
+
+        if (data.formData) {
+          setFormData(data.formData);
+        }
+
+        if (data.shippingMethod) {
+          setShippingMethod(data.shippingMethod);
+        }
+      }
+    } catch (e) {
+      console.error('[KASSAN-RESTORE] Error restoring checkout data:', e);
+    }
+  }, []);
+
+  // Handle Stripe return by replacing history
+  useEffect(() => {
+    if (isFromStripe) {
+      console.log('[KASSAN] Detected return from Stripe, replacing history entry');
+      window.history.replaceState({ kassan: true }, '', window.location.pathname);
+    }
+  }, [isFromStripe]);
+
+  // Load shipping options after data restoration (only once)
+  useEffect(() => {
+    if (hasRestoredCheckoutDataRef.current && formData.country && shippingOptions.length === 0) {
+      console.log('[KASSAN-RESTORE] Loading shipping options after data restoration');
+      fetchShippingOptions(formData.country);
+    }
+  }, [formData.country, shippingOptions.length, fetchShippingOptions]);
+
+  // Auto-save checkout data IMMEDIATELY when anything changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (cartItems.length > 0) {
+        const shippingCost = shippingOptions.find(opt => opt.id === shippingMethod)?.amount || 0;
+        const checkoutState = {
+          cartItems,
+          formData,
+          shippingMethod,
+          shippingCost,
+        };
+        localStorage.setItem('checkoutData', JSON.stringify(checkoutState));
+        sessionStorage.setItem('checkoutData', JSON.stringify(checkoutState));
+        console.log('[KASSAN] Auto-saved checkout data to localStorage and sessionStorage');
+      }
+    }, 100); // Small delay to batch updates
+
+    return () => clearTimeout(timer);
+  }, [cartItems, formData, shippingMethod, shippingOptions]);
 
   useEffect(() => {
     // Load Google Maps Places API script once
@@ -104,16 +178,19 @@ export default function Checkout() {
                 'FI': 'Finland'
               };
 
-              const newCountry = countryMap[countryCode] || 'Sverige';
+              const selectedCountry = countryMap[countryCode] || 'Sverige';
+
               setFormData(prev => ({
                 ...prev,
-                address: `${streetAddress} ${streetNumber}`.trim() || address,
+                address: streetAddress + (streetNumber ? ' ' + streetNumber : ''),
                 postalCode,
                 city,
-                country: newCountry
+                country: selectedCountry
               }));
 
-              fetchShippingOptions(newCountry);
+              if (selectedCountry !== formData.country) {
+                fetchShippingOptions(selectedCountry);
+              }
             }
           });
         } catch (error) {
@@ -137,7 +214,6 @@ export default function Checkout() {
     };
   }, [fetchShippingOptions]);
 
-  // Load cart from localStorage on mount and when page becomes visible
   const loadCartData = useCallback(() => {
     try {
       const savedCartItems = localStorage.getItem('cartItems');
@@ -153,17 +229,43 @@ export default function Checkout() {
   }, []);
 
   useEffect(() => {
-    // Load cart on mount
-    console.log('[KASSAN] Loading cart on mount');
-    loadCartData();
+    console.log('[KASSAN] Initial effect running, hasRestoredCheckoutDataRef:', hasRestoredCheckoutDataRef.current);
 
-    // Reload cart when page is shown (after browser back/forward)
+    // Only load cart from cartItems if we didn't restore from checkoutData
+    if (!hasRestoredCheckoutDataRef.current) {
+      console.log('[KASSAN] Loading cart on mount (no restored data)');
+      loadCartData();
+    } else {
+      console.log('[KASSAN] Skipping loadCartData, already restored from checkoutData');
+    }
+
     const handlePageShow = (event: PageTransitionEvent) => {
       console.log('[KASSAN] Pageshow event fired, persisted:', event.persisted);
       if (event.persisted) {
-        // Page was restored from cache (back button)
-        console.log('[KASSAN] Page restored from cache, reloading cart');
-        loadCartData();
+        console.log('[KASSAN] Page restored from back button, restoring checkout data');
+        const checkoutData = localStorage.getItem('checkoutData') || sessionStorage.getItem('checkoutData');
+        if (checkoutData) {
+          try {
+            const data = JSON.parse(checkoutData);
+            if (data.cartItems?.length > 0) {
+              setCartItems(data.cartItems);
+              const total = data.cartItems.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
+              setCartTotal(total);
+            }
+            if (data.formData) {
+              setFormData(data.formData);
+            }
+            if (data.shippingMethod) {
+              setShippingMethod(data.shippingMethod);
+            }
+            console.log('[KASSAN] Restored checkout data from back button');
+          } catch (e) {
+            console.error('[KASSAN] Error restoring checkout data on pageshow:', e);
+          }
+        } else {
+          console.log('[KASSAN] No checkout data found, loading cart normally');
+          loadCartData();
+        }
       }
     };
 
@@ -172,7 +274,6 @@ export default function Checkout() {
   }, [loadCartData]);
 
   useEffect(() => {
-    // Load customer data from Medusa if logged in
     const loadCustomerData = async () => {
       try {
         const response = await fetch('/api/auth/me');
@@ -180,7 +281,6 @@ export default function Checkout() {
           const data = await response.json();
           const customer = data.customer;
 
-          // Load addresses from Medusa
           const addressResponse = await fetch('/api/auth/addresses');
           if (addressResponse.ok) {
             const addressData = await addressResponse.json();
@@ -200,8 +300,6 @@ export default function Checkout() {
             if (addresses[0]?.city) {
               fetchShippingOptions('Sverige');
             }
-          } else {
-            console.error('Failed to load addresses');
           }
         }
       } catch (error) {
@@ -209,46 +307,37 @@ export default function Checkout() {
       }
     };
 
-    // Load from localStorage on mount (after hydration) - happens when returning from Stripe
-    const checkoutData = localStorage.getItem('checkoutData');
-    if (checkoutData) {
-      try {
-        const data = JSON.parse(checkoutData);
-        setCartItems(data.cartItems || []);
-        if (data.formData) {
-          setFormData(data.formData);
-        }
-        setShippingMethod(data.shippingMethod || 'standard');
-        const total = (data.cartItems || []).reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
-        setCartTotal(total);
-        if (data.formData?.country) {
-          fetchShippingOptions(data.formData.country);
-        }
-        // Still load fresh customer data to ensure address is up to date
-        loadCustomerData();
-      } catch (e) {
-        console.error('Failed to load checkout data from localStorage', e);
-        loadCustomerData();
-      }
-    } else {
-      loadCustomerData();
-    }
+    setIsHydrated(true);
 
-    // Check if coming from quick checkout (Handla nu button)
-    const quickCheckout = localStorage.getItem('quickCheckout');
-    if (quickCheckout) {
-      const item = JSON.parse(quickCheckout);
-      const priceNum = typeof item.price === 'string' ? parseInt(item.price) : item.price;
-      const originalPriceNum = item.originalPrice ? (typeof item.originalPrice === 'string' ? parseInt(item.originalPrice) : item.originalPrice) : undefined;
-
-      setCartItems([{ id: item.id, title: item.title, price: priceNum, originalPrice: originalPriceNum, quantity: item.quantity }]);
-      setCartTotal(priceNum * item.quantity);
-      localStorage.removeItem('quickCheckout');
-      fetchShippingOptions('Sverige');
+    // If we restored checkout data from Stripe return, skip all other loading
+    if (hasRestoredCheckoutDataRef.current) {
+      console.log('[KASSAN] Checkout data already restored, skipping data loading');
       return;
     }
 
-    // Load from sessionStorage (CartAside uses this) - current session cart
+    const quickCheckout = localStorage.getItem('quickCheckout');
+    if (quickCheckout) {
+      try {
+        const item = JSON.parse(quickCheckout);
+        const priceNum = typeof item.price === 'string' ? parseInt(item.price) : item.price;
+        const originalPriceNum = item.originalPrice ? (typeof item.originalPrice === 'string' ? parseInt(item.originalPrice) : item.originalPrice) : undefined;
+        setCartItems([{ id: item.id, title: item.title, price: priceNum, originalPrice: originalPriceNum, quantity: item.quantity }]);
+        setCartTotal(priceNum * item.quantity);
+        localStorage.removeItem('quickCheckout');
+        fetchShippingOptions('Sverige');
+        loadCustomerData();
+        return;
+      } catch (e) {
+        localStorage.removeItem('quickCheckout');
+      }
+    }
+
+    if (cartItems.length > 0) {
+      console.log('[KASSAN] Cart items already restored, loading customer data');
+      loadCustomerData();
+      return;
+    }
+
     const savedCartItems = sessionStorage.getItem('cartItems');
     if (savedCartItems) {
       try {
@@ -262,6 +351,7 @@ export default function Checkout() {
     }
 
     fetchShippingOptions('Sverige');
+    loadCustomerData();
 
     const handleAddToCart = (event: Event) => {
       const customEvent = event as CustomEvent;
@@ -282,7 +372,6 @@ export default function Checkout() {
       setCartTotal(prev => prev + (priceNum * (quantity || 1)));
     };
 
-    // Refresh customer data when page becomes visible (user returns from another tab)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         loadCustomerData();
@@ -295,7 +384,7 @@ export default function Checkout() {
       window.removeEventListener('addToCart', handleAddToCart);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [fetchShippingOptions]);
+  }, [fetchShippingOptions, cartItems.length]);
 
   const selectedShippingOption = shippingOptions.find(opt => opt.id === shippingMethod);
   const shippingCost = selectedShippingOption?.amount || 0;
@@ -320,13 +409,15 @@ export default function Checkout() {
     setIsProcessing(true);
 
     try {
-      // Save checkout state to localStorage before redirecting to Stripe
-      localStorage.setItem('checkoutData', JSON.stringify({
+      const checkoutState = {
         cartItems,
         formData,
         shippingMethod,
         shippingCost,
-      }));
+      };
+      localStorage.setItem('checkoutData', JSON.stringify(checkoutState));
+      sessionStorage.setItem('checkoutData', JSON.stringify(checkoutState));
+      console.log('[KASSAN] Saved checkout data to storage before Stripe redirect:', checkoutState);
 
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -349,8 +440,6 @@ export default function Checkout() {
       }
 
       if (data.url) {
-        // Use a simple window.location to navigate to Stripe
-        // This naturally adds Stripe URL to browser history
         window.location.href = data.url;
       } else {
         throw new Error('No checkout URL returned');
@@ -373,7 +462,6 @@ export default function Checkout() {
           <div className="space-y-3">
             {cartItems.map(item => (
               <div key={item.id} className="flex gap-3 items-center p-3" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                {/* Product Thumbnail */}
                 <div className="flex-shrink-0">
                   {item.image ? (
                     <img
@@ -387,12 +475,10 @@ export default function Checkout() {
                     </div>
                   )}
                 </div>
-                {/* Product Info */}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-gray-900 truncate">{item.title}</h3>
                   <p className="text-xs text-gray-600">Antal: {item.quantity}</p>
                 </div>
-                {/* Price */}
                 <div className="text-right flex-shrink-0">
                   <p className="text-sm font-bold text-gray-900">
                     {(item.price * item.quantity).toLocaleString('sv-SE')} kr
@@ -406,7 +492,6 @@ export default function Checkout() {
               </div>
             ))}
           </div>
-          {/* Order Summary Preview */}
           <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Delsumma</span>
@@ -431,9 +516,7 @@ export default function Checkout() {
           </div>
         </section>
 
-        {/* Form and Summary */}
         <div className="w-full">
-          {/* Customer Type Tabs */}
           <div className="flex gap-0 mb-4 border-b border-gray-200">
             <button
               onClick={() => setCustomerType('private')}
@@ -457,148 +540,172 @@ export default function Checkout() {
             </button>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="bg-white p-6 space-y-8" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            {/* Shipping Information */}
             <section>
               <h2 className="text-2xl font-bold mb-6">Leveransadress</h2>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <InputWithCheck
-                    type="text"
-                    name="firstName"
-                    placeholder="Förnamn"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    required
-                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
-                  />
-                  <InputWithCheck
-                    type="text"
-                    name="lastName"
-                    placeholder="Efternamn"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    required
-                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Förnamn</label>
+                    <InputWithCheck
+                      type="text"
+                      name="firstName"
+                      placeholder="Förnamn"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      required
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Efternamn</label>
+                    <InputWithCheck
+                      type="text"
+                      name="lastName"
+                      placeholder="Efternamn"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      required
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
                 </div>
+
                 {customerType === 'business' && (
-                  <InputWithCheck
-                    type="text"
-                    name="companyName"
-                    placeholder="Företagsnamn"
-                    value={formData.companyName}
-                    onChange={handleInputChange}
-                    required
-                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Företagsnamn</label>
+                    <InputWithCheck
+                      type="text"
+                      name="companyName"
+                      placeholder="Företagsnamn"
+                      value={formData.companyName}
+                      onChange={handleInputChange}
+                      required
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
                 )}
-                <InputWithCheck
-                  type="email"
-                  name="email"
-                  placeholder="E-postadress"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
-                />
-                <InputWithCheck
-                  type="tel"
-                  name="phone"
-                  placeholder="Telefonnummer"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                  ref={addressInputRef}
-                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
-                />
-                <InputWithCheck
-                  type="text"
-                  name="address"
-                  placeholder="Gata och husnummer"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  required
-                  style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
-                />
+
                 <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">E-postadress</label>
+                    <InputWithCheck
+                      type="email"
+                      name="email"
+                      placeholder="E-postadress"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Telefonnummer</label>
+                    <InputWithCheck
+                      type="tel"
+                      name="phone"
+                      placeholder="Telefonnummer"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                      ref={addressInputRef}
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-1">Gata och husnummer</label>
                   <InputWithCheck
                     type="text"
-                    name="postalCode"
-                    placeholder="Postnummer"
-                    value={formData.postalCode}
-                    onChange={handleInputChange}
-                    required
-                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
-                  />
-                  <InputWithCheck
-                    type="text"
-                    name="city"
-                    placeholder="Stad"
-                    value={formData.city}
+                    name="address"
+                    placeholder="Gata och husnummer"
+                    value={formData.address}
                     onChange={handleInputChange}
                     required
                     style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Postnummer</label>
+                    <InputWithCheck
+                      type="text"
+                      name="postalCode"
+                      placeholder="Postnummer"
+                      value={formData.postalCode}
+                      onChange={handleInputChange}
+                      required
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Stad</label>
+                    <InputWithCheck
+                      type="text"
+                      name="city"
+                      placeholder="Stad"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      required
+                      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+                    />
+                  </div>
+                </div>
+
               </div>
             </section>
 
-            {/* Shipping Method */}
             <section>
               <h2 className="text-2xl font-bold mb-6">Frakt</h2>
-              {loadingShipping ? (
-                <p className="text-gray-600">Laddar fraktalternativ...</p>
-              ) : shippingOptions.length > 0 ? (
-                <div className="space-y-3">
-                  {shippingOptions.map((option) => (
-                    <label key={option.id} className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <div className="space-y-3">
+                {loadingShipping ? (
+                  <p className="text-gray-600">Laddar frakt alternativ...</p>
+                ) : shippingOptions.length > 0 ? (
+                  shippingOptions.map(option => (
+                    <label key={option.id} className="flex items-center p-4 border border-gray-200 rounded cursor-pointer hover:bg-gray-50">
                       <input
                         type="radio"
                         name="shippingMethod"
                         value={option.id}
                         checked={shippingMethod === option.id}
                         onChange={(e) => setShippingMethod(e.target.value)}
-                        className="w-4 h-4"
+                        className="mr-3"
                       />
                       <div className="flex-1">
-                        <p className="font-medium">{option.name}</p>
-                        <p className="text-sm text-gray-600">
-                          {option.type === 'standard' ? '2-3 arbetsdagar' : option.type === 'express' ? '1 arbetsdag' : 'Leveransalternativ'}
-                        </p>
+                        <p className="font-semibold text-gray-900">{option.name}</p>
+                        <p className="text-sm text-gray-600">{option.description || ''}</p>
                       </div>
-                      <span className="font-semibold">
-                        {option.amount && option.amount > 0 ? `${option.amount} kr` : 'Gratis'}
-                      </span>
+                      <p className="font-semibold text-gray-900">{(option.amount || 0).toLocaleString('sv-SE')} kr</p>
                     </label>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-600">Ingen frakt tillgänglig för detta land</p>
-              )}
+                  ))
+                ) : (
+                  <p className="text-gray-600">Inga fraktöversättningar tillgängliga</p>
+                )}
+              </div>
             </section>
 
-
-            {/* Submit Button */}
             <button
               type="submit"
-              disabled={isProcessing}
-              className="w-full bg-green-600 text-white py-4 text-lg font-bold hover:bg-green-700 disabled:bg-gray-400"
+              disabled={isProcessing || cartItems.length === 0}
+              className="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isProcessing ? 'Bearbetar...' : 'Slutför köp'}
             </button>
-
-            <Link
-              href="/"
-              className="block text-center text-gray-600 hover:text-gray-900 font-medium"
-            >
-              ← Fortsätt handla
-            </Link>
           </form>
-      </div>
+        </div>
       </div>
       </div>
     </MainLayout>
+  );
+}
+
+export default function Checkout() {
+  return (
+    <Suspense fallback={<div className="p-12">Laddar...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }

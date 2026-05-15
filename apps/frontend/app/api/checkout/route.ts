@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       line_items: lineItems,
       mode: 'payment',
       success_url: `${origin}/order-bekraftelse?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/`,
+      cancel_url: `${origin}/kassan?from=stripe`,
       customer_email: formData.email,
       payment_method_types: ['card'],
       metadata: {

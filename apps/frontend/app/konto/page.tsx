@@ -47,7 +47,7 @@ export default function AccountPage() {
   const addressInputRef = useRef<HTMLInputElement>(null);
 
   // Check if all required fields are filled
-  const isFormComplete = editFirstName && editLastName && editEmail && editAddress && editPostalCode && editCity;
+  const isFormComplete = !!(editFirstName && editLastName && editEmail && editAddress && editPostalCode && editCity);
 
   // Track if any changes have been made
   const hasChanges = editFirstName !== firstName ||
@@ -582,7 +582,7 @@ export default function AccountPage() {
 
             <button
               onClick={handleSaveChanges}
-              disabled={isFormComplete && (!hasChanges || isSaved)}
+              disabled={!isFormComplete || !hasChanges || isSaved}
               className="mt-6 px-8 py-2 bg-black text-white hover:bg-gray-800 font-semibold whitespace-nowrap disabled:cursor-not-allowed"
               style={{ minWidth: '180px', textAlign: 'center' }}
             >

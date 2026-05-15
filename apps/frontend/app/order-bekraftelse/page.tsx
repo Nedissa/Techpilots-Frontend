@@ -6,8 +6,9 @@ import { MainLayout } from '../components/MainLayout';
 
 export default function OrderConfirmation() {
   useEffect(() => {
-    // Clear checkout data from localStorage after successful order
+    // Clear checkout data from localStorage and sessionStorage after successful order
     localStorage.removeItem('checkoutData');
+    sessionStorage.removeItem('checkoutData');
   }, []);
 
   return (
