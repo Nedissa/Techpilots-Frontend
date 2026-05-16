@@ -765,7 +765,7 @@ export default function AccountPage() {
               ) : (
                 <div className="p-4 space-y-4" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                   <div>
-                    <label className="block text-sm font-semibold mb-2">Beställningsnummer</label>
+                    <label className="block text-sm font-semibold mb-2">Ordernummer</label>
                     <input
                       type="text"
                       value={complaintOrderId}
