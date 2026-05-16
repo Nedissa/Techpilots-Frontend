@@ -53,6 +53,18 @@ export async function POST(req: Request) {
     const customerId = customerData.customer?.id || customerData.id
     const existingComplaints = customerData.customer?.metadata?.complaints || []
 
+    // Check if complaint already exists for this order
+    const complaintExists = existingComplaints.some(
+      (complaint: any) => complaint.order_id === order_id
+    )
+
+    if (complaintExists) {
+      return Response.json(
+        { error: "Du har redan lämnat en felanmälan för denna order" },
+        { status: 400 }
+      )
+    }
+
     const newComplaint = {
       id: `complaint_${Date.now()}`,
       order_id,
