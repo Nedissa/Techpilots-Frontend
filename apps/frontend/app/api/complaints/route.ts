@@ -23,17 +23,16 @@ export async function POST(req: Request) {
 
     const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-    const adminKey = process.env.MEDUSA_ADMIN_KEY
 
-    if (!backendUrl || !publishableKey || !adminKey) {
+    if (!backendUrl || !publishableKey) {
       return Response.json(
         { error: "Backend configuration missing" },
         { status: 500 }
       )
     }
 
-    // Get customer ID from the token
-    const customerResponse = await fetch(
+    // Get customer info and save complaint to their metadata
+    const getResponse = await fetch(
       `${backendUrl}/store/customers/me`,
       {
         headers: {
@@ -43,47 +42,51 @@ export async function POST(req: Request) {
       }
     )
 
-    if (!customerResponse.ok) {
+    if (!getResponse.ok) {
       return Response.json(
-        { error: "Failed to get customer info" },
+        { error: "Failed to authenticate" },
         { status: 401 }
       )
     }
 
-    const customerData = await customerResponse.json()
+    const customerData = await getResponse.json()
     const customerId = customerData.customer?.id || customerData.id
+    const existingComplaints = customerData.customer?.metadata?.complaints || []
 
-    if (!customerId) {
+    const newComplaint = {
+      id: `complaint_${Date.now()}`,
+      order_id,
+      description,
+      created_at: new Date().toISOString(),
+      status: "open",
+    }
+
+    // Update customer metadata with new complaint
+    const updateResponse = await fetch(
+      `${backendUrl}/store/customers/me`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+          "x-publishable-api-key": publishableKey,
+        },
+        body: JSON.stringify({
+          metadata: {
+            complaints: [...existingComplaints, newComplaint],
+          },
+        }),
+      }
+    )
+
+    if (!updateResponse.ok) {
       return Response.json(
-        { error: "Could not extract customer ID" },
-        { status: 400 }
+        { error: "Failed to save complaint" },
+        { status: 500 }
       )
     }
 
-    // Save complaint to backend
-    const response = await fetch(`${backendUrl}/admin/complaints`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${adminKey}`,
-      },
-      body: JSON.stringify({
-        customer_id: customerId,
-        order_id,
-        description,
-      }),
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      return Response.json(
-        { error: error.message || "Failed to save complaint" },
-        { status: response.status }
-      )
-    }
-
-    const data = await response.json()
-    return Response.json({ complaint: data.complaint }, { status: 201 })
+    return Response.json({ complaint: newComplaint }, { status: 201 })
   } catch (error) {
     console.error("Complaint API error:", error)
     return Response.json(
