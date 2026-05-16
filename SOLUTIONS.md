@@ -77,3 +77,47 @@ All API routes now use these env vars instead of hardcoded values.
 **Key Fix:** Storage event listener catches when localStorage is directly modified, triggering instant UI updates without waiting for custom events.
 
 **Result:** Cart icon in header stays perfectly in sync with cart sidebar in real-time. Updates instantly when items are added, quantity changed, removed, or cart is emptied.
+
+---
+
+## Felanmälningar (Complaints) Widget in Medusa Admin
+
+**Problem:** Customers needed to submit complaints, and admins needed to view them. Widget wasn't appearing in Medusa admin customer details page despite code being correct.
+
+**Root Cause:** Medusa v2.14.2 admin bundler bug - it couldn't locate the compiled admin UI (`index.html`) during production build. The file existed but the bundler looked in wrong paths, causing the entire admin to fail starting.
+
+**Solution:** 
+
+1. **Widget Registration** - Imported and used `defineWidgetConfig` function from `@medusajs/admin-sdk`:
+   ```tsx
+   export const config = defineWidgetConfig({
+     zone: "customer.details.after",
+   })
+   ```
+   Without this function wrapper, Medusa's compilation system ignored the widget config.
+
+2. **Build Process Fix** - Avoided building entire monorepo (which triggered Next.js storefront to fail with ECONNREFUSED). Instead:
+   - Built ONLY backend: `npx medusa build` in `/apps/backend`
+   - Started in development mode: `npx medusa develop`
+   - This forced Medusa to read files from local `.medusa/client` instead of searching in bundled node_modules paths
+
+3. **Widget Code Structure** - Created `/src/admin/widgets/complaints-widget.tsx`:
+   - Fetches complaints from `/admin/complaints` endpoint using customer ID
+   - Displays complaints in admin panel under customer details
+   - Shows order number, description, and date
+   - Shows "Inga felanmälningar" (No complaints) if customer has none
+
+4. **Backend API** - Created `/src/api/admin/complaints/route.ts`:
+   - GET endpoint that filters complaints by customer_id
+   - Returns complaints array to the widget
+
+5. **Database** - Created migration `/src/migrations/1715800000000_CreateComplaintsTable.ts`:
+   - Creates `complaint` table with: id, customer_id, order_id, order_number, description, status, created_at, updated_at
+
+**Key Lessons:**
+- Medusa v2 monorepo: build backend separately, don't trigger storefront build during backend dev
+- Admin widgets require `defineWidgetConfig()` wrapper - plain JavaScript objects won't register
+- Development mode (`medusa develop`) reads from local build files, production mode has bundler path issues
+- Widget registration happens at compile time - changes require rebuild
+
+**Result:** Admins can now view all customer complaints in the Medusa admin panel on the customer details page. Widget displays in the correct zone with proper styling matching the admin UI.
