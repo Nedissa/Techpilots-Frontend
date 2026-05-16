@@ -1,124 +1,94 @@
-const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
+import { cookies } from "next/headers"
 
-export async function GET(request: Request) {
+export async function POST(req: Request) {
   try {
-    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-    if (!publishableKey) {
+    const { order_id, description } = await req.json()
+
+    if (!order_id || !description) {
       return Response.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
-
-    const cookies = request.headers.get('cookie') || '';
-    const tokenMatch = cookies.match(/medusa_token=([^;]+)/);
-    const token = tokenMatch ? tokenMatch[1] : null;
-
-    if (!token) {
-      return Response.json(
-        { error: 'No authentication token' },
-        { status: 401 }
-      );
-    }
-
-    const response = await fetch(
-      `${MEDUSA_URL}/store/customers/me`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'x-publishable-api-key': publishableKey,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      return Response.json(
-        { error: 'Failed to fetch customer data' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    const complaints = data.customer?.metadata?.complaints || [];
-
-    return Response.json({ complaints });
-  } catch (error) {
-    console.error('Error fetching complaints:', error);
-    return Response.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-    if (!publishableKey) {
-      return Response.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
-
-    const cookies = request.headers.get('cookie') || '';
-    const tokenMatch = cookies.match(/medusa_token=([^;]+)/);
-    const token = tokenMatch ? tokenMatch[1] : null;
-
-    if (!token) {
-      return Response.json(
-        { error: 'No authentication token' },
-        { status: 401 }
-      );
-    }
-
-    const { orderId, description } = await request.json();
-
-    if (!orderId || !description) {
-      return Response.json(
-        { error: 'Missing required fields' },
+        { error: "Order ID and description are required" },
         { status: 400 }
-      );
+      )
     }
 
-    const response = await fetch(
-      `${MEDUSA_URL}/store/customers/me`,
+    const cookieStore = await cookies()
+    const authToken = cookieStore.get("medusa_token")?.value
+
+    if (!authToken) {
+      return Response.json(
+        { error: "Not authenticated" },
+        { status: 401 }
+      )
+    }
+
+    const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+    const adminKey = process.env.MEDUSA_ADMIN_KEY
+
+    if (!backendUrl || !publishableKey || !adminKey) {
+      return Response.json(
+        { error: "Backend configuration missing" },
+        { status: 500 }
+      )
+    }
+
+    // Get customer ID from the token
+    const customerResponse = await fetch(
+      `${backendUrl}/store/customers/me`,
       {
-        method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'x-publishable-api-key': publishableKey,
+          Authorization: `Bearer ${authToken}`,
+          "x-publishable-api-key": publishableKey,
         },
-        body: JSON.stringify({
-          metadata: {
-            complaints: [
-              {
-                id: Date.now().toString(),
-                order_id: orderId,
-                description: description,
-                status: 'pending',
-                created_at: new Date().toISOString(),
-              },
-            ],
-          },
-        }),
       }
-    );
+    )
+
+    if (!customerResponse.ok) {
+      return Response.json(
+        { error: "Failed to get customer info" },
+        { status: 401 }
+      )
+    }
+
+    const customerData = await customerResponse.json()
+    const customerId = customerData.customer?.id || customerData.id
+
+    if (!customerId) {
+      return Response.json(
+        { error: "Could not extract customer ID" },
+        { status: 400 }
+      )
+    }
+
+    // Save complaint to backend
+    const response = await fetch(`${backendUrl}/admin/complaints`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${adminKey}`,
+      },
+      body: JSON.stringify({
+        customer_id: customerId,
+        order_id,
+        description,
+      }),
+    })
 
     if (!response.ok) {
+      const error = await response.json()
       return Response.json(
-        { error: 'Failed to submit complaint' },
+        { error: error.message || "Failed to save complaint" },
         { status: response.status }
-      );
+      )
     }
 
-    return Response.json({ success: true });
+    const data = await response.json()
+    return Response.json({ complaint: data.complaint }, { status: 201 })
   } catch (error) {
-    console.error('Error submitting complaint:', error);
+    console.error("Complaint API error:", error)
     return Response.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
-    );
+    )
   }
 }
