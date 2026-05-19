@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       )
     }
 
-    // Get customer info and save complaint to their metadata
+    // Get customer info
     const getResponse = await fetch(
       `${backendUrl}/store/customers/me`,
       {
@@ -51,31 +51,10 @@ export async function POST(req: Request) {
 
     const customerData = await getResponse.json()
     const customerId = customerData.customer?.id || customerData.id
-    const existingComplaints = customerData.customer?.metadata?.complaints || []
 
-    // Check if complaint already exists for this order
-    const complaintExists = existingComplaints.some(
-      (complaint: any) => complaint.order_id === order_id
-    )
-
-    if (complaintExists) {
-      return Response.json(
-        { error: "Du har redan lämnat en felanmälan för denna order" },
-        { status: 400 }
-      )
-    }
-
-    const newComplaint = {
-      id: `complaint_${Date.now()}`,
-      order_id,
-      description,
-      created_at: new Date().toISOString(),
-      status: "öppen",
-    }
-
-    // Update customer metadata with new complaint
-    const updateResponse = await fetch(
-      `${backendUrl}/store/customers/me`,
+    // Save complaint via Store API
+    const complaintResponse = await fetch(
+      `${backendUrl}/store/complaints`,
       {
         method: "POST",
         headers: {
@@ -84,21 +63,22 @@ export async function POST(req: Request) {
           "x-publishable-api-key": publishableKey,
         },
         body: JSON.stringify({
-          metadata: {
-            complaints: [...existingComplaints, newComplaint],
-          },
+          customer_id: customerId,
+          order_id,
+          description,
         }),
       }
     )
 
-    if (!updateResponse.ok) {
+    if (!complaintResponse.ok) {
       return Response.json(
         { error: "Failed to save complaint" },
-        { status: 500 }
+        { status: complaintResponse.status }
       )
     }
 
-    return Response.json({ complaint: newComplaint }, { status: 201 })
+    const complaintData = await complaintResponse.json()
+    return Response.json({ complaint: complaintData.complaint }, { status: 201 })
   } catch (error) {
     console.error("Complaint API error:", error)
     return Response.json(

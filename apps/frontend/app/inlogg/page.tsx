@@ -34,6 +34,7 @@ export default function LoginPage() {
       if (!response.ok) {
         const error = await response.json();
         setLoginError(error.error || 'E-postadressen eller lösenordet är felaktig');
+        setIsLoading(false);
         return;
       }
 
@@ -62,7 +63,6 @@ export default function LoginPage() {
     } catch (error) {
       console.error('Login error:', error);
       setLoginError('Ett fel uppstod. Försök igen senare.');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -124,9 +124,9 @@ export default function LoginPage() {
 
   return (
     <MainLayout bordered={false}>
-      <div className="min-h-screen flex flex-col items-center justify-center px-6">
+      <div className="min-h-[calc(100vh-200px)] flex flex-col items-center justify-center px-6">
         <div className="max-w-md w-full flex flex-col items-center">
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-1 mb-8">
             <Logo />
             <span className="text-3xl font-bold">Techpilots</span>
           </div>
@@ -135,12 +135,7 @@ export default function LoginPage() {
               {/* Login Form */}
               {showLogin && (
                 <div className="p-8 rounded-lg shadow-sm" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-                  <h2 className="text-2xl font-bold mb-6">Logga in</h2>
-                  {loginError && (
-                    <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
-                      {loginError}
-                    </div>
-                  )}
+                  <h2 className="text-2xl font-bold mb-6 text-center">Logga in</h2>
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div>
                       <label className="block text-sm font-semibold mb-2">E-postadress</label>
@@ -176,7 +171,7 @@ export default function LoginPage() {
                   </form>
                   <div className="text-center mt-4">
                     <p className="text-xs text-gray-600">
-                      <button className="text-blue-600 hover:underline">Glömt lösenord? Återställ här</button>
+                      <button className="text-black">Glömt lösenord? Återställ här</button>
                     </p>
                   </div>
                 </div>
@@ -241,7 +236,7 @@ export default function LoginPage() {
                 </p>
                 <button
                   onClick={() => setShowLogin(!showLogin)}
-                  className="text-blue-600 hover:underline font-semibold"
+                  className="text-black font-semibold"
                 >
                   {showLogin ? 'Skapa ett här' : 'Logga in här'}
                 </button>

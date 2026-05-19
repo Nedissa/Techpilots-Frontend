@@ -63,7 +63,7 @@ export default function AccountPage() {
   useEffect(() => {
     const savedData = localStorage.getItem('userData');
     if (!savedData) {
-      router.push('/logga-in');
+      router.push('/inlogg');
       return;
     }
 
@@ -81,7 +81,7 @@ export default function AccountPage() {
       try {
         const meResponse = await fetch('/api/auth/me');
         if (!meResponse.ok) {
-          router.push('/logga-in');
+          router.push('/inlogg');
           return;
         }
         const meData = await meResponse.json();
@@ -144,13 +144,11 @@ export default function AccountPage() {
         if (addressResponse.ok) {
           const addressData = await addressResponse.json();
           const loadedAddresses = addressData.addresses || [];
-          console.log('Loaded addresses:', loadedAddresses);
           setAddresses(loadedAddresses);
 
           // Populate form fields with first address if available
           if (loadedAddresses.length > 0) {
             const firstAddress = loadedAddresses[0];
-            console.log('Setting currentAddressId to:', firstAddress.id);
             setCurrentAddressId(firstAddress.id);
             // Store original address data
             setAddress(firstAddress.address_1 || '');
@@ -163,7 +161,6 @@ export default function AccountPage() {
             setEditCity(firstAddress.city || '');
             setEditAddressPhone(firstAddress.phone || '');
           } else {
-            console.log('No addresses loaded');
             setCurrentAddressId(null);
             setAddress('');
             setPostalCode('');
@@ -205,7 +202,7 @@ export default function AccountPage() {
     }
     localStorage.removeItem('userData');
     window.dispatchEvent(new Event('userLogout'));
-    router.push('/logga-in');
+    router.push('/inlogg');
   };
 
   const handleAddComplaint = async () => {
@@ -282,7 +279,6 @@ export default function AccountPage() {
         try {
           // If we have existing address, try to update it first
           if (currentAddressId) {
-            console.log('Attempting to update address:', currentAddressId);
             const updateResponse = await fetch(`/api/auth/addresses/${currentAddressId}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
@@ -298,7 +294,6 @@ export default function AccountPage() {
             });
 
             if (updateResponse.ok) {
-              console.log('Address updated successfully');
               // Reload addresses to get fresh data
               const reloadResponse = await fetch('/api/auth/addresses');
               if (reloadResponse.ok) {
@@ -307,13 +302,10 @@ export default function AccountPage() {
                 setAddresses(loadedAddresses);
               }
               return;
-            } else {
-              console.log('Update failed, will create new address instead');
             }
           }
 
           // Create new address if no existing or update failed
-          console.log('Creating new address');
           const createResponse = await fetch('/api/auth/addresses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -329,13 +321,11 @@ export default function AccountPage() {
           });
 
           if (createResponse.ok) {
-            console.log('Address created successfully');
             // Reload addresses from server
             const reloadResponse = await fetch('/api/auth/addresses');
             if (reloadResponse.ok) {
               const reloadData = await reloadResponse.json();
               const loadedAddresses = reloadData.addresses || [];
-              console.log('Reloaded addresses:', loadedAddresses);
               setAddresses(loadedAddresses);
               if (loadedAddresses.length > 0) {
                 const addr = loadedAddresses[0];
@@ -707,7 +697,6 @@ export default function AccountPage() {
                               body: JSON.stringify({ wishlist: updated }),
                             });
                             setFavoriteProducts(updated);
-                            console.log('Favorite removed:', product.id);
                           } catch (error) {
                             console.error('Failed to remove favorite:', error);
                           }

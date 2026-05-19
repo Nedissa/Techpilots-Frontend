@@ -74,19 +74,16 @@ function CheckoutContent() {
   // Use useLayoutEffect to restore data BEFORE the browser paints
   // This runs EVERY time the component mounts, ensuring we always try to restore
   useLayoutEffect(() => {
-    console.log('[KASSAN-RESTORE] Layout effect running - restoring from storage');
     try {
       const checkoutData = localStorage.getItem('checkoutData') || sessionStorage.getItem('checkoutData');
       if (checkoutData) {
         const data = JSON.parse(checkoutData);
-        console.log('[KASSAN-RESTORE] Found checkout data:', { items: data.cartItems?.length, hasForm: !!data.formData });
 
         if (data.cartItems?.length > 0) {
           setCartItems(data.cartItems);
           const total = data.cartItems.reduce((sum: number, item: CartItem) => sum + (item.price * item.quantity), 0);
           setCartTotal(total);
           hasRestoredCheckoutDataRef.current = true;
-          console.log('[KASSAN-RESTORE] Successfully restored checkout data');
         }
 
         if (data.formData) {
@@ -105,7 +102,6 @@ function CheckoutContent() {
   // Handle Stripe return by replacing history
   useEffect(() => {
     if (isFromStripe) {
-      console.log('[KASSAN] Detected return from Stripe, replacing history entry');
       window.history.replaceState({ kassan: true }, '', window.location.pathname);
     }
   }, [isFromStripe]);
@@ -113,7 +109,6 @@ function CheckoutContent() {
   // Load shipping options after data restoration (only once)
   useEffect(() => {
     if (hasRestoredCheckoutDataRef.current && formData.country && shippingOptions.length === 0) {
-      console.log('[KASSAN-RESTORE] Loading shipping options after data restoration');
       fetchShippingOptions(formData.country);
     }
   }, [formData.country, shippingOptions.length, fetchShippingOptions]);
@@ -131,7 +126,6 @@ function CheckoutContent() {
         };
         localStorage.setItem('checkoutData', JSON.stringify(checkoutState));
         sessionStorage.setItem('checkoutData', JSON.stringify(checkoutState));
-        console.log('[KASSAN] Auto-saved checkout data to localStorage and sessionStorage');
       }
     }, 100); // Small delay to batch updates
 
@@ -141,7 +135,6 @@ function CheckoutContent() {
   // Restore data when user presses back button (popstate event)
   useEffect(() => {
     const handlePopState = () => {
-      console.log('[KASSAN] Popstate detected, restoring checkout data');
       const checkoutData = localStorage.getItem('checkoutData') || sessionStorage.getItem('checkoutData');
       if (checkoutData) {
         try {
@@ -157,7 +150,6 @@ function CheckoutContent() {
           if (data.shippingMethod) {
             setShippingMethod(data.shippingMethod);
           }
-          console.log('[KASSAN] Successfully restored data on back button');
         } catch (e) {
           console.error('[KASSAN] Error restoring data on popstate:', e);
         }
@@ -259,20 +251,13 @@ function CheckoutContent() {
   }, []);
 
   useEffect(() => {
-    console.log('[KASSAN] Initial effect running, hasRestoredCheckoutDataRef:', hasRestoredCheckoutDataRef.current);
-
     // Only load cart from cartItems if we didn't restore from checkoutData
     if (!hasRestoredCheckoutDataRef.current) {
-      console.log('[KASSAN] Loading cart on mount (no restored data)');
       loadCartData();
-    } else {
-      console.log('[KASSAN] Skipping loadCartData, already restored from checkoutData');
     }
 
     const handlePageShow = (event: PageTransitionEvent) => {
-      console.log('[KASSAN] Pageshow event fired, persisted:', event.persisted);
       if (event.persisted) {
-        console.log('[KASSAN] Page restored from back button, restoring checkout data');
         const checkoutData = localStorage.getItem('checkoutData') || sessionStorage.getItem('checkoutData');
         if (checkoutData) {
           try {
@@ -288,12 +273,10 @@ function CheckoutContent() {
             if (data.shippingMethod) {
               setShippingMethod(data.shippingMethod);
             }
-            console.log('[KASSAN] Restored checkout data from back button');
           } catch (e) {
             console.error('[KASSAN] Error restoring checkout data on pageshow:', e);
           }
         } else {
-          console.log('[KASSAN] No checkout data found, loading cart normally');
           loadCartData();
         }
       }
@@ -341,7 +324,6 @@ function CheckoutContent() {
 
     // If we restored checkout data from Stripe return, skip all other loading
     if (hasRestoredCheckoutDataRef.current) {
-      console.log('[KASSAN] Checkout data already restored, skipping data loading');
       return;
     }
 
@@ -363,7 +345,6 @@ function CheckoutContent() {
     }
 
     if (cartItems.length > 0) {
-      console.log('[KASSAN] Cart items already restored, loading customer data');
       loadCustomerData();
       return;
     }
@@ -447,7 +428,6 @@ function CheckoutContent() {
       };
       localStorage.setItem('checkoutData', JSON.stringify(checkoutState));
       sessionStorage.setItem('checkoutData', JSON.stringify(checkoutState));
-      console.log('[KASSAN] Saved checkout data to storage before Stripe redirect:', checkoutState);
 
       const response = await fetch('/api/checkout', {
         method: 'POST',
